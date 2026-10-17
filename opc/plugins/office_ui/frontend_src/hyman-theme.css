@@ -1,0 +1,451 @@
+/* HymanAgent VI, Scheme 2.
+   Color and type source: HymanAgent OS视觉vi/part2 + ui-spec/tokens.css.
+   The existing theme IDs remain stable for saved user preferences. */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/hyman/fonts/InterVariable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/hyman/fonts/InterVariable-Italic.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter Display';
+  src: url('/hyman/fonts/InterVariable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('/hyman/fonts/NotoSansSC-VF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/hyman/fonts/GeistMono-VF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ha-font-display: 'Inter Display', 'Inter', 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --ha-font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --ha-font-cjk: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --ha-font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --ha-radius-xs: 4px;
+  --ha-radius-sm: 6px;
+  --ha-radius-md: 8px;
+  --ha-radius-lg: 10px;
+  --ha-radius-xl: 12px;
+  --ha-radius-bubble: 14px;
+  --ha-radius-2xl: 16px;
+  --ha-radius-full: 999px;
+  --ha-space-1: 4px;
+  --ha-space-2: 8px;
+  --ha-space-3: 12px;
+  --ha-space-4: 16px;
+  --ha-space-5: 20px;
+  --ha-space-6: 24px;
+  --ha-space-8: 32px;
+  --ha-space-10: 40px;
+  --ha-space-12: 48px;
+  --ha-space-16: 64px;
+  --ha-focus-width: 2px;
+  --ha-focus-offset: 2px;
+  --ha-ease: cubic-bezier(.2, .8, .2, 1);
+  --ha-dur-fast: 120ms;
+  --ha-dur-base: 200ms;
+}
+
+.app-shell[data-theme="openopc"] {
+  color-scheme: dark;
+  --ha-bg-canvas: #090D0E;
+  --ha-bg-subtle: #0D1112;
+  --ha-bg-surface: #131718;
+  --ha-bg-raised: #1F2223;
+  --ha-bg-overlay: rgba(9, 13, 14, .72);
+  --ha-fill-hover: rgba(243, 242, 236, .04);
+  --ha-fill-pressed: rgba(243, 242, 236, .07);
+  --ha-fill-selected: #1F2223;
+  --ha-border-subtle: #1F2223;
+  --ha-border-default: #303434;
+  --ha-border-strong: #535655;
+  --ha-text-primary: #F3F2EC;
+  --ha-text-reading: #CECEC9;
+  --ha-text-secondary: #A4A5A2;
+  --ha-text-tertiary: #7F817E;
+  --ha-text-disabled: #535655;
+  --ha-text-on-primary: #090D0E;
+  --ha-action-primary: #F3F2EC;
+  --ha-action-primary-hover: #CECEC9;
+  --ha-accent: #C6FFDF;
+  --ha-accent-text: #C6FFDF;
+  --ha-accent-subtle: rgba(198, 255, 223, .1);
+  --ha-focus-ring: #C6FFDF;
+  --ha-selection-bg: rgba(198, 255, 223, .22);
+  --ha-danger: #DA8D86;
+  --ha-danger-subtle: rgba(218, 141, 134, .12);
+  --ha-danger-border: rgba(218, 141, 134, .32);
+  --ha-success: #95C59E;
+  --ha-warning: #DEB67F;
+  --ha-shadow-e0: none;
+  --ha-shadow-e1: 0 0 0 1px #1F2223;
+  --ha-shadow-e2: 0 0 0 1px #303434, 0 12px 40px rgba(0, 0, 0, .35);
+  --ha-shadow-e3: 0 0 0 1px rgba(243, 242, 236, .1), 0 30px 80px rgba(0, 0, 0, .55), 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.app-shell[data-theme="paper"] {
+  color-scheme: light;
+  --ha-bg-canvas: #F3F2EC;
+  --ha-bg-subtle: #ECEBE5;
+  --ha-bg-surface: #FAF9F5;
+  --ha-bg-raised: #FFFFFF;
+  --ha-bg-overlay: rgba(9, 13, 14, .4);
+  --ha-fill-hover: rgba(9, 13, 14, .04);
+  --ha-fill-pressed: rgba(9, 13, 14, .07);
+  --ha-fill-selected: rgba(9, 13, 14, .06);
+  --ha-border-subtle: rgba(9, 13, 14, .08);
+  --ha-border-default: rgba(9, 13, 14, .14);
+  --ha-border-strong: #A4A5A2;
+  --ha-text-primary: #090D0E;
+  --ha-text-reading: #1F2223;
+  --ha-text-secondary: #535655;
+  --ha-text-tertiary: #676A68;
+  --ha-text-disabled: #A4A5A2;
+  --ha-text-on-primary: #F3F2EC;
+  --ha-action-primary: #090D0E;
+  --ha-action-primary-hover: #1F2223;
+  --ha-accent: #2D6549;
+  --ha-accent-text: #2D6549;
+  --ha-accent-subtle: #C6FFDF;
+  --ha-focus-ring: #2D6549;
+  --ha-selection-bg: rgba(45, 101, 73, .18);
+  --ha-danger: #9C443B;
+  --ha-danger-subtle: rgba(156, 68, 59, .1);
+  --ha-danger-border: rgba(156, 68, 59, .28);
+  --ha-success: #376742;
+  --ha-warning: #845922;
+  --ha-shadow-e0: none;
+  --ha-shadow-e1: 0 0 0 1px rgba(9, 13, 14, .08), 0 1px 2px rgba(9, 13, 14, .04);
+  --ha-shadow-e2: 0 0 0 1px rgba(9, 13, 14, .08), 0 8px 24px rgba(9, 13, 14, .08);
+  --ha-shadow-e3: 0 0 0 1px rgba(9, 13, 14, .08), 0 24px 64px rgba(9, 13, 14, .14), 0 4px 12px rgba(9, 13, 14, .06);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) {
+  --bg: var(--ha-bg-canvas);
+  --bg-elevated: var(--ha-bg-surface);
+  --bg-card: var(--ha-bg-surface);
+  --bg-secondary: var(--ha-bg-raised);
+  --surface: var(--ha-bg-surface);
+  --surface-hover: var(--ha-bg-raised);
+  --text: var(--ha-text-primary);
+  --text-primary: var(--ha-text-primary);
+  --text-secondary: var(--ha-text-secondary);
+  /* Small legacy labels use text-dim. Tertiary remains available for large text. */
+  --text-dim: var(--ha-text-secondary);
+  --text-tertiary: var(--ha-text-tertiary);
+  --border: var(--ha-border-default);
+  --border-hover: var(--ha-border-strong);
+  --accent: var(--ha-accent);
+  --accent-soft: var(--ha-accent-subtle);
+  --accent-glow: transparent;
+  --action-primary: var(--ha-action-primary);
+  --action-primary-hover: var(--ha-action-primary-hover);
+  --text-on-primary: var(--ha-text-on-primary);
+  --green: var(--ha-success);
+  --yellow: var(--ha-warning);
+  --red: var(--ha-danger);
+  --radius: var(--ha-radius-xl);
+  --radius-sm: var(--ha-radius-md);
+  --radius-xs: var(--ha-radius-sm);
+  --font-mono: var(--ha-font-mono);
+  grid-template-rows: 64px minmax(0, 1fr);
+  font-family: var(--ha-font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) ::selection {
+  background: var(--ha-selection-bg);
+  color: var(--text);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :focus-visible {
+  outline: var(--ha-focus-width) solid var(--ha-focus-ring);
+  outline-offset: var(--ha-focus-offset);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(button, input, textarea, select) {
+  font-family: var(--ha-font-sans);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(code, pre, .mono, .log-data, .ce-export-textarea) {
+  font-family: var(--ha-font-mono);
+}
+
+/* Neutral chrome keeps the mint accent limited to active controls and focus. */
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .topbar {
+  height: 64px;
+  padding: 0 24px;
+  background: var(--bg);
+  border-bottom-color: var(--ha-border-subtle);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.topbar-left, .topbar-center) {
+  gap: 16px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .topbar-right {
+  gap: 8px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .page-nav {
+  padding: 4px;
+  gap: 4px;
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  border-radius: 10px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .page-nav-btn {
+  min-height: 32px;
+  padding: 4px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .page-nav-btn:first-child {
+  border-right: 0;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .page-nav-btn.active {
+  background: var(--ha-fill-selected);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.language-toggle, .theme-select, .icon-btn) {
+  min-height: 32px;
+  border-color: var(--border);
+  background: transparent;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .stat-chips {
+  gap: 8px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .stat-chip {
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: transparent;
+  border-color: var(--ha-border-subtle);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.conn-dot, .dot, .evo-dot) {
+  box-shadow: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .dot.reflecting {
+  background: var(--text-secondary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.count-badge, .sub-badge) {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.canvas-wrap, .ce-canvas-wrap) {
+  background: var(--ha-bg-subtle);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.canvas-float-btn, .sidebar-collapse-btn) {
+  background: var(--bg-elevated);
+  box-shadow: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.send-btn, .ce-btn.apply) {
+  background: var(--action-primary);
+  color: var(--text-on-primary);
+  border-color: transparent;
+  border-radius: 8px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.send-btn, .ce-btn.apply):not(:disabled):hover {
+  background: var(--action-primary-hover);
+  filter: none;
+  transform: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-btn.upload {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-btn.upload:hover {
+  filter: none;
+  background: var(--surface-hover);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.agent-del:hover, .ce-btn.danger:hover) {
+  background: var(--ha-danger-subtle);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .del-confirm-yes {
+  color: var(--text-on-primary);
+}
+
+/* Office controls use the same quiet panels. The pixel canvas is untouched. */
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .team-panel {
+  padding: 16px;
+  gap: 16px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .office-cards {
+  gap: 8px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .office-card {
+  padding: 12px;
+  background: var(--bg);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .office-card:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-hover);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .office-agent-chip {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .office-agent-chip:hover {
+  background: var(--bg-secondary);
+  color: var(--text);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.agent-row.selected, .agent-row-simple.selected, .pill-btn.active, .icon-btn.active, .language-toggle-btn.active) {
+  background: var(--ha-fill-selected);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .agent-row-main {
+  padding: 12px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.agent-name, .office-name) {
+  font-size: 13px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.agent-spec, .office-capacity) {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.agent-info, .dev-row) {
+  gap: 4px;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.section-label, .dev-label, .evo-label):lang(zh) {
+  letter-spacing: 0;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .agent-detail {
+  padding: 12px;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  border-left: 2px solid var(--accent);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .agent-detail-name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .evo-node.active .evo-dot {
+  box-shadow: none;
+  animation: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .toast-success {
+  background: var(--green);
+  color: var(--text-on-primary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .toast-error {
+  background: var(--red);
+  color: var(--text-on-primary);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .dev-overlay {
+  top: 72px;
+  max-height: calc(100vh - 80px);
+  padding: 16px;
+  gap: 16px;
+  box-shadow: var(--ha-shadow-e2);
+  backdrop-filter: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-canvas-wrap canvas {
+  box-shadow: none;
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-mode-btn.active.wall {
+  background: var(--ha-danger-subtle);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-mode-btn.active.floor {
+  background: color-mix(in srgb, var(--green) 10%, transparent);
+}
+
+.app-shell:is([data-theme="openopc"], [data-theme="paper"]) .ce-mode-btn.active.seat {
+  background: color-mix(in srgb, var(--yellow) 10%, transparent);
+}
+
+@media (max-width: 1040px) {
+  .app-shell:is([data-theme="openopc"], [data-theme="paper"]) .topbar {
+    padding: 0 16px;
+  }
+
+  .app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.topbar-left, .topbar-center) {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell:is([data-theme="openopc"], [data-theme="paper"]) .topbar {
+    padding: 0 12px;
+  }
+
+  .app-shell:is([data-theme="openopc"], [data-theme="paper"]) .page-nav-btn {
+    padding: 4px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --ha-dur-fast: 0ms; --ha-dur-base: 0ms; }
+
+  .app-shell:is([data-theme="openopc"], [data-theme="paper"]) :is(.conn-dot, .evo-dot) {
+    animation: none;
+    transition: none;
+  }
+}

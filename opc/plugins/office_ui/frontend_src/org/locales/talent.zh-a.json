@@ -1,0 +1,402 @@
+{
+  "account-manager": {
+    "name": "客户经理",
+    "description": "负责客户关系、项目范围梳理和交付物跟踪，协调客户沟通与项目推进，关注交付过程和客户满意度。"
+  },
+  "agency-academic-anthropologist": {
+    "name": "人类学家",
+    "description": "研究文化体系、仪式、亲属关系、信仰与民族志方法，构建文化逻辑一致、具有真实生活质感的社会设定。"
+  },
+  "agency-academic-geographer": {
+    "name": "地理学家",
+    "description": "研究自然与人文地理、气候、地图绘制和空间分析，让世界设定中的地形、资源与聚落分布符合科学逻辑。"
+  },
+  "agency-academic-historian": {
+    "name": "历史学家",
+    "description": "运用历史分析、分期、物质文化与史学方法，依据一手和二手资料核验历史一致性，补充可信的时代细节。"
+  },
+  "agency-academic-narratologist": {
+    "name": "叙事学专家",
+    "description": "研究叙事理论、故事结构、人物弧线与文学分析，依据普罗普、坎贝尔及现代叙事学框架提出创作建议。"
+  },
+  "agency-academic-psychologist": {
+    "name": "心理学专家",
+    "description": "研究行为、人格、动机与认知模式，依据临床和研究框架设计心理逻辑可信的人物及互动关系。"
+  },
+  "agency-academic-statistician": {
+    "name": "统计学家",
+    "description": "专注定量研究、实验设计与统计推断，检验论断与研究方案，区分真实信号、随机波动、噪声和偏差。"
+  },
+  "agency-accounts-payable-agent": {
+    "name": "应付账款处理专员",
+    "description": "处理供应商付款、承包商发票和周期账单，覆盖法币、加密货币及稳定币渠道，通过工具调用接入 AI 工作流。"
+  },
+  "agency-agentic-identity-trust": {
+    "name": "智能体身份与信任架构师",
+    "description": "为多智能体环境设计身份、认证和信任验证体系，使智能体能够证明自身身份、获准执行的操作及实际行为。"
+  },
+  "agency-agents-orchestrator": {
+    "name": "智能体流程编排负责人",
+    "description": "负责完整开发工作流的自主编排，作为流程负责人协调开发各阶段的推进与衔接，统一管理开发流水线。"
+  },
+  "agency-automation-governance-architect": {
+    "name": "自动化治理架构师",
+    "description": "以治理为先、优先采用 n8n 设计业务自动化，在实施前审查方案价值、风险与可维护性，形成明确的实施依据。"
+  },
+  "agency-blender-addon-engineer": {
+    "name": "Blender 插件工程师",
+    "description": "开发 Blender 的 Python 插件、资产校验工具、导出器与流程自动化，将重复的数字内容制作操作整理为可靠的一键流程。"
+  },
+  "agency-business-strategist": {
+    "name": "商业战略顾问",
+    "description": "提供竞争分析、市场进入、商业模式、增长与组织战略咨询，将复杂市场变化转化为可执行的战略和决策建议。"
+  },
+  "agency-change-management-consultant": {
+    "name": "组织变革管理顾问",
+    "description": "运用 ADKAR、Kotter 与 Prosci 框架支持技术落地、重组、文化转型和并购整合，处理阻力并促进持续采用。"
+  },
+  "agency-chief-financial-officer": {
+    "name": "首席财务官",
+    "description": "统筹资本配置、资金管理、财务规划、并购财务、投资者关系和董事会报告，将财务问题转化为支持经营的清晰决策。"
+  },
+  "agency-corporate-training-designer": {
+    "name": "企业培训设计师",
+    "description": "设计企业培训体系与课程，涵盖需求分析、教学设计、混合学习、内训师培养、领导力项目及培训效果评估优化。"
+  },
+  "agency-customer-service": {
+    "name": "客户服务专员",
+    "description": "以专业、友好的方式处理客户咨询、投诉、账号支持与常见问题，协调问题升级，在服务过程中关注效率与客户满意度。"
+  },
+  "agency-customer-success-manager": {
+    "name": "客户成功经理",
+    "description": "负责客户入门、健康度评分、季度业务回顾、流失预防、扩展机会和续约管理，帮助客户取得可衡量成果并维持长期合作。"
+  },
+  "agency-data-consolidation-agent": {
+    "name": "销售数据整合专员",
+    "description": "将已提取的销售数据整合为实时报告看板，汇总区域、销售代表和销售管道信息，便于集中查看业务进展。"
+  },
+  "agency-data-privacy-officer": {
+    "name": "数据隐私负责人",
+    "description": "建设 GDPR、CCPA 及全球隐私合规方案，负责数据映射、隐私影响评估、同意管理、泄露响应、供应商审查和监管沟通。"
+  },
+  "agency-design-brand-guardian": {
+    "name": "品牌一致性顾问",
+    "description": "专注品牌识别体系建设、视觉与表达一致性维护及战略定位，让不同品牌接触点遵循统一、清晰的品牌方向。"
+  },
+  "agency-design-image-prompt-engineer": {
+    "name": "图像提示词工程师",
+    "description": "将摄影与视觉概念转化为细致、准确的图像生成提示词，描述画面意图与表现细节，支持生成专业摄影风格的图像。"
+  },
+  "agency-design-inclusive-visuals-specialist": {
+    "name": "包容性视觉专家",
+    "description": "识别并纠正 AI 图像与视频中的系统性偏见，关注文化呈现准确性、积极表达和非刻板印象的人物与场景描绘。"
+  },
+  "agency-design-persona-walkthrough": {
+    "name": "用户画像认知走查专家",
+    "description": "从指定用户画像的心理视角逐段走查网页，记录情绪与理性判断，依据 LIFT、Cialdini、Fogg 框架输出转化优化报告。"
+  },
+  "agency-design-ui-designer": {
+    "name": "用户界面设计师",
+    "description": "设计视觉系统、组件库和细节准确的产品界面，关注美感、一致性与无障碍体验，使界面反映品牌并改善用户体验。"
+  },
+  "agency-design-ui-finish-gate-reviewer": {
+    "name": "界面交付验收审查员",
+    "description": "依据真实产品证据、书面设计约定与实施验收要求审查界面，在发布前识别缺乏产品针对性、可相互替换的泛化设计。"
+  },
+  "agency-design-ux-architect": {
+    "name": "用户体验架构师",
+    "description": "结合技术架构与用户体验，为开发者提供清晰的实现基础、CSS 系统和落地指导，使设计与工程实现相互衔接。"
+  },
+  "agency-design-ux-researcher": {
+    "name": "用户体验研究员",
+    "description": "通过用户行为分析、可用性测试与数据研究形成可执行洞察，帮助改进产品的可用性和用户满意度。"
+  },
+  "agency-design-visual-storyteller": {
+    "name": "视觉叙事设计师",
+    "description": "通过设计构建视觉叙事、多媒体内容与品牌故事，将复杂信息转化为易理解、能与受众产生情感联系的视觉表达。"
+  },
+  "agency-design-whimsy-injector": {
+    "name": "趣味体验创意师",
+    "description": "为品牌体验加入个性、愉悦感和适度的趣味元素，设计令人记住的互动与意外惊喜，让品牌形成独特的体验。"
+  },
+  "agency-economy-designer": {
+    "name": "游戏经济系统设计师",
+    "description": "设计运营中游戏的虚拟经济，涵盖货币体系、产出与消耗、商业化模型、通胀控制，以及依据数据进行经济平衡调整。"
+  },
+  "agency-engineering-ai-data-remediation-engineer": {
+    "name": "AI 数据修复工程师",
+    "description": "专注数据异常修复层，利用隔离网络的本地小模型与语义聚类检测、分类异常，通过 Ollama 生成确定性修复逻辑，保护持续运行的数据管道。"
+  },
+  "agency-engineering-ai-engineer": {
+    "name": "AI 工程师",
+    "description": "开发、部署并集成机器学习模型，构建智能功能、数据管道和 AI 应用，关注生产环境中的实用性与可扩展性。"
+  },
+  "agency-engineering-api-platform-engineer": {
+    "name": "API 平台工程师",
+    "description": "负责公共与合作伙伴 API 的契约设计、版本和弃用策略、SDK 生成、网关认证与限流配额，改善开发者门户体验。"
+  },
+  "agency-engineering-ats-validator-architect": {
+    "name": "ATS 简历解析验证架构师",
+    "description": "设计与验证 ATS 和简历解析器，结合确定性检索、资历校准的量化规则、版式与 PDF 文本层审计，关注监管要求和原生 BYOK 架构。"
+  },
+  "agency-engineering-autonomous-optimization-architect": {
+    "name": "自主性能优化架构师",
+    "description": "持续通过影子测试评估 API 性能，同时执行财务与安全约束，协调系统优化，防止自动优化过程引发成本失控。"
+  },
+  "agency-engineering-backend-architect": {
+    "name": "后端架构师",
+    "description": "设计可扩展服务端系统、数据库、API 与云基础设施，构建可靠、安全且性能良好的后端应用和微服务架构。"
+  },
+  "agency-engineering-china-network-engineer": {
+    "name": "中国企业网络工程师",
+    "description": "负责 Huawei VRP、H3C Comware、Ruijie RGOS 与 Hillstone StoneOS 网络，覆盖路由、交换、防火墙、NAT 和等保 2.0 边界设计。"
+  },
+  "agency-engineering-cms-developer": {
+    "name": "CMS 开发工程师",
+    "description": "专注 Drupal 与 WordPress 的主题、插件和模块开发，设计内容架构，以代码方式实现可维护的内容管理系统。"
+  },
+  "agency-engineering-code-reviewer": {
+    "name": "代码审查员",
+    "description": "从正确性、可维护性、安全和性能角度审查代码，提供具体、建设性且可执行的修改建议，避免将个人风格偏好当作问题。"
+  },
+  "agency-engineering-codebase-onboarding-engineer": {
+    "name": "代码库入门指导工程师",
+    "description": "阅读源码并追踪代码执行路径，帮助新工程师快速理解陌生代码库，只陈述能够从代码中验证的事实。"
+  },
+  "agency-engineering-data-engineer": {
+    "name": "数据工程师",
+    "description": "建设可靠的数据管道、湖仓架构与数据基础设施，运用 ETL/ELT、Apache Spark、dbt 和流处理将原始数据转化为可信分析资产。"
+  },
+  "agency-engineering-data-visualization-engineer": {
+    "name": "数据可视化工程师",
+    "description": "依据数据与问题选择图表，设计真实、色觉友好且无障碍的交互表达，使用 D3、Vega 等工具高效展示大规模数据。"
+  },
+  "agency-engineering-database-optimizer": {
+    "name": "数据库优化工程师",
+    "description": "专注 PostgreSQL、MySQL、Supabase 与 PlanetScale 等数据库的结构设计、查询优化、索引策略和性能调优。"
+  },
+  "agency-engineering-database-reliability-engineer": {
+    "name": "数据库可靠性工程师",
+    "description": "负责数据库高可用、复制、自动故障切换、备份与时间点恢复、在线结构迁移、连接池和灾备演练，重点保障数据安全与可用性。"
+  },
+  "agency-engineering-desktop-app-engineer": {
+    "name": "桌面应用工程师",
+    "description": "开发 Electron 与 Tauri 桌面应用，负责安全 IPC、进程隔离、签名公证、自动更新和系统集成，控制资源占用。"
+  },
+  "agency-engineering-developer-tooling-engineer": {
+    "name": "开发工具与 CLI 工程师",
+    "description": "构建命令行工具和内部开发平台，关注直观命令、有效错误提示、Shell 补全、快速启动、跨平台分发与可组合脚本接口。"
+  },
+  "agency-engineering-devops-automator": {
+    "name": "DevOps 自动化工程师",
+    "description": "专注基础设施自动化、CI/CD 流水线开发与云运维，将部署和运行流程组织为可重复执行、便于维护的工程体系。"
+  },
+  "agency-engineering-drupal-performance": {
+    "name": "Drupal 性能工程师",
+    "description": "优化 Drupal 10/11 的网页体验、渲染与动态缓存、BigPipe、查询、静态资源、图片和 CDN，调整 PHP 运行性能。"
+  },
+  "agency-engineering-drupal-shopping-cart": {
+    "name": "Drupal 电商工程师",
+    "description": "基于 Drupal Commerce 管理商品目录、支付网关、结账流程和订单，配置税费与促销，交付可靠的 Drupal 10/11 商城。"
+  },
+  "agency-engineering-email-intelligence-engineer": {
+    "name": "邮件信息提取工程师",
+    "description": "从原始邮件线程中提取结构化信息，整理为适合推理的数据，为 AI 智能体与自动化系统提供清晰的邮件上下文。"
+  },
+  "agency-engineering-embedded-firmware-engineer": {
+    "name": "嵌入式固件工程师",
+    "description": "开发裸机与 RTOS 固件，熟悉 ESP32/ESP-IDF、PlatformIO、Arduino、ARM Cortex-M、STM32、Nordic、FreeRTOS 和 Zephyr。"
+  },
+  "agency-engineering-feishu-integration-developer": {
+    "name": "飞书集成开发工程师",
+    "description": "基于飞书（Lark）开放平台构建机器人、小程序、审批、多维表格和互动卡片，集成 Webhooks、SSO 与工作流自动化。"
+  },
+  "agency-engineering-filament-optimization-specialist": {
+    "name": "Filament 优化专家",
+    "description": "重构并优化 Filament PHP 管理后台，重点调整影响可用性和工作效率的界面结构，而非仅进行外观修饰。"
+  },
+  "agency-engineering-finops-engineer": {
+    "name": "FinOps 云成本工程师",
+    "description": "管理 AWS、GCP 与 Azure 的成本分摊、标签、资源规模和预留承诺，优化流量及存储，并建立连接支出与业务价值的单位经济看板。"
+  },
+  "agency-engineering-frontend-developer": {
+    "name": "前端开发工程师",
+    "description": "使用现代 Web 技术及 React、Vue、Angular 等框架开发界面，负责用户界面实现与性能优化，关注交互与运行效果。"
+  },
+  "agency-engineering-gaussdb-expert": {
+    "name": "GaussDB 数据库专家",
+    "description": "专注 GaussDB OLTP 的结构、分布式表、查询、索引与 Ustore 调优，覆盖分布式和集中式部署，不包含 DWS、for openGauss 或 for MySQL 产品。"
+  },
+  "agency-engineering-git-workflow-master": {
+    "name": "Git 工作流专家",
+    "description": "设计 Git 工作流与分支策略，实践规范提交、变基、工作树及适配 CI 的分支管理，帮助团队维护清晰的版本历史。"
+  },
+  "agency-engineering-i18n-engineer": {
+    "name": "国际化工程师",
+    "description": "负责 ICU MessageFormat、CLDR 复数规则、RTL 与双向布局、本地化日期数字格式、字符串提取和伪本地化测试。"
+  },
+  "agency-engineering-identity-access-engineer": {
+    "name": "身份与访问控制工程师",
+    "description": "实现 OAuth 2.0/OIDC、企业 SSO、SCIM 账号配置与 passkeys/WebAuthn，设计会话及多租户 RBAC/ABAC 授权。"
+  },
+  "agency-engineering-incident-response-commander": {
+    "name": "生产事故响应指挥官",
+    "description": "统筹生产事故响应与协作，组织复盘，跟踪 SLO/SLI 并设计值班流程，帮助工程组织以结构化方式处理故障。"
+  },
+  "agency-engineering-iot-fleet-engineer": {
+    "name": "物联网设备群工程师",
+    "description": "管理物联网与边缘设备的配置、身份和 MQTT 遥测，实施可回滚的分阶段 OTA 更新、边缘计算及间歇联网设备群的可观测性。"
+  },
+  "agency-engineering-it-service-manager": {
+    "name": "IT 服务经理",
+    "description": "运用 ITIL 4 设计服务目录、事件和问题管理、变更控制、SLA 治理与 CMDB 维护，持续改进 IT 服务的可靠性及业务价值。"
+  },
+  "agency-engineering-knowledge-graph-engineer": {
+    "name": "知识图谱工程师",
+    "description": "将信息与能力组织为互联的实体和关系，支持动态上下文导航与模块化能力组合，降低 token 消耗并减少生成幻觉。"
+  },
+  "agency-engineering-llm-post-training-engineer": {
+    "name": "大模型后训练工程师",
+    "description": "以证据驱动 SFT、偏好优化、RLHF/RLVR 和 MoE 后训练，设置发布验收要求，使模型检查点变化具备可解释的验证依据。"
+  },
+  "agency-engineering-minimal-change-engineer": {
+    "name": "最小改动工程师",
+    "description": "专注必要且最小的代码差异，只修复明确提出的问题，控制范围扩张，避免过早抽象和将缺陷修复演变为大规模重构。"
+  },
+  "agency-engineering-mobile-app-builder": {
+    "name": "移动应用开发工程师",
+    "description": "专注移动应用开发，掌握原生 iOS、Android 技术及跨平台框架，依据移动端需求实现应用功能和界面。"
+  },
+  "agency-engineering-mobile-release-engineer": {
+    "name": "移动应用发布工程师",
+    "description": "管理 iOS 与 Android 的代码签名、配置、fastlane 流水线、商店提交和分阶段发布，结合崩溃分析判断版本健康度。"
+  },
+  "agency-engineering-multi-agent-systems-architect": {
+    "name": "多智能体系统架构师",
+    "description": "设计、协调和治理生产级多智能体流水线，涵盖拓扑、上下文、互信、失败恢复、人工审批节点与系统可观测性。"
+  },
+  "agency-engineering-network-engineer": {
+    "name": "企业网络工程师",
+    "description": "负责 Cisco IOS/IOS-XE、Cisco ASA/FTD、Juniper Junos 与 Palo Alto PAN-OS 的路由、交换、防火墙及故障排查。"
+  },
+  "agency-engineering-orgscript-engineer": {
+    "name": "OrgScript 工程师",
+    "description": "设计、解析并实现 OrgScript 语法，负责抽象语法树校验和业务逻辑定义，将语言规则转化为可执行的系统实现。"
+  },
+  "agency-engineering-payments-billing-engineer": {
+    "name": "支付与计费工程师",
+    "description": "集成 Stripe、Adyen、Braintree、PayPal 等支付服务，设计幂等支付、Webhook、订阅计费、SCA/3DS 与财务对账，减少 PCI 范围。"
+  },
+  "agency-engineering-pdf-engine-architect": {
+    "name": "PDF 引擎架构师",
+    "description": "设计确定性的 HTML 转 PDF 编译，管理 Playwright 上下文池、动态页面尺寸、LayoutNG 子像素预算、标记 PDF 与一比一页面编辑。"
+  },
+  "agency-engineering-platform-engineer": {
+    "name": "内部开发平台工程师",
+    "description": "建设内部开发者平台，通过标准化的推荐路径、成熟流程与自助基础设施，减少工程团队重复操作并提升开发效率。"
+  },
+  "agency-engineering-privacy-engineer": {
+    "name": "隐私工程师",
+    "description": "以代码落实个人信息发现、分类与最小化，在 API 层执行同意要求，自动处理数据访问、跨服务删除、假名化和保留期限。"
+  },
+  "agency-engineering-prompt-engineer": {
+    "name": "提示词工程师",
+    "description": "编写、测试并系统优化大模型提示词，将模糊指令转化为清晰约束与可靠的执行行为，支持生产环境中的 AI 应用。"
+  },
+  "agency-engineering-rag-pipeline-engineer": {
+    "name": "RAG 管道工程师",
+    "description": "专注生产级 RAG 的分块、检索质量、混合搜索、重排序与评测驱动迭代，构建能准确召回所需上下文的检索管道。"
+  },
+  "agency-engineering-rapid-prototyper": {
+    "name": "快速原型工程师",
+    "description": "专注概念验证和最小可行产品的快速开发，利用高效工具与框架，将初步构想尽快实现为可验证的应用原型。"
+  },
+  "agency-engineering-realtime-collaboration-engineer": {
+    "name": "实时协作工程师",
+    "description": "建设 WebSocket/SSE、在线状态与 CRDT/OT 协同编辑，设计离线优先同步、消息分发扩展及可安全重连的协议。"
+  },
+  "agency-engineering-rust-refactoring-specialist": {
+    "name": "Rust 重构专家",
+    "description": "负责 Rust 仓库级重构、安全重命名、模块调整、去重与 panic 加固，改善所有权结构并处理编译器和 Clippy 问题。"
+  },
+  "agency-engineering-search-relevance-engineer": {
+    "name": "搜索相关性工程师",
+    "description": "优化 Elasticsearch 与 OpenSearch 的索引、分析器、BM25 查询和词法向量混合检索，通过 nDCG 与在线实验评价相关性。"
+  },
+  "agency-engineering-section-508-specialist": {
+    "name": "Section 508 无障碍专家",
+    "description": "依据 Section 508 的 WCAG 2.0 AA 基线处理政府与企业界面无障碍问题，涵盖 ARIA、读屏测试、键盘操作、表单与 PDF 审计整改。"
+  },
+  "agency-engineering-senior-developer": {
+    "name": "高级应用实现工程师",
+    "description": "专注高质量应用与界面实现，熟练使用 Laravel、Livewire、FluxUI、高级 CSS 和 Three.js，处理复杂前端整合需求。"
+  },
+  "agency-engineering-servicenow-developer-mentor": {
+    "name": "ServiceNow 开发与指导专家",
+    "description": "开发与排查 ServiceNow 业务规则、Script Includes、GlideRecord、Flow Designer 和 ACL，逐步区分原生行为与定制问题。"
+  },
+  "agency-engineering-software-architect": {
+    "name": "软件架构师",
+    "description": "负责系统设计、领域驱动设计、架构模式选择和技术决策，为可扩展、可维护的软件系统提供清晰结构与实现方向。"
+  },
+  "agency-engineering-solidity-smart-contract-engineer": {
+    "name": "Solidity 智能合约工程师",
+    "description": "设计 Ethereum 与 L2 上的 EVM 智能合约，优化 gas、可升级代理及 DeFi 协议，优先关注合约安全。"
+  },
+  "agency-engineering-sre": {
+    "name": "站点可靠性工程师",
+    "description": "为规模化生产系统设计 SLO、错误预算与可观测性，开展混沌工程并减少重复运维工作，提升服务运行可靠性。"
+  },
+  "agency-engineering-technical-writer": {
+    "name": "技术文档工程师",
+    "description": "编写开发者文档、API 参考、README 和教程，将复杂工程概念转化为准确、清晰且便于开发者实际使用的说明。"
+  },
+  "agency-engineering-universal-document-compiler": {
+    "name": "通用文档编译架构师",
+    "description": "设计不依赖特定数据模式的文档 AST、基于数据形状的布局推断、CST 与画布双向同步，以及通用分页文档发布体系。"
+  },
+  "agency-engineering-uswds-developer": {
+    "name": "USWDS 前端工程师",
+    "description": "使用 USWDS 组件、设计令牌和 Sass 主题实现响应式政府界面，集成 Drupal/WordPress，关注默认无障碍与联邦网站标准。"
+  },
+  "agency-engineering-video-streaming-engineer": {
+    "name": "视频流媒体工程师",
+    "description": "负责自适应码率视频的 HLS/DASH 封装、ffmpeg 转码、CMAF 低延迟、DRM 和 CDN 分发，并依据体验质量调整播放器。"
+  },
+  "agency-engineering-voice-ai-integration-engineer": {
+    "name": "语音 AI 集成工程师",
+    "description": "使用 Whisper 类模型与云 ASR 构建转录管道，覆盖音频预处理、文本清理、字幕与说话人区分，并接入应用、API 和 CMS。"
+  },
+  "agency-engineering-webassembly-engineer": {
+    "name": "WebAssembly 工程师",
+    "description": "将 Rust、C++、Go 编译为 Wasm，处理 JS 互操作与边界数据传递，使用 WASI、Wasmtime/Wasmer 和组件模型优化性能。"
+  },
+  "agency-engineering-wechat-mini-program-developer": {
+    "name": "微信小程序开发工程师",
+    "description": "使用 WXML、WXSS、WXS 开发微信小程序，集成微信 API、支付和订阅消息，围绕微信生态实现应用功能。"
+  },
+  "agency-engineering-wordpress-performance": {
+    "name": "WordPress 性能工程师",
+    "description": "优化 WordPress 网页体验、Redis/Memcached 缓存、数据库与 WP_Query、资源和图片、CDN 及插件性能，调整 PHP 运行配置。"
+  },
+  "agency-engineering-wordpress-shopping-cart": {
+    "name": "WordPress 电商工程师",
+    "description": "基于 WooCommerce 管理商品、集成支付、定制结账与订单流程，配置税费和优惠券，为 WordPress 商城优化转化体验。"
+  },
+  "agency-esg-sustainability-officer": {
+    "name": "ESG 与可持续发展负责人",
+    "description": "建设企业环境、社会和治理项目，管理 ESG 披露与减碳行动，使可持续发展规划与业务战略、利益相关方及监管要求相协调。"
+  },
+  "agency-finance-bookkeeper-controller": {
+    "name": "会计与财务控制专员",
+    "description": "负责日常会计、财务对账、月末结账与内部控制，维护记录的准确性、完整性和及时性，关注 GAAP 合规与审计准备。"
+  },
+  "agency-finance-financial-analyst": {
+    "name": "财务分析师",
+    "description": "建立财务模型、预测与情景分析，将原始财务数据整理为可执行的经营洞察，为战略规划、投资决策与运营优化提供支持。"
+  },
+  "agency-finance-fpa-analyst": {
+    "name": "财务规划与分析师",
+    "description": "负责预算、差异分析、财务计划和滚动预测，将经营数字与业务解释衔接，为战略决策、运营表现和资源配置提供支持。"
+  }
+}

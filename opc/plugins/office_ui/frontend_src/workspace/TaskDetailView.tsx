@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useMemo } from 'react'
 import type { KanbanTask, Session } from '../types/kanban'
 import type { ChatMessage } from '../types/chat'
@@ -48,6 +49,7 @@ export function TaskDetailView({
   onOpenLinkedSession,
   onOpenExecutionPanel,
 }: TaskDetailViewProps) {
+  const wsText = useWorkspaceText()
   const liveAssignees = useMemo(() => (
     task.assigneeIds
       .map(id => agents.find(agent => agent.agent_id === id))
@@ -88,8 +90,7 @@ export function TaskDetailView({
     <div className="ctx-child-detail">
       <div className="ctx-child-topbar">
         <button className="ctx-back-btn" onClick={onBack}>
-          {'\u2190'} Back to board
-        </button>
+          {'\u2190'} {wsText("Back to board")}</button>
         {linkedTaskId && (onOpenLinkedSession || onOpenExecutionPanel) && (
           <button
             className="ctx-child-stop-btn"
@@ -101,8 +102,7 @@ export function TaskDetailView({
               onOpenExecutionPanel?.(linkedTaskId)
             }}
           >
-            Open Runtime Session
-          </button>
+            {wsText("Open Runtime Session")}</button>
         )}
       </div>
 
@@ -113,7 +113,7 @@ export function TaskDetailView({
         <div className="ctx-child-meta">
           <span className="ctx-child-name">{task.title}</span>
           <span className="ctx-child-work-item">
-            {[task.workItemRoleName, task.phase].filter(Boolean).join(' · ')}
+            {[task.workItemRoleName, task.phase ? wsText(task.phase) : undefined].filter(Boolean).join(' · ')}
           </span>
         </div>
       </div>
@@ -124,7 +124,7 @@ export function TaskDetailView({
           <span>
             {task.agentStatus === 'tool_active' && task.currentTool
               ? task.currentTool
-              : AGENT_STATUS_LABEL[task.agentStatus!] ?? task.agentStatus}
+              : wsText(AGENT_STATUS_LABEL[task.agentStatus!] ?? task.agentStatus ?? '')}
           </span>
           {liveAssignees.length > 0 && (
             <span className="task-detail-runtime-agent">
@@ -136,12 +136,12 @@ export function TaskDetailView({
 
       <div className="task-detail-body">
         <div className="task-detail-section">
-          <h4 className="task-detail-section-title">{isWorkItem ? 'Work Item' : 'Task'}</h4>
+          <h4 className="task-detail-section-title">{isWorkItem ? wsText("Work Item") : wsText("Task")}</h4>
           <div className="ctx-task-chip-row">
             <span className="task-detail-dep-id">{task.displayId}</span>
-            {priorityMeta && <span className="kanban-tag">{priorityMeta.label}</span>}
+            {priorityMeta && <span className="kanban-tag">{wsText(priorityMeta.label)}</span>}
             {task.workItemRoleName && <span className="kanban-tag">{task.workItemRoleName}</span>}
-            {task.managerRoleId && <span className="kanban-tag">Manager: {task.managerRoleId}</span>}
+            {task.managerRoleId && <span className="kanban-tag">{wsText("Manager: ")}{task.managerRoleId}</span>}
             {task.scopeKey && <span className="kanban-tag">{task.scopeKey}</span>}
           </div>
           {task.description && (
@@ -153,21 +153,21 @@ export function TaskDetailView({
 
         {task.originalMessage && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Session Goal</h4>
+            <h4 className="task-detail-section-title">{wsText("Session Goal")}</h4>
             <pre className="task-detail-handoff">{task.originalMessage}</pre>
           </div>
         )}
 
         {task.planningContext && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Planning Context</h4>
+            <h4 className="task-detail-section-title">{wsText("Planning Context")}</h4>
             <pre className="task-detail-handoff">{task.planningContext}</pre>
           </div>
         )}
 
         {deliverables.length > 0 && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Deliverables</h4>
+            <h4 className="task-detail-section-title">{wsText("Deliverables")}</h4>
             <ul className="task-detail-dep-list">
               {deliverables.map(item => (
                 <li key={item} className="task-detail-dep-item">{item}</li>
@@ -178,7 +178,7 @@ export function TaskDetailView({
 
         {acceptanceCriteria.length > 0 && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Acceptance Criteria</h4>
+            <h4 className="task-detail-section-title">{wsText("Acceptance Criteria")}</h4>
             <ul className="task-detail-dep-list">
               {acceptanceCriteria.map(item => (
                 <li key={item} className="task-detail-dep-item">{item}</li>
@@ -189,7 +189,7 @@ export function TaskDetailView({
 
         {(task.delegationRationale || task.nonOverlapGuard || task.coordinationNotes) && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Delegation Notes</h4>
+            <h4 className="task-detail-section-title">{wsText("Delegation Notes")}</h4>
             {task.delegationRationale && <pre className="task-detail-handoff">{task.delegationRationale}</pre>}
             {task.nonOverlapGuard && <pre className="task-detail-handoff">{task.nonOverlapGuard}</pre>}
             {task.coordinationNotes && <pre className="task-detail-handoff">{task.coordinationNotes}</pre>}
@@ -198,7 +198,7 @@ export function TaskDetailView({
 
         {dependencyIds.length > 0 && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Dependencies</h4>
+            <h4 className="task-detail-section-title">{wsText("Dependencies")}</h4>
             <ul className="task-detail-dep-list">
               {dependencyIds.map(depId => (
                 <li key={depId} className="task-detail-dep-item">
@@ -211,11 +211,11 @@ export function TaskDetailView({
 
         {(assignmentSummary.length > 0 || memberStateSummary.length > 0 || linkedSession) && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Role Runtime Context</h4>
+            <h4 className="task-detail-section-title">{wsText("Role Runtime Context")}</h4>
             {linkedSession && (
               <div className="ctx-task-chip-row">
-                <span className="kanban-tag">Runtime Session: {linkedSession.title}</span>
-                <span className="kanban-tag">Status: {linkedSession.status}</span>
+                <span className="kanban-tag">{wsText("Runtime Session: ")}{linkedSession.title}</span>
+                <span className="kanban-tag">{wsText("Status: ")}{wsText(linkedSession.status)}</span>
               </div>
             )}
             {assignmentSummary.length > 0 && (
@@ -243,14 +243,14 @@ export function TaskDetailView({
 
         {task.handoffContext && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Handoff Context</h4>
+            <h4 className="task-detail-section-title">{wsText("Handoff Context")}</h4>
             <pre className="task-detail-handoff">{task.handoffContext}</pre>
           </div>
         )}
 
         {promptContext && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Role Prompt Context</h4>
+            <h4 className="task-detail-section-title">{wsText("Role Prompt Context")}</h4>
             <div className="msg-content-agent-card ctx-task-detail-card">
               <MarkdownBody content={promptContext} />
             </div>
@@ -259,21 +259,21 @@ export function TaskDetailView({
 
         {deltaContext && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Role Delta Context</h4>
+            <h4 className="task-detail-section-title">{wsText("Role Delta Context")}</h4>
             <pre className="task-detail-handoff">{deltaContext}</pre>
           </div>
         )}
 
         {Object.keys(ownershipContract).length > 0 && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Ownership Contract</h4>
+            <h4 className="task-detail-section-title">{wsText("Ownership Contract")}</h4>
             <pre className="task-detail-handoff">{prettyJson(ownershipContract)}</pre>
           </div>
         )}
 
         {task.progressLog && task.progressLog.length > 0 && (
           <div className="task-detail-section">
-            <h4 className="task-detail-section-title">Activity</h4>
+            <h4 className="task-detail-section-title">{wsText("Activity")}</h4>
             <ul className="task-detail-progress">
               {task.progressLog.map((entry, index) => (
                 <li key={`${entry.timestamp}-${index}`} className={`progress-entry type-${entry.type}`}>
@@ -293,7 +293,7 @@ export function TaskDetailView({
 
         {/* Runtime session transcript — live chat of the agent processing this work item */}
         <div className="task-detail-section">
-          <h4 className="task-detail-section-title">Runtime Session Activity</h4>
+          <h4 className="task-detail-section-title">{wsText("Runtime Session Activity")}</h4>
           {linkedSession && linkedSessionMessages && linkedSessionMessages.length > 0 ? (
             <div className="task-detail-linked-messages">
               <MessageList
@@ -305,9 +305,9 @@ export function TaskDetailView({
               />
             </div>
           ) : linkedSession ? (
-            <p className="task-detail-empty-hint">Runtime session has no visible messages yet.</p>
+            <p className="task-detail-empty-hint">{wsText("Runtime session has no visible messages yet.")}</p>
           ) : (
-            <p className="task-detail-empty-hint">No Runtime Session linked yet.</p>
+            <p className="task-detail-empty-hint">{wsText("No Runtime Session linked yet.")}</p>
           )}
         </div>
       </div>

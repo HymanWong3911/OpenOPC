@@ -1,3 +1,4 @@
+import { useChatText, type ChatText } from '../lib/chatMessages'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   CheckpointReplyMetadata,
@@ -46,6 +47,7 @@ function buildOptions(
   role: StaffingRoleEntry,
   employees: StaffingEmployeeOption[],
   templates: StaffingTemplateOption[],
+  tr: ChatText,
 ): StaffingOption[] {
   const roleId = String(role.role_id ?? '').trim()
   const roleLabel = String(role.role_label ?? '').trim()
@@ -66,7 +68,7 @@ function buildOptions(
     const name = String(employee.employee_name ?? id).trim() || id
     const employeeRole = String(employee.role_id ?? '').trim()
     const category = String(employee.category ?? '').trim()
-    const subtitle = [employeeRole, category].filter(Boolean).join(' · ') || id
+    const subtitle = [employeeRole, tr(category)].filter(Boolean).join(' · ') || id
     return {
       kind: 'employee',
       id,
@@ -81,7 +83,7 @@ function buildOptions(
     const id = String(template.template_id ?? '').trim()
     const name = String(template.template_name ?? id).trim() || id
     const category = String(template.category ?? '').trim()
-    const subtitle = [category, id].filter(Boolean).join(' · ') || id
+    const subtitle = [tr(category), id].filter(Boolean).join(' · ') || id
     return {
       kind: 'template',
       id,
@@ -107,7 +109,7 @@ function optionForSelection(options: StaffingOption[], selection: StaffingSelect
 function optionMatches(option: StaffingOption, query: string): boolean {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
   if (terms.length === 0) return true
-  return terms.every(term => option.searchText.includes(term))
+  return terms.every(term => `${option.searchText} ${option.subtitle}`.toLowerCase().includes(term))
 }
 
 function buildSelectionsFromMeta(meta: ChatMessageMeta, roles: StaffingRoleEntry[]): Record<string, StaffingSelectionValue> {
@@ -195,6 +197,7 @@ function hasSubmittedCheckpointMetadata(meta: ChatMessageMeta): boolean {
 export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel({
   meta, onReply, responded,
 }: StaffingSelectionPanelProps) {
+  const tr = useChatText()
   const roles = useMemo(() => meta.staffing_roles ?? [], [meta.staffing_roles])
   const employees = meta.staffing_pool?.employees ?? []
   const templates = meta.staffing_pool?.templates ?? []
@@ -202,10 +205,10 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
     const next: Record<string, StaffingOption[]> = {}
     for (const role of roles) {
       const roleId = String(role.role_id ?? '').trim()
-      if (roleId) next[roleId] = buildOptions(role, employees, templates)
+      if (roleId) next[roleId] = buildOptions(role, employees, templates, tr)
     }
     return next
-  }, [employees, roles, templates])
+  }, [employees, roles, templates, tr])
   const [queries, setQueries] = useState<Record<string, string>>({})
   const [selections, setSelections] = useState<Record<string, StaffingSelectionValue>>(() => buildSelectionsFromMeta(meta, roles))
   const [roleAgents, setRoleAgents] = useState<Record<string, TaskPreferredAgent>>(() => buildRoleAgentsFromMeta(meta, roles))
@@ -268,18 +271,17 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
             <path d="M12.5 3.5v5M10 6h5" />
           </svg>
         </div>
-        <div className="ckpt-title">Manual Staffing</div>
-        <span className="ckpt-badge ckpt-badge-profile">{meta.company_profile || 'corporate'}</span>
-        {recommendAutoRecruit && !isResponded && <span className="ckpt-badge ckpt-badge-scope">Recruit recommended</span>}
-        {isResponded && <span className="ckpt-badge ckpt-badge-responded">Responded</span>}
+        <div className="ckpt-title">{tr("Manual Staffing")}</div>
+        <span className="ckpt-badge ckpt-badge-profile">{tr(meta.company_profile || 'corporate')}</span>
+        {recommendAutoRecruit && !isResponded && <span className="ckpt-badge ckpt-badge-scope">{tr("Recruit recommended")}</span>}
+        {isResponded && <span className="ckpt-badge ckpt-badge-responded">{tr("Responded")}</span>}
       </div>
 
       {meta.summary && <div className="ckpt-summary">{meta.summary}</div>}
 
       <div className="ckpt-recruiter-agent">
         <label className="ckpt-agent-label" htmlFor={`staffing-recruiter-agent-${meta.checkpoint_id}`}>
-          Recruiter Agent
-        </label>
+          {tr("Recruiter Agent")}</label>
         <select
           id={`staffing-recruiter-agent-${meta.checkpoint_id}`}
           className="ckpt-agent-select"
@@ -315,7 +317,7 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
               <div className="ckpt-proposal-header">
                 <span className="ckpt-role-name">{roleId}</span>
                 <span className={`ckpt-badge ckpt-badge-${externallyStaffed ? 'external-team' : selected.kind}`}>
-                  {externallyStaffed ? 'JiuwenSwarm-team' : selected.kind}
+                  {externallyStaffed ? tr("JiuwenSwarm-team") : tr(selected.kind)}
                 </span>
               </div>
               {role.role_label && role.role_label !== roleId && (
@@ -325,23 +327,23 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
               )}
               {externallyStaffed ? (
                 <div className="ckpt-external-team-staffing">
-                  <b>{dynamicTeamCovered && !dynamicTeamBoundary ? `Covered by Team at ${dynamicBoundaryRoleId}` : 'Internally staffed external team'}</b>
-                  <span>One opaque Team covers: {coveredRoleIds.join(', ')}</span>
-                  <span>No OPC employees are recruited for these covered roles.</span>
-                  {dynamicTeamBoundary && !isResponded && <span>Choose another execution agent here to staff these roles individually.</span>}
+                  <b>{dynamicTeamCovered && !dynamicTeamBoundary ? tr('Covered by Team at {role}', { role: dynamicBoundaryRoleId }) : tr("Internally staffed external team")}</b>
+                  <span>{tr("One opaque Team covers:")}{' '}{coveredRoleIds.join(', ')}</span>
+                  <span>{tr("No OPC employees are recruited for these covered roles.")}</span>
+                  {dynamicTeamBoundary && !isResponded && <span>{tr("Choose another execution agent here to staff these roles individually.")}</span>}
                 </div>
               ) : <div className="ckpt-staffing-selected">
-                <div className="ckpt-cand-name">{selected.name}</div>
+                <div className="ckpt-cand-name">{selected.kind === 'fallback' ? tr(selected.name) : selected.name}</div>
                 <div className="ckpt-cand-meta">
-                  <span className="ckpt-cand-category">{selected.category}</span>
-                  <span className="ckpt-domain-tag">{selected.subtitle}</span>
+                  <span className="ckpt-cand-category">{tr(selected.category)}</span>
+                  <span className="ckpt-domain-tag">{selected.kind === 'fallback' ? tr(selected.subtitle) : selected.subtitle}</span>
                 </div>
               </div>}
               {!externallyStaffed && <input
                 className="ckpt-staffing-search"
                 value={query}
                 onChange={event => setQueries(current => ({ ...current, [roleId]: event.target.value }))}
-                placeholder="Search employees or templates..."
+                placeholder={tr("Search employees or templates...")}
                 disabled={isResponded}
               />}
               {!externallyStaffed && <div className="ckpt-staffing-options">
@@ -353,18 +355,17 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
                       className={`ckpt-staffing-option${active ? ' active' : ''}`}
                       onClick={() => setSelections(current => ({ ...current, [roleId]: { kind: option.kind, id: option.id } }))}
                       disabled={isResponded}
-                      title={option.subtitle}
+                      title={option.kind === 'fallback' ? tr(option.subtitle) : option.subtitle}
                     >
-                      <span className="ckpt-staffing-option-kind">{option.kind}</span>
-                      <span className="ckpt-staffing-option-name">{option.name}</span>
+                      <span className="ckpt-staffing-option-kind">{tr(option.kind)}</span>
+                      <span className="ckpt-staffing-option-name">{option.kind === 'fallback' ? tr(option.name) : option.name}</span>
                     </button>
                   )
                 })}
               </div>}
               <div className="ckpt-agent-picker">
                 <label className="ckpt-agent-label" htmlFor={`staffing-agent-${meta.checkpoint_id}-${roleId}`}>
-                  Execution Agent
-                </label>
+                  {tr("Execution Agent")}</label>
                 <select
                   id={`staffing-agent-${meta.checkpoint_id}-${roleId}`}
                   className="ckpt-agent-select"
@@ -388,13 +389,13 @@ export const StaffingSelectionPanel = React.memo(function StaffingSelectionPanel
         <div className="ckpt-actions">
           {recommendAutoRecruit ? (
             <>
-              <button className="ckpt-btn ckpt-btn-approve" onClick={handleAutoRecruit}>Auto Recruit</button>
-              <button className="ckpt-btn ckpt-btn-feedback" onClick={handleApprove}>Approve Selections</button>
+              <button className="ckpt-btn ckpt-btn-approve" onClick={handleAutoRecruit}>{tr("Auto Recruit")}</button>
+              <button className="ckpt-btn ckpt-btn-feedback" onClick={handleApprove}>{tr("Approve Selections")}</button>
             </>
           ) : (
             <>
-              <button className="ckpt-btn ckpt-btn-approve" onClick={handleApprove}>Approve Selections</button>
-              {templates.length > 0 && <button className="ckpt-btn ckpt-btn-feedback" onClick={handleAutoRecruit}>Auto Recruit</button>}
+              <button className="ckpt-btn ckpt-btn-approve" onClick={handleApprove}>{tr("Approve Selections")}</button>
+              {templates.length > 0 && <button className="ckpt-btn ckpt-btn-feedback" onClick={handleAutoRecruit}>{tr("Auto Recruit")}</button>}
             </>
           )}
         </div>

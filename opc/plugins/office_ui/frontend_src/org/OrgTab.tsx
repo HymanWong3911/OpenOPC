@@ -16,6 +16,8 @@ import { TeamView } from './TeamView'
 import { DelegationStrategyPanel } from './DelegationStrategyPanel'
 import { ArchitectureMarketplace } from './ArchitectureMarketplace'
 import { EmployeesMarketplace } from './EmployeesMarketplace'
+import { TeamPresets } from './TeamPresets'
+import { TEAM_PRESETS } from './teamPresetCatalog'
 import { ConfigImportExportPanel } from './ConfigImportExportPanel'
 import { OrgCreateModal } from './OrgCreateModal'
 import { getRuntimeOrgView } from '../lib/runtimeOrg'
@@ -44,7 +46,7 @@ const SECTION_ICON = {
   importPkg: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E",
 }
 
-type SubTab = 'team' | 'runtime' | 'architecture' | 'employees'
+type SubTab = 'team' | 'runtime' | 'architecture' | 'employees' | 'presets'
 
 function humanizeOrgName(value?: string | null): string {
   const normalized = String(value ?? '').trim()
@@ -133,6 +135,7 @@ export function OrgTab({
   const { t } = useI18n()
   const [activeTab, setActiveTab] = useState<SubTab>('team')
   const [createOpen, setCreateOpen] = useState(false)
+  const handledCreateNonce = useRef<number | null>(null)
 
   const switchTab = useCallback((tab: SubTab) => {
     setActiveTab(tab)
@@ -172,7 +175,8 @@ export function OrgTab({
   }, [])
 
   useEffect(() => {
-    if (!orgCreateResult || !orgCreateResult.ok) return
+    if (!orgCreateResult || !orgCreateResult.ok || handledCreateNonce.current === orgCreateResult.nonce) return
+    handledCreateNonce.current = orgCreateResult.nonce
     setCreateOpen(false)
     setActiveTab('team')
     showToast(t('org.createdToast', { name: orgCreateResult.organization_name || orgCreateResult.name }))
@@ -184,7 +188,8 @@ export function OrgTab({
   const displayEmployees = useMemo(() => data?.employees ?? [], [data?.employees])
   const runtimeView = useMemo(() => getRuntimeOrgView(data), [data])
   const activeAgents = useMemo(() => displayEmployees.filter(e => e.linked_agent_id), [displayEmployees])
-  const configuredOrgName = data?.organization_name?.trim()
+  const sourceOrgName = data?.organization_name?.trim()
+  const configuredOrgName = !isCustomMode && sourceOrgName === 'My One-Person Company' ? t('org.defaultCompany') : sourceOrgName
   const activeOrgLabel = configuredOrgName || humanizeOrgName(activeSavedOrg) || (isCustomMode ? t('org.customOrg') : t('org.corporateCompany'))
   const activeOrgId = (isCustomMode ? (data?.organization_id || activeSavedOrg) : 'corporate') || ''
   const architectureKindLabel = isCustomMode ? t('org.kind.saved') : t('org.kind.corporate')
@@ -325,6 +330,7 @@ export function OrgTab({
           { id: 'runtime' as SubTab, icon: TAB_ICON.runtime, label: t('org.tab.runtime'), count: runtimeView.runtimeTeams.length },
           { id: 'architecture' as SubTab, icon: TAB_ICON.architecture, label: t('org.tab.architecture'), count: marketPresets?.length ?? 0 },
           { id: 'employees' as SubTab, icon: TAB_ICON.employees, label: t('org.tab.employees'), count: talents.length },
+          { id: 'presets' as SubTab, icon: TAB_ICON.team, label: t('org.tab.presets'), count: TEAM_PRESETS.length },
         ]).map(tab => (
           <button key={tab.id}
             className={`org-subtab${activeTab === tab.id ? ' org-subtab--active' : ''}`}
@@ -423,6 +429,11 @@ export function OrgTab({
               />
             )}
           </>
+        )}
+
+        {activeTab === 'presets' && (
+          <TeamPresets templates={talents} pending={orgCreatePending} result={orgCreateResult}
+            onCreate={onSavedOrgCreate} />
         )}
 
         {/* Employees tab */}

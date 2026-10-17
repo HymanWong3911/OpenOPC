@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { OrgRole, TalentTemplate, RoleId, TemplateId } from '../types/visual'
 import { asRoleId, asTemplateId } from '../types/visual'
+import { useI18n } from '../i18n'
+import { getTalentPresentation, talentMessages } from '../lib/talentLocalization'
 
 interface HireToRoleModalProps {
   open: boolean
@@ -13,6 +15,8 @@ interface HireToRoleModalProps {
 export function HireToRoleModal({
   open, template, vacantRoles, onConfirm, onClose,
 }: HireToRoleModalProps) {
+  const { locale } = useI18n()
+  const messages = talentMessages(locale)
   const [selectedRoleId, setSelectedRoleId] = useState<string>('')
 
   useEffect(() => {
@@ -30,6 +34,8 @@ export function HireToRoleModal({
 
   if (!open || !template) return null
 
+  const presentation = getTalentPresentation(template, locale)
+  const showOriginalName = locale === 'zh-CN' && presentation.name !== template.name
   const noVacancies = vacantRoles.length === 0
   const canConfirm = !noVacancies && selectedRoleId !== ''
 
@@ -40,25 +46,26 @@ export function HireToRoleModal({
 
   return (
     <div className="htr-overlay" role="dialog" aria-modal="true" onMouseDown={onClose}>
-      <div className="htr-modal" onMouseDown={event => event.stopPropagation()}>
+      <div className="htr-modal" data-locale={locale} onMouseDown={event => event.stopPropagation()}>
         <header className="htr-header">
           <div>
-            <h3 className="htr-title">Hire {template.name}</h3>
-            <p className="htr-subtitle">Pick the role to fill with this employee.</p>
+            <h3 className="htr-title">{messages.hireTitle(presentation.name)}</h3>
+            {showOriginalName && <p className="htr-original-name" lang="en">{template.name}</p>}
+            <p className="htr-subtitle">{messages.pickRole}</p>
           </div>
-          <button className="htr-close" type="button" onClick={onClose} aria-label="Close">x</button>
+          <button className="htr-close" type="button" onClick={onClose} aria-label={messages.close}>x</button>
         </header>
 
         <div className="htr-body">
           {noVacancies ? (
             <div className="htr-empty">
-              <p className="htr-empty-title">No vacant roles.</p>
+              <p className="htr-empty-title">{messages.noVacancies}</p>
               <p className="htr-empty-hint">
-                Add a role in the Team tab first, then come back to hire.
+                {messages.addRoleFirst}
               </p>
             </div>
           ) : (
-            <div className="htr-role-list" role="listbox" aria-label="Vacant roles">
+            <div className="htr-role-list" role="listbox" aria-label={messages.vacantRoles}>
               {vacantRoles.map(role => {
                 const selected = role.role_id === selectedRoleId
                 return (
@@ -83,7 +90,7 @@ export function HireToRoleModal({
 
         <footer className="htr-footer">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
-            {noVacancies ? 'Close' : 'Cancel'}
+            {noVacancies ? messages.close : messages.cancel}
           </button>
           {!noVacancies && (
             <button
@@ -92,7 +99,7 @@ export function HireToRoleModal({
               onClick={handleConfirm}
               disabled={!canConfirm}
             >
-              Hire to selected role
+              {messages.hireToSelectedRole}
             </button>
           )}
         </footer>

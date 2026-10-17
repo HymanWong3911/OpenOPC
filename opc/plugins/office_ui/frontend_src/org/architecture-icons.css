@@ -1,0 +1,18 @@
+.architecture-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 10px;
+  background: var(--ha-bg-surface, var(--surface));
+  color: var(--ha-text-secondary, var(--text-secondary));
+}
+
+.architecture-icon svg {
+  display: block;
+  flex: none;
+}

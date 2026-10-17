@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { OrgRole, TalentTemplate, HireTalentHandler } from '../types/visual'
 import { asRoleId, asTemplateId } from '../types/visual'
+import { useI18n } from '../i18n'
+import { getTalentPresentation, getTalentTagLabel, talentMessages } from '../lib/talentLocalization'
 
 interface TalentDetailModalProps {
   template: TalentTemplate
@@ -14,6 +16,10 @@ interface TalentDetailModalProps {
 export function TalentDetailModal({
   template: t, vacantRoles, hiringId, readOnly, onHire, onClose,
 }: TalentDetailModalProps) {
+  const { locale } = useI18n()
+  const presentation = getTalentPresentation(t, locale)
+  const messages = talentMessages(locale)
+  const showOriginal = locale === 'zh-CN' && (presentation.name !== t.name || presentation.description !== t.description || presentation.vibe !== t.vibe)
   const [selectedRoleId, setSelectedRoleId] = useState<string>('')
   const isHiring = hiringId === t.template_id
   const noVacancies = vacantRoles.length === 0
@@ -30,61 +36,73 @@ export function TalentDetailModal({
 
   return (
     <div className="tm-detail-overlay" onClick={onClose}>
-      <div className="tm-detail-modal" onClick={e => e.stopPropagation()}>
+      <div className="tm-detail-modal" data-locale={locale} role="dialog" aria-modal="true" aria-label={presentation.name} onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="tm-detail-header" style={{ borderBottomColor: t.color || 'var(--border)' }}>
+        <div className="tm-detail-header">
           {t.emoji && <span className="tm-detail-emoji">{t.emoji}</span>}
           <div>
-            <h2 className="tm-detail-name">{t.name}</h2>
-            <span className="tm-detail-category">{t.category}</span>
+            <h2 className="tm-detail-name">{presentation.name}</h2>
+            {showOriginal && <span className="tm-detail-original-name" lang="en">{t.name}</span>}
+            <span className="tm-detail-category">{presentation.category}</span>
           </div>
-          <button className="tm-detail-close" onClick={onClose}>&times;</button>
+          <button className="tm-detail-close" onClick={onClose} aria-label={messages.close}>&times;</button>
         </div>
 
         {/* Body */}
         <div className="tm-detail-body">
-          {t.vibe && (
-            <blockquote className="tm-detail-vibe">"{t.vibe}"</blockquote>
+          {presentation.vibe && (
+            <blockquote className="tm-detail-vibe">"{presentation.vibe}"</blockquote>
           )}
 
-          {t.description && (
-            <p className="tm-detail-desc">{t.description}</p>
+          {presentation.description && (
+            <p className="tm-detail-desc">{presentation.description}</p>
+          )}
+
+          {showOriginal && (
+            <details className="tm-original-english">
+              <summary>{messages.originalEnglish}</summary>
+              <div className="tm-original-english-body" lang="en">
+                <h3>{t.name}</h3>
+                {t.vibe && <blockquote>"{t.vibe}"</blockquote>}
+                {t.description && <p>{t.description}</p>}
+              </div>
+            </details>
           )}
 
           {t.domains.length > 0 && (
             <div className="tm-detail-section">
-              <div className="tm-detail-label">Domains</div>
+              <div className="tm-detail-label">{messages.domains}</div>
               <div className="tm-detail-tags">
-                {t.domains.map(d => <span key={d} className="org-domain-tag">{d}</span>)}
+                {t.domains.map(d => <span key={d} className="org-domain-tag">{getTalentTagLabel(d, locale)}</span>)}
               </div>
             </div>
           )}
 
           {t.tags.length > 0 && (
             <div className="tm-detail-section">
-              <div className="tm-detail-label">Tags</div>
+              <div className="tm-detail-label">{messages.tags}</div>
               <div className="tm-detail-tags">
-                {t.tags.map(tag => <span key={tag} className="org-tool-tag">{tag}</span>)}
+                {t.tags.map(tag => <span key={tag} className="org-tool-tag">{getTalentTagLabel(tag, locale)}</span>)}
               </div>
             </div>
           )}
 
           {t.preferred_external_agent && (
             <div className="tm-detail-section">
-              <div className="tm-detail-label">Recommended Agent</div>
+              <div className="tm-detail-label">{messages.recommendedAgent}</div>
               <span className="tm-card-agent-badge">{t.preferred_external_agent}</span>
             </div>
           )}
 
           {!readOnly && (
             <div className="tm-detail-section">
-              <div className="tm-detail-label">Hire into role</div>
+              <div className="tm-detail-label">{messages.hireIntoRole}</div>
               {noVacancies ? (
                 <p className="tm-detail-vacancy-empty">
-                  No vacant roles. Create a role in the Team tab first.
+                  {messages.noVacancies} {messages.addRoleFirst}
                 </p>
               ) : (
-                <div className="tm-detail-role-list" role="listbox" aria-label="Vacant roles">
+                <div className="tm-detail-role-list" role="listbox" aria-label={messages.vacantRoles}>
                   {vacantRoles.map(role => {
                     const selected = role.role_id === selectedRoleId
                     return (
@@ -117,7 +135,7 @@ export function TalentDetailModal({
               disabled={!canHire}
               onClick={handleHire}
             >
-              {isHiring ? <><span className="spinner-inline" /> Hiring...</> : 'Hire to selected role'}
+              {isHiring ? <><span className="spinner-inline" /> {messages.hiring}</> : messages.hireToSelectedRole}
             </button>
           </div>
         )}

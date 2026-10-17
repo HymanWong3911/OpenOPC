@@ -1,0 +1,538 @@
+{
+  "vc-investment-firm": {
+    "name": "风险投资机构",
+    "description": "开展行业图谱研究、初创企业搜寻、技术与商业尽职调查，组织投资委员会辩论，并交付投资备忘录和 PPT。",
+    "category": "投资",
+    "dag_summary": "投资简报->研究/项目搜寻->尽职调查->投委会正反方评审->前三名->投资备忘录/PPT",
+    "tags": {
+      "vc": "风险投资",
+      "investment": "投资",
+      "due-diligence": "尽职调查",
+      "startup-scouting": "初创企业搜寻",
+      "market-research": "市场研究"
+    },
+    "roles": {
+      "managing_partner": {
+        "name": "管理合伙人",
+        "responsibility": "明确投资授权范围、目标阶段、重点行业和决策标准，提出最终投资组合建议。"
+      },
+      "investment_director": {
+        "name": "投资总监",
+        "responsibility": "将用户需求转化为投资研究框架、筛选标准、任务分工和候选公司短名单。"
+      },
+      "sector_analyst": {
+        "name": "行业分析师",
+        "responsibility": "评估目标行业未来 3–5 年的持续增长潜力，分析需求驱动因素、拐点与采用限制。"
+      },
+      "market_researcher": {
+        "name": "市场研究员",
+        "responsibility": "量化 TAM/SAM/SOM、买方预算、增长率和采用曲线，并分析可比的公开或私有市场信号。"
+      },
+      "startup_scout": {
+        "name": "初创企业搜寻员",
+        "responsibility": "建立广泛的候选企业库，记录成立日期、总部、融资阶段与金额、投资者、产品、客户、新闻、官网，以及 LinkedIn、Crunchbase、PitchBook、GitHub 和来源链接。"
+      },
+      "competitive_analyst": {
+        "name": "竞争分析师",
+        "responsibility": "梳理既有企业、初创竞争者和替代技术，分析市场定位、护城河、差异化与大型科技企业带来的压力。"
+      },
+      "news_signal_analyst": {
+        "name": "新闻与市场信号分析师",
+        "responsibility": "跟踪近期市场信号、客户签约、产品发布、裁员、监管变化、招聘速度、GitHub 活跃度和投资者关注。"
+      },
+      "due_diligence_lead": {
+        "name": "尽职调查负责人",
+        "responsibility": "根据短名单制定尽调计划，协调专业核查、处理矛盾信息，并汇总对各公司的投资判断依据。"
+      },
+      "technical_dd_analyst": {
+        "name": "技术尽调分析师",
+        "responsibility": "评估技术护城河、架构可信度、基准测试、专利、论文、开源项目、GitHub 关注度、团队技术深度与可扩展性。"
+      },
+      "business_dd_analyst": {
+        "name": "商业尽调分析师",
+        "responsibility": "评估目标客户、销售方式、定价模型、ARR 或收入证据、部署阻力、客户集中度和市场进入策略的防御能力。"
+      },
+      "financial_analyst": {
+        "name": "财务分析师",
+        "responsibility": "分析融资历史、投资者、估值信号、资金消耗影响、融资轮次动态、可比估值、退出路径及潜在风险回报。"
+      },
+      "risk_legal_analyst": {
+        "name": "风险与法律分析师",
+        "responsibility": "识别隐私、开源许可、供应链、地缘政治、客户集中、监管、知识产权和创始人稳定性方面的风险。"
+      },
+      "investment_committee": {
+        "name": "投资委员会主席",
+        "responsibility": "组织结构化的投资正反方评审，比较证据质量，并为管理合伙人准备决策材料。"
+      },
+      "bull_case_reviewer": {
+        "name": "投资支持方评审员",
+        "responsibility": "依据证据，为每家入围公司构建支持当前投资的有力论证。"
+      },
+      "bear_case_reviewer": {
+        "name": "投资反对方评审员",
+        "responsibility": "依据证据构建反对投资的有力论证，涵盖时机、估值、技术、市场和执行方面的异议。"
+      },
+      "final_decision_reviewer": {
+        "name": "最终决策评审员",
+        "responsibility": "综合投资正反方论证，对公司排序并说明判断置信度，在合伙人审批前标出需要补充尽调的问题。"
+      },
+      "report_delivery_lead": {
+        "name": "报告与交付负责人",
+        "responsibility": "负责最终投资备忘录、评分卡、市场图谱、竞争矩阵、融资时间线、PPT、数据表和图表的交付。"
+      },
+      "data_analyst": {
+        "name": "数据分析师",
+        "responsibility": "规范化公司数据、计算评分卡、制作可比分析表，并准备适合图表展示的数据集。"
+      },
+      "investment_memo_writer": {
+        "name": "投资备忘录撰写人",
+        "responsibility": "撰写供合伙人审阅的投资备忘录，涵盖投资论点、市场与公司分析、尽调证据、风险、估值观点和建议。"
+      },
+      "ppt_designer": {
+        "name": "PPT 设计师",
+        "responsibility": "将投资备忘录整理为简洁的风险投资演示文稿，清晰呈现信息层级、评分卡、市场图谱和决策页面。"
+      },
+      "visualization_specialist": {
+        "name": "可视化专家",
+        "responsibility": "为最终报告与 PPT 制作市场图谱、竞争矩阵、融资时间线、评分图表和可视化摘要。"
+      }
+    },
+    "workItems": {
+      "investment_brief": {
+        "title": "投资简报"
+      },
+      "research_framework": {
+        "title": "研究框架"
+      },
+      "sector_thesis": {
+        "title": "行业投资论点"
+      },
+      "market_sizing": {
+        "title": "市场规模测算"
+      },
+      "company_sourcing": {
+        "title": "候选公司搜寻"
+      },
+      "signal_scan": {
+        "title": "新闻与市场信号扫描"
+      },
+      "competitive_map": {
+        "title": "竞争图谱"
+      },
+      "candidate_shortlist": {
+        "title": "候选公司短名单"
+      },
+      "dd_plan": {
+        "title": "尽职调查计划"
+      },
+      "technical_dd": {
+        "title": "技术尽职调查"
+      },
+      "business_dd": {
+        "title": "商业尽职调查"
+      },
+      "financial_dd": {
+        "title": "财务尽职调查"
+      },
+      "risk_legal_dd": {
+        "title": "风险与法律尽职调查"
+      },
+      "dd_synthesis": {
+        "title": "尽调结果综合"
+      },
+      "bull_case": {
+        "title": "支持投资论证"
+      },
+      "bear_case": {
+        "title": "反对投资论证"
+      },
+      "decision_review": {
+        "title": "决策评审"
+      },
+      "final_investment_decision": {
+        "title": "最终投资决策"
+      },
+      "dataset_scoring": {
+        "title": "数据集与评分卡"
+      },
+      "investment_memo": {
+        "title": "投资备忘录"
+      },
+      "visualizations": {
+        "title": "可视化图表"
+      },
+      "pitch_deck": {
+        "title": "PPT 演示文稿"
+      },
+      "final_delivery": {
+        "title": "最终风险投资交付物"
+      }
+    }
+  },
+  "startup-studio": {
+    "name": "创业工作室",
+    "description": "精简的全栈创业团队：CEO 制定战略，CTO 负责技术决策，工程师与设计师并行构建，由 QA 验证质量。",
+    "category": "创业",
+    "dag_summary": "CEO 首席执行官→CTO 首席技术官→[工程∥设计]→QA 质保→评审→部署",
+    "tags": {
+      "full-stack": "全栈",
+      "agile": "敏捷",
+      "mvp": "最小可行产品",
+      "small-team": "小型团队"
+    },
+    "roles": {
+      "ceo": {
+        "name": "CEO 首席执行官",
+        "responsibility": "负责产品愿景、战略和最终决策。"
+      },
+      "cto": {
+        "name": "CTO 首席技术官",
+        "responsibility": "负责技术架构与工程团队领导。"
+      },
+      "engineer": {
+        "name": "工程师",
+        "responsibility": "负责全栈开发与实现。"
+      },
+      "designer": {
+        "name": "设计师",
+        "responsibility": "负责 UI/UX 设计、原型制作与用户研究。"
+      },
+      "qa": {
+        "name": "QA 质量保障工程师",
+        "responsibility": "负责测试、质量保障与缺陷跟踪。"
+      }
+    },
+    "workItems": {
+      "planning": {
+        "title": "规划"
+      },
+      "architecture": {
+        "title": "架构设计"
+      },
+      "design": {
+        "title": "设计"
+      },
+      "development": {
+        "title": "开发"
+      },
+      "testing": {
+        "title": "测试"
+      },
+      "review": {
+        "title": "评审"
+      },
+      "deploy": {
+        "title": "部署"
+      }
+    }
+  },
+  "enterprise-corp": {
+    "name": "大型企业",
+    "description": "采用正式的公司层级，设置部门负责人、审批节点和合规检查，适用于受监管行业。",
+    "category": "企业",
+    "dag_summary": "产品经理→CEO 审批✓→[技术∥用户体验]→实现→QA 质保→安全审查✓→预发布→生产发布✓",
+    "tags": {
+      "corporate": "公司制",
+      "compliance": "合规",
+      "governance": "治理",
+      "large-team": "大型团队"
+    },
+    "roles": {
+      "ceo": {
+        "name": "CEO 首席执行官",
+        "responsibility": "负责高层领导、愿景与投资者关系。"
+      },
+      "vp_eng": {
+        "name": "工程副总裁",
+        "responsibility": "负责领导工程组织。"
+      },
+      "vp_product": {
+        "name": "产品副总裁",
+        "responsibility": "负责产品战略与路线图。"
+      },
+      "cfo": {
+        "name": "CFO 首席财务官",
+        "responsibility": "负责财务、预算与合规。"
+      },
+      "tech_lead": {
+        "name": "技术负责人",
+        "responsibility": "负责技术执行与代码质量。"
+      },
+      "devops_lead": {
+        "name": "DevOps 开发运维负责人",
+        "responsibility": "负责基础设施、CI/CD 与监控。"
+      },
+      "product_manager": {
+        "name": "产品经理",
+        "responsibility": "负责功能规格、用户故事与优先级安排。"
+      },
+      "ux_lead": {
+        "name": "用户体验负责人",
+        "responsibility": "负责用户体验设计与研究。"
+      },
+      "engineer": {
+        "name": "软件工程师",
+        "responsibility": "负责开发与实现。"
+      },
+      "designer": {
+        "name": "用户界面设计师",
+        "responsibility": "负责视觉设计与原型制作。"
+      },
+      "qa_lead": {
+        "name": "QA 质量保障负责人",
+        "responsibility": "负责质量保障策略与测试。"
+      }
+    },
+    "workItems": {
+      "requirements": {
+        "title": "需求"
+      },
+      "exec_review": {
+        "title": "高层评审"
+      },
+      "tech_design": {
+        "title": "技术设计"
+      },
+      "ux_design": {
+        "title": "用户体验设计"
+      },
+      "implementation": {
+        "title": "实现"
+      },
+      "qa": {
+        "title": "质量保障"
+      },
+      "security_review": {
+        "title": "安全审查"
+      },
+      "preprod_deploy": {
+        "title": "预生产环境部署"
+      },
+      "release": {
+        "title": "生产环境发布"
+      }
+    }
+  },
+  "creative-agency": {
+    "name": "创意机构",
+    "description": "以客户需求为导向的创意团队：客户经理维护客户关系，创意总监确定方向，各专业成员跨领域协作执行。",
+    "category": "代理服务",
+    "dag_summary": "客户简报→创意概念→[视觉∥文案]→开发→创意评审✓→客户审批✓",
+    "tags": {
+      "creative": "创意",
+      "client-work": "客户项目",
+      "design": "设计",
+      "marketing": "营销"
+    },
+    "roles": {
+      "account_manager": {
+        "name": "客户经理",
+        "responsibility": "负责客户关系、项目范围界定与交付物跟踪。"
+      },
+      "creative_director": {
+        "name": "创意总监",
+        "responsibility": "负责创意愿景、品牌一致性与质量标准。"
+      },
+      "designer": {
+        "name": "视觉设计师",
+        "responsibility": "负责图形、版式、品牌资产与界面设计稿。"
+      },
+      "copywriter": {
+        "name": "文案撰稿人",
+        "responsibility": "负责文案、内容策略、传播信息与表达语气。"
+      },
+      "developer": {
+        "name": "Web 开发工程师",
+        "responsibility": "负责前端开发、CMS 与落地页。"
+      }
+    },
+    "workItems": {
+      "brief": {
+        "title": "客户简报"
+      },
+      "concept": {
+        "title": "创意概念"
+      },
+      "visual_design": {
+        "title": "视觉设计"
+      },
+      "copy": {
+        "title": "文案撰写"
+      },
+      "build": {
+        "title": "开发"
+      },
+      "creative_review": {
+        "title": "创意评审"
+      },
+      "client_approval": {
+        "title": "客户审批"
+      }
+    }
+  },
+  "research-lab": {
+    "name": "研究实验室",
+    "description": "采用学术研究团队模式，由首席研究员领导假设驱动的研究，并通过同行评审和可复现性检查审查成果。",
+    "category": "研究",
+    "dag_summary": "假设→文献综述→实验设计→[数据∥实验]→分析→同行评审✓→发表",
+    "tags": {
+      "academic": "学术",
+      "research": "研究",
+      "data-science": "数据科学",
+      "peer-review": "同行评审"
+    },
+    "roles": {
+      "pi": {
+        "name": "首席研究员",
+        "responsibility": "负责研究方向、假设制定与发表监督。"
+      },
+      "researcher": {
+        "name": "研究科学家",
+        "responsibility": "负责实验设计、分析与论文撰写。"
+      },
+      "data_engineer": {
+        "name": "数据工程师",
+        "responsibility": "负责数据管道、基础设施与可复现性。"
+      },
+      "reviewer": {
+        "name": "同行评审员",
+        "responsibility": "负责批判性审查、方法验证与反馈。"
+      }
+    },
+    "workItems": {
+      "hypothesis": {
+        "title": "研究假设"
+      },
+      "lit_review": {
+        "title": "文献综述"
+      },
+      "experiment_design": {
+        "title": "实验设计"
+      },
+      "data_collection": {
+        "title": "数据管道"
+      },
+      "experiment": {
+        "title": "执行实验"
+      },
+      "analysis": {
+        "title": "分析"
+      },
+      "peer_review": {
+        "title": "同行评审"
+      },
+      "publication": {
+        "title": "发表"
+      }
+    }
+  },
+  "devops-pipeline": {
+    "name": "DevOps 流水线",
+    "description": "以基础设施为重点，结合 SRE 实践，围绕 CI/CD、监控与快速部署周期组织协作。",
+    "category": "工程",
+    "dag_summary": "计划→开发→持续集成→[安全∥测试]→预发布→金丝雀发布✓→生产环境",
+    "tags": {
+      "devops": "开发运维",
+      "sre": "站点可靠性工程",
+      "infrastructure": "基础设施",
+      "automation": "自动化"
+    },
+    "roles": {
+      "sre_lead": {
+        "name": "SRE 站点可靠性负责人",
+        "responsibility": "负责可靠性策略、事故响应与 SLO 管理。"
+      },
+      "platform_eng": {
+        "name": "平台工程师",
+        "responsibility": "负责基础设施即代码、Kubernetes 与云架构。"
+      },
+      "security_eng": {
+        "name": "安全工程师",
+        "responsibility": "负责安全审计、漏洞扫描与合规。"
+      },
+      "developer": {
+        "name": "开发工程师",
+        "responsibility": "负责应用开发与功能交付。"
+      }
+    },
+    "workItems": {
+      "plan": {
+        "title": "迭代规划"
+      },
+      "develop": {
+        "title": "开发"
+      },
+      "ci": {
+        "title": "持续集成流水线"
+      },
+      "security_scan": {
+        "title": "安全扫描"
+      },
+      "integration_test": {
+        "title": "集成测试"
+      },
+      "preprod_deploy": {
+        "title": "预生产环境部署"
+      },
+      "canary": {
+        "title": "金丝雀发布"
+      },
+      "production": {
+        "title": "生产环境"
+      }
+    }
+  },
+  "content-studio": {
+    "name": "内容工作室",
+    "description": "面向博客、社交媒体和文档的内容创作流水线，由主编统筹内容质量与发布节奏。",
+    "category": "媒体",
+    "dag_summary": "选题→[研究∥SEO 搜索引擎优化]→初稿→编辑评审✓→发布→分发",
+    "tags": {
+      "content": "内容",
+      "writing": "写作",
+      "social-media": "社交媒体",
+      "publishing": "发布"
+    },
+    "roles": {
+      "editor_in_chief": {
+        "name": "主编",
+        "responsibility": "负责编辑策略、内容日历与质量标准。"
+      },
+      "writer": {
+        "name": "内容撰稿人",
+        "responsibility": "负责文章研究、起草与修订。"
+      },
+      "seo_specialist": {
+        "name": "SEO 搜索引擎优化专家",
+        "responsibility": "负责关键词研究、优化与数据分析。"
+      },
+      "social_manager": {
+        "name": "社交媒体经理",
+        "responsibility": "负责内容分发、受众互动与交叉推广。"
+      }
+    },
+    "workItems": {
+      "topic_planning": {
+        "title": "选题规划"
+      },
+      "research": {
+        "title": "研究与大纲"
+      },
+      "seo_research": {
+        "title": "SEO 搜索引擎优化研究"
+      },
+      "drafting": {
+        "title": "起草"
+      },
+      "editorial_review": {
+        "title": "编辑评审"
+      },
+      "publish": {
+        "title": "发布"
+      },
+      "distribute": {
+        "title": "社交媒体分发"
+      }
+    }
+  }
+}

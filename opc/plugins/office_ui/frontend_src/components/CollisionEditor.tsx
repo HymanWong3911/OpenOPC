@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import type { GameBridge } from '../game/GameBridge'
 import {
@@ -18,6 +19,7 @@ type EditorMode = 'wall' | 'floor' | 'seat'
 const BG_ASSET_URL = 'assets/office-bg.png'
 
 export function CollisionEditor({ bridge }: Props) {
+  const wsText = useWorkspaceText()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const bgImgRef = useRef<HTMLImageElement | null>(null)
   const isPainting = useRef(false)
@@ -200,7 +202,7 @@ export function CollisionEditor({ bridge }: Props) {
     <div className="collision-editor">
       <div className="ce-toolbar">
         <div className="ce-toolbar-group">
-          <span className="ce-title">Map Editor</span>
+          <span className="ce-title">{wsText("Map Editor")}</span>
           <select
             className="ce-office-select"
             value={selectedOfficeId}
@@ -212,35 +214,32 @@ export function CollisionEditor({ bridge }: Props) {
 
         <div className="ce-toolbar-group">
           <button className={`ce-mode-btn ${mode === 'wall' ? 'active wall' : ''}`} onClick={() => setMode('wall')}>
-            <span className="ce-mode-dot wall" /> Wall
-          </button>
+            <span className="ce-mode-dot wall" /> {wsText("Wall")}</button>
           <button className={`ce-mode-btn ${mode === 'floor' ? 'active floor' : ''}`} onClick={() => setMode('floor')}>
-            <span className="ce-mode-dot floor" /> Floor
-          </button>
+            <span className="ce-mode-dot floor" /> {wsText("Floor")}</button>
           <button className={`ce-mode-btn ${mode === 'seat' ? 'active seat' : ''}`} onClick={() => setMode('seat')}>
-            <span className="ce-mode-dot seat" /> Seat
-          </button>
+            <span className="ce-mode-dot seat" /> {wsText("Seat")}</button>
         </div>
 
         <div className="ce-toolbar-group">
           <button className="ce-btn" onClick={zoomOut}>-</button>
           <span className="ce-zoom-label">{Math.round(zoom * 100)}%</span>
           <button className="ce-btn" onClick={zoomIn}>+</button>
-          <button className={`ce-btn${showGrid ? ' active' : ''}`} onClick={() => setShowGrid(v => !v)}>Grid</button>
+          <button className={`ce-btn${showGrid ? ' active' : ''}`} onClick={() => setShowGrid(v => !v)}>{wsText("Grid")}</button>
         </div>
 
         <div className="ce-toolbar-group">
           <button className={`ce-btn apply${applied ? ' success' : ''}`} onClick={handleApply}>
-            {applied ? 'Applied' : 'Apply'}
+            {applied ? wsText("Applied") : wsText("Apply")}
           </button>
-          <button className={`ce-btn${showExport ? ' active' : ''}`} onClick={handleExport}>Export</button>
-          <button className="ce-btn danger" onClick={handleReset}>Reset</button>
+          <button className={`ce-btn${showExport ? ' active' : ''}`} onClick={handleExport}>{wsText("Export")}</button>
+          <button className="ce-btn danger" onClick={handleReset}>{wsText("Reset")}</button>
         </div>
 
         <div className="ce-toolbar-group ce-stats">
-          <span>Walls: {wallCount}</span>
-          <span>Floor: {floorCount}</span>
-          <span>Seats: {seats.length}</span>
+          <span>{wsText("Walls: ")}{wallCount}</span>
+          <span>{wsText("Floor: ")}{floorCount}</span>
+          <span>{wsText("Seats: ")}{seats.length}</span>
         </div>
       </div>
 
@@ -264,8 +263,8 @@ export function CollisionEditor({ bridge }: Props) {
         {showExport && (
           <div className="ce-export-panel">
             <div className="ce-export-header">
-              <span>Export — copy to source code</span>
-              <button className="ce-btn" onClick={() => navigator.clipboard.writeText(exportText)}>Copy</button>
+              <span>{wsText("Export — copy to source code")}</span>
+              <button className="ce-btn" onClick={() => navigator.clipboard.writeText(exportText)}>{wsText("Copy")}</button>
             </div>
             <textarea className="ce-export-textarea" value={exportText} readOnly rows={20} />
           </div>

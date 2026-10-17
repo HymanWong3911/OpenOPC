@@ -1,3 +1,6 @@
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import type { Locale } from '../i18n'
 /**
  * OrgVersionSwitcher — editor-toolbar "version picker" for the org.
  *
@@ -12,7 +15,7 @@
  *
  * Lives in the StructureEditor toolbar (Team tab, org mode only).
  */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 interface SavedOrg {
   name: string
@@ -34,15 +37,16 @@ export interface OrgVersionSwitcherProps {
 
 const MAX_DISPLAY_NAME = 80
 
-function formatRelativeTime(epochSeconds: number): string {
+function formatRelativeTime(epochSeconds: number, locale: Locale): string {
+  const msg = orgMessages(locale)
   const now = Date.now() / 1000
   const diff = Math.max(0, now - epochSeconds)
-  if (diff < 60) return 'just now'
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`
+  if (diff < 60) return msg('just now')
+  if (diff < 3600) return msg('{count}m ago', { count: Math.floor(diff / 60) })
+  if (diff < 86400) return msg('{count}h ago', { count: Math.floor(diff / 3600) })
+  if (diff < 604800) return msg('{count}d ago', { count: Math.floor(diff / 86400) })
   try {
-    return new Date(epochSeconds * 1000).toLocaleDateString()
+    return new Date(epochSeconds * 1000).toLocaleDateString(locale)
   } catch {
     return ''
   }
@@ -103,6 +107,8 @@ function SearchGlyph({ className }: { className?: string }) {
 export function OrgVersionSwitcher({
   savedOrgs, activeName, isDirty, onRefresh, onSaveAs, onLoad, onDelete,
 }: OrgVersionSwitcherProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [highlighted, setHighlighted] = useState(0)
@@ -234,15 +240,15 @@ export function OrgVersionSwitcher({
         onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        title={activeName ? `Active saved architecture: ${activeName}` : 'No saved architecture loaded'}
+        title={activeName ? msg('Active saved architecture: {name}', { name: activeName }) : msg("No saved architecture loaded")}
       >
         <LayersGlyph className="sos-pill-glyph" />
         {activeName ? (
           <span className="sos-pill-name">{activeName}</span>
         ) : (
-          <span className="sos-pill-name sos-pill-name--placeholder">draft</span>
+          <span className="sos-pill-name sos-pill-name--placeholder">{msg("draft")}</span>
         )}
-        {isDirty && <span className="sos-pill-dirty" aria-label="Modified since opened" />}
+        {isDirty && <span className="sos-pill-dirty" aria-label={msg("Modified since opened")} />}
         <Caret className="sos-pill-caret" />
       </button>
 
@@ -253,7 +259,7 @@ export function OrgVersionSwitcher({
             <input
               type="text"
               className="sos-search-input"
-              placeholder="Search architectures…"
+              placeholder={msg("Search architectures…")}
               value={search}
               onChange={e => { setSearch(e.target.value); setHighlighted(0) }}
               autoFocus
@@ -264,10 +270,10 @@ export function OrgVersionSwitcher({
 
           <div className="sos-list">
             {savedOrgs === null ? (
-              <div className="sos-empty">Loading…</div>
+              <div className="sos-empty">{msg("Loading…")}</div>
             ) : filtered.length === 0 ? (
               <div className="sos-empty">
-                {(savedOrgs ?? []).length === 0 ? 'No saved architectures.' : 'No matches.'}
+                {(savedOrgs ?? []).length === 0 ? msg("No saved architectures.") : msg("No matches.")}
               </div>
             ) : (
               filtered.map((org, idx) => {
@@ -288,33 +294,35 @@ export function OrgVersionSwitcher({
                       <span className="sos-row-name">{title}</span>
                       <span className="sos-row-stats">
                         {title !== org.name && `${org.name} · `}
-                        {org.roles_count} {org.roles_count === 1 ? 'role' : 'roles'}
+                        {org.roles_count} {org.roles_count === 1 ? msg("role") : msg("roles")}
                         {' · '}
-                        {org.employees_count} {org.employees_count === 1 ? 'employee' : 'employees'}
+                        {org.employees_count} {org.employees_count === 1 ? msg("employee") : msg("employees")}
                         {' · '}
-                        {formatRelativeTime(org.saved_at)}
+                        {formatRelativeTime(org.saved_at, locale)}
                       </span>
                     </div>
                     {loadingName === org.name ? (
-                      <span className="sos-row-loading">loading…</span>
+                      <span className="sos-row-loading">{msg("loading…")}</span>
                     ) : isActive ? (
-                      <span className="sos-row-active-chip">active</span>
+                      <span className="sos-row-active-chip">{msg("active")}</span>
                     ) : confirmDelete === org.name ? (
                       <button
                         type="button"
                         className="sos-row-delete sos-row-delete--confirm"
                         onClick={e => { e.stopPropagation(); handleDelete(org.name) }}
                       >
-                        confirm
+
+                        {msg("confirm")}
                       </button>
                     ) : (
                       <button
                         type="button"
                         className="sos-row-delete"
                         onClick={e => { e.stopPropagation(); setConfirmDelete(org.name) }}
-                        title="Delete"
+                        title={msg("Delete")}
                       >
-                        delete
+
+                        {msg("delete")}
                       </button>
                     )}
                   </div>
@@ -330,7 +338,7 @@ export function OrgVersionSwitcher({
                   ref={saveInputRef}
                   type="text"
                   className="sos-save-as-input"
-                  placeholder="Organization name"
+                  placeholder={msg("Organization name")}
                   value={saveAsName}
                   onChange={e => setSaveAsName(e.target.value)}
                   onKeyDown={onKeyDown}
@@ -341,14 +349,15 @@ export function OrgVersionSwitcher({
                   onClick={handleSaveAs}
                   disabled={!saveAsValid}
                 >
-                  {saveAsExists ? 'Overwrite copy' : 'Save as copy'}
+                  {saveAsExists ? msg("Overwrite copy") : msg("Save as copy")}
                 </button>
                 <button
                   type="button"
                   className="btn btn-ghost btn-sm"
                   onClick={() => { setSaveAsMode(false); setSaveAsName('') }}
                 >
-                  Cancel
+
+                  {msg("Cancel")}
                 </button>
               </div>
             ) : (
@@ -357,17 +366,20 @@ export function OrgVersionSwitcher({
                 className="sos-save-as-trigger"
                 onClick={() => setSaveAsMode(true)}
               >
-                + Save as copy...
+
+                {msg("+ Save as copy...")}
               </button>
             )}
             {saveAsMode && saveAsName && !saveAsValid && (
               <div className="sos-save-as-hint sos-save-as-hint--warn">
-                Use up to 80 characters. Slashes are not allowed.
+
+                {msg("Use up to 80 characters. Slashes are not allowed.")}
               </div>
             )}
             {saveAsMode && saveAsValid && saveAsExists && (
               <div className="sos-save-as-hint sos-save-as-hint--warn">
-                Name exists - this will overwrite that copy.
+
+                {msg("Name exists - this will overwrite that copy.")}
               </div>
             )}
           </div>

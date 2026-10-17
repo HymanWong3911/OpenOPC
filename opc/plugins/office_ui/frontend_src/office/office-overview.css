@@ -1,0 +1,449 @@
+/* Team status view. All displayed people, tasks, and occupancy come from OfficePage. */
+.office-visual-host {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ha-bg-canvas, var(--bg));
+  color: var(--ha-text-primary, var(--text));
+  container-type: inline-size;
+  container-name: officevisual;
+}
+
+.office-pixel-layer,
+.office-pixel-layer > div {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.office-pixel-layer.is-concealed {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Override canvas-wrap's full-height rule for direct div children. */
+.office-visual-host > .office-view-switch {
+  position: absolute;
+  top: 20px;
+  right: 32px;
+  z-index: 7;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--ha-border-default, var(--border));
+  border-radius: 10px;
+  background: var(--ha-bg-surface, var(--surface));
+}
+
+.office-view-switch button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+}
+
+.office-view-switch button:hover {
+  background: var(--ha-fill-hover, var(--surface-hover));
+  color: var(--ha-text-primary, var(--text));
+}
+
+.office-view-switch button:is(.active, .is-selected, [aria-pressed="true"]) {
+  background: var(--ha-fill-selected, var(--surface-hover));
+  color: var(--ha-text-primary, var(--text));
+  box-shadow: inset 0 -2px 0 var(--ha-accent, var(--accent));
+}
+
+.office-overview {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 80px 32px 32px;
+  box-sizing: border-box;
+  background: var(--ha-bg-canvas, var(--bg));
+  scrollbar-width: thin;
+  scrollbar-color: var(--ha-border-default, var(--border)) transparent;
+}
+
+.office-overview-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.office-overview-eyebrow,
+.office-overview-header > small {
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+
+.office-overview-header h1 {
+  margin: 0;
+  color: var(--ha-text-primary, var(--text));
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.office-overview-header p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 15px;
+  line-height: 26px;
+}
+
+.office-overview-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.office-overview-metrics article {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 20px;
+  border: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 10px;
+  background: var(--ha-bg-surface, var(--surface));
+}
+
+.office-overview-metrics article > :is(strong, b) {
+  color: var(--ha-text-primary, var(--text));
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 36px;
+  font-variant-numeric: tabular-nums;
+}
+
+.office-overview-metrics article > :is(span, p, small) {
+  margin: 0;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.office-room-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.office-room-card {
+  min-width: 0;
+  padding: 20px 16px 16px;
+  border: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 10px;
+  background: var(--ha-bg-surface, var(--surface));
+}
+
+.office-room-card-heading {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.office-room-card-heading :is(h2, h3, strong) {
+  min-width: 0;
+  margin: 0;
+  color: var(--ha-text-primary, var(--text));
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+
+.office-room-card-heading :is(span, small) {
+  flex-shrink: 0;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  font-size: 13px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.office-seat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.office-seat {
+  display: flex;
+  min-width: 0;
+  min-height: 80px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-family: inherit;
+  text-align: center;
+}
+
+button.office-seat { cursor: pointer; }
+
+button.office-seat:hover {
+  background: var(--ha-fill-hover, var(--surface-hover));
+  color: var(--ha-text-primary, var(--text));
+}
+
+.office-seat:is(.selected, .is-selected, [aria-pressed="true"]) {
+  background: var(--ha-fill-selected, var(--surface-hover));
+  border-color: var(--ha-border-default, var(--border));
+  color: var(--ha-text-primary, var(--text));
+  box-shadow: inset 0 -2px 0 var(--ha-accent, var(--accent));
+}
+
+.office-seat-label {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--ha-border-default, var(--border));
+  border-radius: 50%;
+  background: var(--ha-bg-raised, var(--bg-elevated));
+  color: var(--ha-text-primary, var(--text));
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.office-seat:is(.vacant, .is-vacant) .office-seat-label {
+  background: transparent;
+  border-style: dashed;
+  color: var(--ha-text-tertiary, var(--text-secondary));
+}
+
+.office-seat-name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  color: inherit;
+  font-size: 13px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.office-member-section { min-width: 0; }
+
+.office-member-section > :is(h2, h3) {
+  margin: 0 0 8px;
+  color: var(--ha-text-primary, var(--text));
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+}
+
+.office-member-section > :is(p, small) {
+  display: block;
+  margin: 0 0 16px;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.office-member-table {
+  overflow: hidden;
+  border: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 10px;
+  background: var(--ha-bg-surface, var(--surface));
+}
+
+.office-member-table > :is(header, button, .office-member-table-header, .office-member-row) {
+  display: grid;
+  grid-template-columns: minmax(140px, 1.3fr) minmax(84px, .7fr) minmax(0, 1.6fr) minmax(72px, .8fr) minmax(72px, .8fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.office-member-table > :is(header, .office-member-table-header) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  background: var(--ha-bg-subtle, var(--bg));
+  font-weight: 500;
+}
+
+.office-member-table > :is(button, .office-member-row) {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 0;
+  background: transparent;
+  color: var(--ha-text-primary, var(--text));
+  cursor: pointer;
+  transition: background 120ms;
+}
+
+.office-member-table > :is(button, .office-member-row):hover {
+  background: var(--ha-fill-hover, var(--surface-hover));
+}
+
+.office-member-table > :is(button, .office-member-row):is(.selected, .is-selected, [aria-pressed="true"]) {
+  background: var(--ha-fill-selected, var(--surface-hover));
+  box-shadow: inset 2px 0 0 var(--ha-accent, var(--accent));
+}
+
+.office-member-table > :is(button, .office-member-row) > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.office-member-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.office-member-avatar,
+.office-member-identity > :is(i, .avatar) {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--ha-border-default, var(--border));
+  border-radius: 50%;
+  background: var(--ha-bg-raised, var(--bg-elevated));
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.office-member-identity > :is(span, div) { min-width: 0; }
+.office-member-identity :is(strong, b) { display: block; font-size: 13px; font-weight: 500; line-height: 20px; }
+.office-member-identity small { display: block; color: var(--ha-text-secondary, var(--text-secondary)); font-size: 12px; line-height: 18px; }
+
+.office-member-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.office-member-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.office-member-status.is-active { color: var(--ha-accent, var(--accent)); }
+.office-member-status.is-error { color: var(--ha-danger, var(--red)); }
+.office-member-status.is-done { color: var(--ha-success, var(--green)); }
+
+.office-member-task,
+.office-member-room { color: var(--ha-text-secondary, var(--text-secondary)); }
+.office-member-tool { color: var(--ha-text-secondary, var(--text-secondary)); font-family: var(--ha-font-mono, 'Geist Mono', monospace); font-size: 13px; }
+
+.office-member-empty {
+  padding: 32px 20px;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 15px;
+  line-height: 26px;
+  text-align: center;
+}
+
+.office-visual-host :is(button, [tabindex]):focus-visible {
+  outline: 2px solid var(--ha-focus-ring, var(--accent));
+  outline-offset: 2px;
+}
+
+.office-member-table > button:focus-visible { outline-offset: -3px; }
+
+@container officevisual (max-width: 860px) {
+  .office-room-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container officevisual (max-width: 760px) {
+  .office-overview { padding-left: 24px; padding-right: 24px; }
+  .office-visual-host > .office-view-switch { right: 24px; }
+  .office-member-table > :is(header, .office-member-table-header) { display: none; }
+  .office-member-table > :is(button, .office-member-row) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px 16px;
+  }
+  .office-member-identity { grid-column: 1 / -1; }
+  .office-member-task { grid-column: 1 / -1; }
+}
+
+@container officevisual (max-width: 560px) {
+  .office-overview { padding: 76px 20px 24px; }
+  .office-visual-host > .office-view-switch { top: 16px; right: 20px; }
+  .office-room-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .office-overview-metrics { gap: 8px; }
+  .office-overview-metrics article { padding: 12px; }
+  .office-overview-metrics article > :is(strong, b) { font-size: 24px; line-height: 32px; }
+}
+
+@media (max-width: 700px) {
+  .office-member-table > :is(header, .office-member-table-header) { display: none; }
+  .office-member-table > :is(button, .office-member-row) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px 16px;
+  }
+  .office-member-identity,
+  .office-member-task { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .office-visual-host *, .office-visual-host *::before, .office-visual-host *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { NativeApprovalLevel, RoleWorkItemSummary, Session, TaskPreferredAgent } from '../types/kanban'
 import type { ChatMessage, CheckpointReplyMetadata, InteractionReplyReceipt, OutgoingAttachmentPayload } from '../types/chat'
@@ -339,6 +340,7 @@ function InfoTabView({
   agents: AgentInfo[]
   roleLabel: string | null
 }) {
+  const wsText = useWorkspaceText()
   const [showDev, setShowDev] = useState(false)
   const priorityKey = task.priority as TaskPriority | undefined
   const priorityMeta = priorityKey && (task.priority as string) in PRIORITY_META
@@ -361,17 +363,17 @@ function InfoTabView({
   return (
     <div className="ctx-info-v2">
       <section className="ctx-info-section">
-        <h4 className="ctx-info-section-title">Status</h4>
+        <h4 className="ctx-info-section-title">{wsText("Status")}</h4>
         <div className="ctx-info-card">
           <div className="ctx-info-status-row">
-            <span className={`ctx-info-status-pill status-${task.status}`}>
+            <span className={`ctx-info-status-pill status-${wsText(task.status)}`}>
               <span className="ctx-info-status-dot" />
-              {task.status}
+              {wsText(task.status)}
             </span>
             {priorityMeta && (
               <span className="ctx-info-priority-pill" style={{ color: priorityMeta.color }}>
                 <span aria-hidden="true">{priorityMeta.symbol}</span>
-                {priorityMeta.label}
+                {wsText(priorityMeta.label)}
               </span>
             )}
           </div>
@@ -386,11 +388,11 @@ function InfoTabView({
       </section>
 
       <section className="ctx-info-section">
-        <h4 className="ctx-info-section-title">People &amp; agent</h4>
+        <h4 className="ctx-info-section-title">{wsText("People & agent")}</h4>
         <div className="ctx-info-card">
           {assigneeNames.length > 0 && (
             <Fact
-              label="Assignees"
+              label={wsText("Assignees")}
               value={
                 <div className="ctx-info-chips">
                   {assigneeNames.map(name => (
@@ -400,10 +402,10 @@ function InfoTabView({
               }
             />
           )}
-          {roleLabel && <Fact label="Role" value={roleLabel} />}
-          {employeeLabel && <Fact label="Employee" value={employeeLabel} />}
+          {roleLabel && <Fact label={wsText("Role")} value={roleLabel} />}
+          {employeeLabel && <Fact label={wsText("Employee")} value={employeeLabel} />}
           {task.selectedExecutionAgent && (
-            <Fact label="Execution agent" value={
+            <Fact label={wsText("Execution agent")} value={
               <span className="ctx-info-mono">{executionAgentLabel(task.selectedExecutionAgent)}</span>
             } />
           )}
@@ -411,10 +413,10 @@ function InfoTabView({
       </section>
 
       <section className="ctx-info-section">
-        <h4 className="ctx-info-section-title">Timing</h4>
+        <h4 className="ctx-info-section-title">{wsText("Timing")}</h4>
         <div className="ctx-info-card">
           <Fact
-            label="Created"
+            label={wsText("Created")}
             value={
               <span>
                 {createdAt.toLocaleString(undefined, {
@@ -444,23 +446,23 @@ function InfoTabView({
               strokeLinejoin="round"
             />
           </svg>
-          <span>Developer details</span>
+          <span>{wsText("Developer details")}</span>
         </button>
         {showDev && (
           <div className="ctx-info-card ctx-info-dev-card">
             {task.workItemProjectionId && (
-              <Fact label="Projection" value={
+              <Fact label={wsText("Projection")} value={
                 <span className="ctx-info-mono ctx-info-mono-break">{task.workItemProjectionId}</span>
               } />
             )}
-            <Fact label="Task ID" value={
+            <Fact label={wsText("Task ID")} value={
               <span className="ctx-info-mono ctx-info-mono-break">{task.taskId}</span>
             } />
-            <Fact label="Channel" value={
+            <Fact label={wsText("Channel")} value={
               <span className="ctx-info-mono ctx-info-mono-break">{task.channelId}</span>
             } />
             {task.sessionId && (
-              <Fact label="Session" value={
+              <Fact label={wsText("Session")} value={
                 <span className="ctx-info-mono ctx-info-mono-break">{task.sessionId}</span>
               } />
             )}
@@ -544,6 +546,7 @@ export function ContextPanel({
   onLoadSessionHistory,
   isSessionHistoryLoading,
 }: ContextPanelProps) {
+  const wsText = useWorkspaceText()
 
   const isSecretary = activeView.kind === 'secretary'
   const isActivity = activeView.kind === 'activity'
@@ -646,7 +649,7 @@ export function ContextPanel({
       <div
         className="ctx-collapse-strip"
         onClick={() => onExpand()}
-        title="Open panel"
+        title={wsText("Open panel")}
       >
         &#x25C0;
       </div>
@@ -679,30 +682,26 @@ export function ContextPanel({
           <div className="ctx-child-detail" ref={childDetailScrollRef}>
             <div className="ctx-child-topbar">
               <button className="ctx-back-btn" onClick={onBackToParent}>
-                &#x2190; Back to parent
-              </button>
+                {wsText("← Back to parent")}</button>
               {(childDetailSession.canStop ?? childDetailSession.status === 'running') && childDetailSession.runtimeControlState !== 'suspending' && onStopTask && (
                 <button
                   className="ctx-child-stop-btn"
                   onClick={() => onStopTask(childDetailSession.taskId)}
-                  title="Stop this agent"
+                  title={wsText("Stop this agent")}
                 >
-                  Stop
-                </button>
+                  {wsText("Stop")}</button>
               )}
               {childDetailSession.runtimeControlState === 'suspending' && (
-                <button className="ctx-child-stop-btn" disabled title="Stopping this agent">
-                  Stopping...
-                </button>
+                <button className="ctx-child-stop-btn" disabled title={wsText("Stopping this agent")}>
+                  {wsText("Stopping...")}</button>
               )}
               {canShowContinue(childDetailSession) && onResumeTask && (
                 <button
                   className="ctx-child-resume-btn"
                   onClick={() => onResumeTask(childDetailSession.taskId)}
-                  title="Continue this agent's runtime"
+                  title={wsText("Continue this agent's runtime")}
                 >
-                  Continue
-                </button>
+                  {wsText("Continue")}</button>
               )}
             </div>
             <div className="ctx-child-header">
@@ -732,7 +731,7 @@ export function ContextPanel({
               <div className="exec-section ctx-child-markdown-section">
                 <div className="exec-section-header">
                   <IconHandoff />
-                  <span>Received From</span>
+                  <span>{wsText("Received From")}</span>
                 </div>
                 <div className="msg-content-agent-card ctx-child-markdown-card">
                   <MarkdownBody content={childDetailSession.handoffContext} />
@@ -743,7 +742,7 @@ export function ContextPanel({
             <div className="ctx-child-transcript">
               <div className="ctx-child-transcript-header">
                 <IconTimeline />
-                <span>Transcript</span>
+                <span>{wsText("Transcript")}</span>
               </div>
               <MessageList
                 key={childDetailSession.channelId}
@@ -785,7 +784,7 @@ export function ContextPanel({
               <div className="ctx-child-artifacts">
                 <div className="ctx-child-section-header">
                   <IconTool />
-                  <span>Artifacts</span>
+                  <span>{wsText("Artifacts")}</span>
                 </div>
                 <ul className="ctx-child-artifact-list">
                   {childDetailSession.artifacts.map((a, i) => (
@@ -799,7 +798,7 @@ export function ContextPanel({
               <div className="ctx-child-markdown-section ctx-child-passed-to">
                 <div className="ctx-child-section-header">
                   <IconHandoff />
-                  <span>Passed To</span>
+                  <span>{wsText("Passed To")}</span>
                 </div>
                 <div className="msg-content-agent-card ctx-child-markdown-card">
                   <MarkdownBody content={childDetailSession.handoffTo} />
@@ -825,7 +824,7 @@ export function ContextPanel({
                           onClick={() => onSelectSessionTab?.(session.taskId)}
                           title={session.title}
                         >
-                          <span className={`ctx-session-chip-status status-${session.status}`} />
+                          <span className={`ctx-session-chip-status status-${wsText(session.status)}`} />
                           <span className="ctx-session-chip-title">{session.title}</span>
                           {unreadCount > 0 && (
                             <span className="ctx-session-chip-unread">
@@ -836,7 +835,7 @@ export function ContextPanel({
                         <button
                           className="ctx-session-chip-close"
                           onClick={() => onCloseSessionTab?.(session.taskId)}
-                          title="Close tab"
+                          title={wsText("Close tab")}
                         >
                           &#x00D7;
                         </button>
@@ -849,7 +848,7 @@ export function ContextPanel({
                     className={`ctx-session-view-btn${multiSessionView ? ' active' : ''}`}
                     onClick={onToggleMultiSessionView}
                   >
-                    {multiSessionView ? 'Single View' : 'Multi View'}
+                    {multiSessionView ? wsText("Single View") : wsText("Multi View")}
                   </button>
                 )}
               </div>
@@ -859,18 +858,17 @@ export function ContextPanel({
             <div className="ctx-header">
               {showMultiSessionGrid ? (
                 <span className="ctx-header-title">
-                  {isCompanyRuntime ? 'Open Runtime Sessions' : 'Open Sessions'} · {multiViewSessions.length} of {openSessions.length}
+                  {isCompanyRuntime ? wsText("Open Runtime Sessions") : wsText("Open Sessions")} · {multiViewSessions.length} {wsText("of ")}{openSessions.length}
                 </span>
               ) : showTabs ? (
-                <div className="ctx-header-tabs" role="tablist" aria-label="Session view">
+                <div className="ctx-header-tabs" role="tablist" aria-label={wsText("Session view")}>
                   <button
                     role="tab"
                     aria-selected={panelTab === 'chat'}
                     className={`ctx-tab${panelTab === 'chat' ? ' active' : ''}`}
                     onClick={() => onPanelTabChange('chat')}
                   >
-                    Chat
-                  </button>
+                    {wsText("Chat")}</button>
                   {canShowAgentsTab && (
                     <button
                       role="tab"
@@ -878,8 +876,7 @@ export function ContextPanel({
                       className={`ctx-tab${panelTab === 'agents' ? ' active' : ''}`}
                       onClick={() => onPanelTabChange('agents')}
                     >
-                      Agents
-                    </button>
+                      {wsText("Agents")}</button>
                   )}
                   <button
                     role="tab"
@@ -887,8 +884,7 @@ export function ContextPanel({
                     className={`ctx-tab${panelTab === 'info' ? ' active' : ''}`}
                     onClick={() => onPanelTabChange('info')}
                   >
-                    Info
-                  </button>
+                    {wsText("Info")}</button>
                   {onCommsRefresh && (
                     <button
                       role="tab"
@@ -896,8 +892,7 @@ export function ContextPanel({
                       className={`ctx-tab${panelTab === 'comms' ? ' active' : ''}`}
                       onClick={() => onPanelTabChange('comms')}
                     >
-                      Comms
-                    </button>
+                      {wsText("Comms")}</button>
                   )}
                   {canShowTeamTab && (
                     <button
@@ -906,28 +901,27 @@ export function ContextPanel({
                       className={`ctx-tab${panelTab === 'team' ? ' active' : ''}`}
                       onClick={() => onPanelTabChange('team')}
                     >
-                      Team
-                    </button>
+                      {wsText("Team")}</button>
                   )}
                 </div>
               ) : isSecretary ? (
-                <span style={{ fontSize: 13, fontWeight: 600, padding: '0 4px' }}>Secretary</span>
+                <span style={{ fontSize: 13, fontWeight: 600, padding: '0 4px' }}>{wsText("Secretary")}</span>
               ) : (
-                <span style={{ fontSize: 13, fontWeight: 600, padding: '0 4px' }}>Activity</span>
+                <span style={{ fontSize: 13, fontWeight: 600, padding: '0 4px' }}>{wsText("Activity")}</span>
               )}
 
               <div className="ctx-header-actions">
                 {panelState === 'open' && (
-                  <button onClick={onMaximize} title="Maximize">
+                  <button onClick={onMaximize} title={wsText("Maximize")}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.3" /></svg>
                   </button>
                 )}
                 {panelState === 'maximized' && (
-                  <button onClick={onExpand} title="Restore">
+                  <button onClick={onExpand} title={wsText("Restore")}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.3" /><path d="M5 3V1.5A.5.5 0 015.5 1H12.5a.5.5 0 01.5.5V8.5a.5.5 0 01-.5.5H11" stroke="currentColor" strokeWidth="1.3" /></svg>
                   </button>
                 )}
-                <button onClick={onCollapse} title="Close panel">
+                <button onClick={onCollapse} title={wsText("Close panel")}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
                 </button>
               </div>
@@ -939,7 +933,7 @@ export function ContextPanel({
               {!activeSession && !isSecretary && !isActivity && (
                 <div className="ctx-empty">
                   <span className="ctx-empty-icon">&#x1F4CB;</span>
-                  <span>{isCompanyRuntime ? 'Select a Work Item to see details' : 'Select a task to see details'}</span>
+                  <span>{isCompanyRuntime ? wsText("Select a Work Item to see details") : wsText("Select a task to see details")}</span>
                 </div>
               )}
 
@@ -964,24 +958,24 @@ export function ContextPanel({
                           <button
                             className="ctx-multi-card-main"
                             onClick={() => onSelectSessionTab?.(session.taskId)}
-                            title="Focus session"
+                            title={wsText("Focus session")}
                           >
-                            <span className={`ctx-multi-card-status status-${session.status}`} />
+                            <span className={`ctx-multi-card-status status-${wsText(session.status)}`} />
                             <span className="ctx-multi-card-title">{session.title}</span>
                           </button>
                           <div className="ctx-multi-card-actions">
-                            <button onClick={() => onSelectSessionTab?.(session.taskId)}>Focus</button>
-                            <button onClick={() => onCloseSessionTab?.(session.taskId)} title="Close tab">
+                            <button onClick={() => onSelectSessionTab?.(session.taskId)}>{wsText("Focus")}</button>
+                            <button onClick={() => onCloseSessionTab?.(session.taskId)} title={wsText("Close tab")}>
                               &#x00D7;
                             </button>
                           </div>
                         </div>
                         <div className="ctx-multi-card-meta">
-                          <span>{sessionModeLabel(session)}</span>
-                          <span>{session.status}</span>
-                          {runtimeLabel && <span>{runtimeLabel}</span>}
+                          <span>{wsText(sessionModeLabel(session))}</span>
+                          <span>{wsText(session.status)}</span>
+                          {runtimeLabel && <span>{wsText(runtimeLabel)}</span>}
                           {assigneeNames.length > 0 && <span>{assigneeNames.join(', ')}</span>}
-                          <span>{relativeTime(session.updatedAt)}</span>
+                          <span>{wsText(relativeTime(session.updatedAt))}</span>
                         </div>
                         <div className="ctx-multi-card-body">
                           {previewMessage ? (
@@ -992,7 +986,7 @@ export function ContextPanel({
                               <p className="ctx-multi-preview-text">{sessionPreviewText(previewMessage.content)}</p>
                             </>
                           ) : (
-                            <span className="ctx-multi-preview-empty">No messages yet</span>
+                            <span className="ctx-multi-preview-empty">{wsText("No messages yet")}</span>
                           )}
                         </div>
                       </section>
@@ -1005,8 +999,7 @@ export function ContextPanel({
               {isActivity && (
                 <>
                   <div style={{ padding: '8px 12px', fontSize: 12, color: 'var(--text-secondary)', borderBottom: '1px solid var(--border)' }}>
-                    Recent activity across all sessions
-                  </div>
+                    {wsText("Recent activity across all sessions")}</div>
                   <MessageList
                     key={channelId}
                     messages={messages}
@@ -1037,7 +1030,7 @@ export function ContextPanel({
                     key={secretaryChannelId}
                     disabled={false}
                     channelId={secretaryChannelId}
-                    placeholder="Talk to Secretary about policies, rules, preferences..."
+                    placeholder={wsText("Talk to Secretary about policies, rules, preferences...")}
                     onSend={onComposerSend}
                   />
                 </>
@@ -1188,7 +1181,7 @@ export function ContextPanel({
                 ) : (
                   <div className="ctx-empty">
                     <span className="ctx-empty-icon">&#x1F9E0;</span>
-                    <span>No child agents have started for this session yet</span>
+                    <span>{wsText("No child agents have started for this session yet")}</span>
                   </div>
                 )
               )}

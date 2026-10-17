@@ -1,8 +1,12 @@
-<h1 align="center" style="font-size: 1.75em;">OpenOPC：打造你的个人 AI 原生公司 — 自建、自营、自成长</h1>
+<h1 align="center" style="font-size: 1.75em;">Hyman OpenOPC：打造你的个人 AI 原生公司 — 自建、自营、自成长</h1>
 
 <p align="center">
   <a href="README.md">English</a> | <b>简体中文</b>
 </p>
+
+**Hyman OpenOPC** 是基于 [HKUDS/OpenOPC](https://github.com/HKUDS/OpenOPC) 独立维护的衍生版本，包含 Hyman 品牌视觉与本地工作流改进。原软件版权归 © 2026 OpenOPC Authors 所有，保留原 [MIT 许可证](LICENSE) 与作者归属。
+
+**验证范围：** 秘书聊天、独立任务、公司模式中的 Native 联网搜索及主要界面流程已有本地验证。第三方 Agent CLI、消息渠道与 MCP 服务器仍需使用者在各自环境中安装、配置并单独验收。
 
 🏗️ **自建（Self-Built）** — 全自动招募各岗位的 AI 员工，搭建组织架构。
 
@@ -188,6 +192,13 @@ OpenOPC 围绕复杂的真实任务组建一家 AI 公司 — 通过三个紧密
 
 ## 快速开始
 
+先克隆此 Hyman OpenOPC 衍生仓库，再按下文配置运行环境：
+
+```bash
+git clone https://github.com/HymanWong3911/OpenOPC.git
+cd OpenOPC
+```
+
 推荐使用 `uv` 来安装 OpenOPC。它可以安装/管理 Python、创建项目虚拟环境，并在该环境中运行命令，而不会把 OpenOPC 的依赖混入全局 Python。
 
 OpenOPC 要求 Python `>=3.10`；下面的示例使用 Python `3.12`。
@@ -287,8 +298,8 @@ uv run opc exec -p demo --mode task --agent native --json "Summarize the current
 - 本地开发与发布测试推荐使用 `uv`。如果你偏好经典 pip，请创建并激活一个 Python `>=3.10` 的虚拟环境，然后运行 `python -m pip install -e .`。
 - 如果虚拟环境激活被阻止，可以不激活，直接用 `uv run ...` 运行命令。
 - 关于其他包管理器与托管 Python 的细节，参见官方 [`uv` 安装文档](https://docs.astral.sh/uv/getting-started/installation/) 与 [Python 管理文档](https://docs.astral.sh/uv/guides/install-python/)。
-- Node.js：需要构建 Office UI 前端时要求 `>=18`。
-- `opc ui` 会自动安装缺失的 `aiohttp` / `aiosqlite`，并在需要时自动构建前端。
+- Node.js：构建 Office UI 前端请使用 `>=22.12`；Vite 也支持 Node.js 20.x 系列中的 `20.19+`。
+- `aiohttp` 与 `aiosqlite` 随 Python 包一并安装。`opc ui` 保留依赖缺失时的补装机制，并在需要时构建前端。
 - 如果你尚未安装外部 Agent CLI，运行 `opc init --no-external-agent-preflight` 可跳过首次运行的外部 Agent 检查。
 - 浏览器工具基于原生 Playwright。在让 Agent 浏览网页之前，先用 `python -m playwright install chromium` 安装 Chromium。
 </details>

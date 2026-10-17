@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import React from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup as renderStaticMarkup } from 'react-dom/server'
+import { I18nProvider } from '../i18n'
+const renderToStaticMarkup = (element: React.ReactNode) => renderStaticMarkup(<I18nProvider initialLocale="en">{element}</I18nProvider>)
 
 import { RecruitmentPanel } from './RecruitmentPanel'
 

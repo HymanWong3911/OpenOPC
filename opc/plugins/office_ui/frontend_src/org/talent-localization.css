@@ -1,0 +1,105 @@
+/* Bilingual talent metadata is a display layer; original definitions remain intact. */
+.tm-card-original-name,
+.tm-detail-original-name,
+.htr-original-name {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.tm-card-original-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tm-detail-original-name { margin: 4px 0; }
+.htr-original-name { margin: 4px 0 8px; }
+
+.tm-original-english {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border: 1px solid var(--ha-border-subtle, var(--border));
+  border-radius: 8px;
+  background: var(--ha-bg-subtle, var(--bg));
+}
+
+.tm-original-english summary {
+  color: var(--ha-text-secondary, var(--text-secondary));
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.tm-original-english-body {
+  padding-top: 12px;
+  color: var(--ha-text-reading, var(--text));
+  font-size: 15px;
+  line-height: 26px;
+}
+
+.tm-original-english-body h3 {
+  margin: 0 0 8px;
+  color: var(--ha-text-primary, var(--text));
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.tm-original-english-body :is(p, blockquote) { margin: 0 0 8px; }
+.tm-original-english-body > :last-child { margin-bottom: 0; }
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-card, .tm-detail-modal, .htr-modal, .mkt-container)[data-locale] :is(
+  .tm-card-category, .tm-card-chip, .tm-card-agent-badge,
+  .tm-detail-category, .tm-detail-label, .tm-detail-role-name, .tm-detail-role-resp,
+  .tm-detail-vacancy-empty, .org-domain-tag, .org-tool-tag,
+  .htr-subtitle, .htr-empty-title, .htr-empty-hint, .htr-role-name, .htr-role-resp,
+  .mkt-count, .mkt-pill
+) {
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+:is(.tm-card, .tm-detail-modal, .htr-modal, .mkt-container)[data-locale="zh-CN"] :is(
+  .tm-card-name, .tm-card-desc, .tm-card-vibe,
+  .tm-detail-name, .tm-detail-desc, .tm-detail-vibe,
+  .htr-title, .htr-subtitle, .htr-role-name, .htr-role-resp,
+  .mkt-section-title, .mkt-search, .mkt-pill
+) { letter-spacing: 0; }
+
+.htr-title { overflow-wrap: anywhere; }
+.htr-role-row, .tm-detail-role-row { min-width: 0; }
+.htr-role-name, .tm-detail-role-name, .htr-role-resp, .tm-detail-role-resp { overflow-wrap: anywhere; }
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .htr-modal {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-default);
+  border-radius: 12px;
+}
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.htr-role-row, .tm-detail-role-row).is-selected {
+  background: var(--ha-fill-selected);
+  border-color: var(--ha-border-default);
+  box-shadow: inset 2px 0 0 var(--ha-accent);
+}
+
+:is(.htr-modal, .tm-detail-modal) :is(button, summary):focus-visible {
+  outline: 2px solid var(--ha-focus-ring, var(--accent));
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .htr-overlay { padding: 16px; }
+  .htr-modal { max-height: calc(100dvh - 32px); }
+  .htr-footer, .tm-detail-footer { flex-wrap: wrap; }
+}

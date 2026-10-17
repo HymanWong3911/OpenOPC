@@ -1,0 +1,402 @@
+{
+  "agency-finance-investment-researcher": {
+    "name": "投资研究员",
+    "description": "专注市场研究、尽职调查、投资组合分析与资产估值，结合基本面和量化分析识别机会、评估风险，为公开股票、私募市场及另类资产的组合决策提供依据。"
+  },
+  "agency-finance-tax-strategist": {
+    "name": "税务策略师",
+    "description": "专注税务优化、跨司法辖区合规、转让定价与税务规划，梳理地方、州、联邦及国际税制，在遵守监管要求的前提下优化税务负担。"
+  },
+  "agency-game-audio-engineer": {
+    "name": "游戏音频工程师",
+    "description": "专注互动音频，负责 FMOD/Wwise 集成、自适应音乐、空间音频与音频性能预算，将声音系统接入不同游戏引擎并控制运行资源占用。"
+  },
+  "agency-game-designer": {
+    "name": "游戏设计师",
+    "description": "负责游戏系统与核心机制设计，编写游戏设计文档，结合玩家心理、经济系统平衡与玩法循环，组织适用于不同引擎和类型的游戏方案。"
+  },
+  "agency-gis-3d-scene-developer": {
+    "name": "三维场景开发工程师",
+    "description": "使用 Cesium、ArcGIS Scene Viewer 及现代 Web 三维框架构建沉浸式场景，开发地形模型、点云可视化和交互体验，服务于网页三维展示。"
+  },
+  "agency-gis-analyst": {
+    "name": "GIS 分析师",
+    "description": "负责日常 GIS 操作，包括地图制作、图层管理、空间查询及地理空间数据维护，在桌面与网页环境中保持数据完整性与一致性。"
+  },
+  "agency-gis-bim-specialist": {
+    "name": "BIM/GIS 集成专家",
+    "description": "连接建筑信息模型与地理信息系统，处理 Revit/IFC 数据转换、室内地图、数字孪生架构及设施管理数据模型，组织跨系统的空间信息。"
+  },
+  "agency-gis-cartography-designer": {
+    "name": "地图制图设计师",
+    "description": "专注地图的美感、可读性与信息表达，运用色彩、字体、标签布局、底图选择及视觉层级，设计适用于印刷和网页的地图。"
+  },
+  "agency-gis-drone-reality-mapping": {
+    "name": "无人机实景测绘专家",
+    "description": "专注摄影测量与实景采集，将无人机影像处理为正射影像、数字地形模型、点云和三维网格，衔接现场采集与可用于 GIS 的数据成果。"
+  },
+  "agency-gis-geoai-ml-engineer": {
+    "name": "GeoAI 机器学习工程师",
+    "description": "为地理空间影像构建机器学习模型，处理卫星与航空影像的特征提取、目标检测、图像分割及土地覆盖分类，支持空间数据分析。"
+  },
+  "agency-gis-geoprocessing-specialist": {
+    "name": "地理处理自动化专家",
+    "description": "使用 ArcPy 与 Python 自动化空间工作流，为 ArcGIS Pro 构建 .pyt 工具箱、Model Builder 流程、批量地理处理及定制分析脚本，将重复步骤组织为可复用流程。"
+  },
+  "agency-gis-qa-engineer": {
+    "name": "GIS 质量保障工程师",
+    "description": "验证地理空间数据质量，执行拓扑检查、元数据审计、坐标参考系统一致性核验、精度评估及合规检查，维护数据完整性。"
+  },
+  "agency-gis-solution-engineer": {
+    "name": "GIS 解决方案工程师",
+    "description": "将技术顾问提出的 GIS 策略转化为可运行的演示、概念验证及技术测试，使用 Esri 与开源技术栈搭建原型并检验方案可行性。"
+  },
+  "agency-gis-spatial-data-engineer": {
+    "name": "空间数据工程师",
+    "description": "通过 ETL 将不同来源的地理空间数据整理为标准化数据集，负责格式转换、坐标参考系统重投影、属性规范化及自动化数据管道。"
+  },
+  "agency-gis-spatial-data-scientist": {
+    "name": "空间数据科学家",
+    "description": "运用统计建模、空间计量经济学、聚类和预测分析研究地理空间数据，识别地图展示之外的空间规律，为高级空间分析提供依据。"
+  },
+  "agency-gis-technical-consultant": {
+    "name": "GIS 技术顾问",
+    "description": "将业务问题转化为地理空间解决方案，开展差距分析、技术路线规划、招标需求响应及数字化转型策略，覆盖 Esri 与开源生态。"
+  },
+  "agency-gis-web-gis-developer": {
+    "name": "Web GIS 全栈开发工程师",
+    "description": "使用 MapLibre GL JS、ArcGIS JS API 与 Leaflet 构建交互式地图应用，开发实时仪表盘、接入 REST API 并组织地理空间 Web 服务，完成网页地图的全栈开发。"
+  },
+  "agency-godot-gameplay-scripter": {
+    "name": "Godot 玩法脚本工程师",
+    "description": "为 Godot 4 项目编写玩法脚本，使用 GDScript 2.0、C# 集成、节点架构和类型安全信号设计，重视组件组合与信号连接的完整性。"
+  },
+  "agency-godot-multiplayer-engineer": {
+    "name": "Godot 多人游戏网络工程师",
+    "description": "专注 Godot 4 实时多人游戏网络，使用 MultiplayerAPI、场景复制、ENet/WebRTC 传输及 RPC，处理场景数据同步并设计客户端与服务端的网络权限模型。"
+  },
+  "agency-godot-shader-developer": {
+    "name": "Godot 着色器开发工程师",
+    "description": "使用 Godot Shading Language 与 VisualShader 开发 Godot 4 视觉效果，处理 CanvasItem、Spatial 着色器、后期处理及二维和三维效果优化，兼顾整体视觉表现与运行效率。"
+  },
+  "agency-government-digital-presales-consultant": {
+    "name": "政务数字化售前顾问",
+    "description": "面向中国政务数字化市场，负责政策解读、方案设计、投标文件与概念验证，覆盖等保、密评、信创要求及相关方沟通，支持政务 IT 项目售前。"
+  },
+  "agency-grant-writer": {
+    "name": "资助申请撰写专家",
+    "description": "服务非营利组织、科研机构和社会企业，负责资助机会研究、意向函、完整申请书、预算说明及获批后报告，覆盖联邦与基金会资助。"
+  },
+  "agency-healthcare-aging-parent-care-companion": {
+    "name": "长辈照护协调助手",
+    "description": "为照护年迈父母的家庭提供富有同理心的协调与决策支持，管理预约、用药和照护团队沟通，并关注照护者身心状态，遵循 HIPAA 相关要求。"
+  },
+  "agency-healthcare-clinical-evidence-agent": {
+    "name": "临床证据评估专家",
+    "description": "建立医疗 AI 的证据标准与临床可信度框架，区分已验证和未验证的临床主张，依据同一证据面向同行评审与投资者写作，明确决策支持的边界。"
+  },
+  "agency-healthcare-customer-service": {
+    "name": "医疗客户服务专员",
+    "description": "为患者提供有同理心的服务，处理账单咨询、预约管理、保险问题和投诉，按需要转交临床或行政人员，衔接患者支持与机构内部响应。"
+  },
+  "agency-healthcare-innovation-strategist": {
+    "name": "医疗创新策略师",
+    "description": "为医疗创业者构建连贯叙事，将临床可信度、医疗金融与复杂部署条件转化为清晰表达，协调投资者、监管、政府和临床受众之间的信息口径。"
+  },
+  "agency-healthcare-marketing-compliance": {
+    "name": "医疗营销合规专家",
+    "description": "审查中国医药、器械、医美、保健食品及互联网医疗营销内容，依据广告法等规定开展风险控制、平台规则解读与患者隐私保护。"
+  },
+  "agency-healthcare-sovereign-health-systems-agent": {
+    "name": "国家卫生体系策略专家",
+    "description": "为参与国家卫生基础设施、全民健康覆盖政策和新兴市场部署的医疗 AI 建立协作框架，梳理卫生部对接、政策目标匹配与双市场上线顺序。"
+  },
+  "agency-hospitality-guest-services": {
+    "name": "酒店宾客服务专员",
+    "description": "面向酒店、度假村、餐厅与活动场馆，处理预订、入住退房、礼宾服务、投诉、会员计划和离店回访，通过连续服务改善宾客体验。"
+  },
+  "agency-hr-onboarding": {
+    "name": "人力资源入职专员",
+    "description": "负责新员工入职培训、文件管理、合规跟踪、福利办理、文化融入和入职支持，衔接首日到首年的员工体验，支持留任与工作效率。"
+  },
+  "agency-identity-graph-operator": {
+    "name": "身份图谱运维专家",
+    "description": "运营供多个 AI 智能体共同查询的身份图谱，使多智能体系统对同一实体获得一致的规范身份解析结果，并处理并发写入下的确定性。"
+  },
+  "agency-language-translator": {
+    "name": "西班牙语与英语翻译员",
+    "description": "提供西班牙语与英语的实时双向翻译，结合文化语境、地区方言和合适语气，支持日常、商务、旅行及紧急场景的沟通。"
+  },
+  "agency-legal-billing-time-tracking": {
+    "name": "法律计费与工时管理专员",
+    "description": "负责律师工时记录、发票生成、计费说明、应收款管理、信托账户合规及账单分析，兼顾收入回收、客户关系与职业规范。"
+  },
+  "agency-legal-client-intake": {
+    "name": "法律客户接洽专员",
+    "description": "负责潜在客户筛选、案件资料收集、咨询预约与利益冲突检查，整理可交由律师使用的接洽摘要，支持不同业务领域和规模的律所。"
+  },
+  "agency-legal-document-review": {
+    "name": "法律文件审阅专员",
+    "description": "审阅合同、诉讼文件与房地产协议，整理文件摘要、标记风险条款、比较合同版本并检查合规性，支持不同规模与业务领域的律所。"
+  },
+  "agency-level-designer": {
+    "name": "游戏关卡设计师",
+    "description": "专注空间叙事与游玩流程，运用布局理论、节奏设计、遭遇设计和环境叙事，构建适用于不同游戏引擎的关卡体验。"
+  },
+  "agency-loan-officer-assistant": {
+    "name": "贷款业务助理",
+    "description": "为房贷及贷款从业者处理借款人接洽、资格预审、文件收集、业务进度、合规跟踪、利率报价与交割协调，覆盖住宅、商业及消费贷款。"
+  },
+  "agency-lsp-index-engineer": {
+    "name": "LSP 语义索引工程师",
+    "description": "专注 Language Server Protocol，通过 LSP 客户端编排与语义索引构建统一的代码智能系统，组织代码语义信息供开发工具使用。"
+  },
+  "agency-ma-integration-manager": {
+    "name": "并购整合经理",
+    "description": "设计并执行并购后的整合计划，覆盖交割首日准备、百日规划、协同效益跟踪、文化融合、职能工作流协调与过渡服务协议管理。"
+  },
+  "agency-macos-spatial-metal-engineer": {
+    "name": "macOS 空间计算与 Metal 工程师",
+    "description": "使用原生 Swift 与 Metal 构建高性能三维渲染系统，面向 macOS 系统和 Vision Pro 设备开发空间计算体验，专注平台原生实现与渲染性能。"
+  },
+  "agency-marketing-aeo-foundations": {
+    "name": "AEO 基础架构设计师",
+    "description": "建设 AI 引擎优化基础设施，配置 llms.txt、面向 AI 的 robots.txt、内容令牌预算、结构化 Markdown 和智能体发现文件，便于 AI 检索并解析网站。"
+  },
+  "agency-marketing-agentic-search-optimizer": {
+    "name": "智能体搜索体验优化师",
+    "description": "评估 AI 浏览智能体能否在网站完成预订、购买、注册和订阅，实施 WebMCP 声明式及命令式模式，并衡量不同智能体的任务完成率。"
+  },
+  "agency-marketing-ai-citation-strategist": {
+    "name": "AI 引用策略师",
+    "description": "专注 AEO/GEO，评估品牌在 ChatGPT、Claude、Gemini 与 Perplexity 的可见度，分析竞品被引用的原因，并通过针对性内容修订支持品牌获得 AI 推荐与引用。"
+  },
+  "agency-marketing-app-store-optimizer": {
+    "name": "应用商店优化师",
+    "description": "专注应用商店营销与 ASO，研究应用发现路径和商店页面转化，优化用户在商店中找到应用并采取行动的机会。"
+  },
+  "agency-marketing-baidu-seo-specialist": {
+    "name": "百度 SEO 专家",
+    "description": "面向中国市场开展百度搜索优化，研究中文关键词、搜索排名、百度生态集成、ICP 合规与移动优先索引，制定适配本地搜索的策略。"
+  },
+  "agency-marketing-bilibili-content-strategist": {
+    "name": "B站内容策略师",
+    "description": "专注 Bilibili 平台营销，研究 UP 主增长、弹幕文化和推荐机制，结合社群建设与品牌内容规划，发展符合 B站社区语境的内容策略。"
+  },
+  "agency-marketing-book-co-author": {
+    "name": "商业著作联合作者",
+    "description": "协助创始人、专家与业务操盘者撰写思想领导力著作，将语音笔记、零散素材和定位整理为结构化的第一人称章节。"
+  },
+  "agency-marketing-carousel-growth-engine": {
+    "name": "轮播内容增长运营师",
+    "description": "用 Playwright 分析网站，借助 Gemini 生成六页轮播内容，通过官方 API 或发布服务分发至 TikTok 与 Instagram，再获取分析数据，通过持续学习循环迭代内容。"
+  },
+  "agency-marketing-china-ecommerce-operator": {
+    "name": "中国电商运营专家",
+    "description": "覆盖淘宝、天猫、拼多多与京东生态，负责商品页面优化、直播电商、店铺运营、618 与双十一活动，以及跨平台运营策略。"
+  },
+  "agency-marketing-china-market-localization-strategist": {
+    "name": "中国市场本地化策略师",
+    "description": "将实时趋势信号转化为可执行的中国市场进入策略，结合抖音、小红书、微信、B站等平台的特点，组织本地化营销与上线行动。"
+  },
+  "agency-marketing-content-creator": {
+    "name": "多平台内容创作者",
+    "description": "策划并制作多平台营销内容，编排编辑日历、撰写文案、管理品牌故事，并依据各数字渠道的互动特点持续优化内容表达。"
+  },
+  "agency-marketing-cross-border-ecommerce": {
+    "name": "跨境电商策略专家",
+    "description": "覆盖 Amazon、Shopee、Lazada、AliExpress、Temu 与 TikTok Shop 的电商运营，协调国际物流、海外仓储、税务与合规，优化多语言商品页面，推进品牌全球化及 DTC 独立站开发。"
+  },
+  "agency-marketing-developer-community-builder": {
+    "name": "开发者社区建设专家",
+    "description": "运营 Discord、GitHub Discussions、论坛与贡献者计划，维护开发者社区的增长和参与，推动用户成为倡导者并进一步参与项目贡献。"
+  },
+  "agency-marketing-douyin-strategist": {
+    "name": "抖音内容增长策略师",
+    "description": "专注抖音短视频营销，研究推荐机制、热门视频策划和直播电商流程，通过内容矩阵连接品牌曝光、用户互动与全链路增长。"
+  },
+  "agency-marketing-email-strategist": {
+    "name": "邮件营销策略师",
+    "description": "设计 CRM 驱动的邮件营销、生命周期自动化、用户分群和送达策略，覆盖欢迎、培育、唤回、评价及推荐序列，关注 AI 个性化与 Apple MPP 后的衡量。"
+  },
+  "agency-marketing-global-podcast-strategist": {
+    "name": "全球播客增长策略师",
+    "description": "专注播客定位、听众发展、内容规划与变现，将想法转化为持续积累听众和收入的音频品牌，覆盖 Spotify、Apple Podcasts 与 YouTube。"
+  },
+  "agency-marketing-growth-hacker": {
+    "name": "增长实验策略师",
+    "description": "通过数据驱动的实验推动用户获取，设计传播循环、优化转化漏斗并寻找可扩展的增长渠道，为业务增长提供可验证的路径。"
+  },
+  "agency-marketing-instagram-curator": {
+    "name": "Instagram 内容策展师",
+    "description": "专注 Instagram 视觉叙事、社群建设与多格式内容优化，建立一致的视觉审美，并通过内容与社区运营促进有意义的互动。"
+  },
+  "agency-marketing-kuaishou-strategist": {
+    "name": "快手内容增长策略师",
+    "description": "面向快手及中国下沉市场，策划短视频内容、运营直播电商并建立社区信任，结合基层用户特点推动受众增长。"
+  },
+  "agency-marketing-linkedin-content-creator": {
+    "name": "LinkedIn 内容策略师",
+    "description": "围绕 LinkedIn 的平台机制与文化，策划思想领导力、个人品牌和专业内容，为创始人、求职者、开发者等建立专业影响力并带来主动机会。"
+  },
+  "agency-marketing-livestream-commerce-coach": {
+    "name": "直播电商培训教练",
+    "description": "为抖音、快手、淘宝直播与视频号培训主播并指导直播间运营，覆盖脚本、商品顺序、付费与自然流量配置、成交技巧及实时数据优化。"
+  },
+  "agency-marketing-multi-platform-publisher": {
+    "name": "多平台文章发布专员",
+    "description": "通过 Wechatsync 将文章适配至知乎、小红书、CSDN、B站、公众号与掘金，结合 xhs-mcp、biliup 控制频率和风险；只生成草稿，交由人工审核。"
+  },
+  "agency-marketing-podcast-strategist": {
+    "name": "中文播客运营策略师",
+    "description": "面向小宇宙、喜马拉雅等中文音频平台，负责节目定位、音频制作、听众增长、多平台分发及商业化，帮助播客建立有黏性的内容品牌。"
+  },
+  "agency-marketing-pr-communications-manager": {
+    "name": "公关与传播经理",
+    "description": "负责媒体关系、新闻稿、危机沟通、高管观点传播、品牌声誉与整合传播规划，通过媒体报道和叙事管理建设并保护组织声誉。"
+  },
+  "agency-marketing-private-domain-operator": {
+    "name": "私域运营专家",
+    "description": "建设企业微信私域生态，结合 SCRM、分层社群、小程序电商和用户生命周期管理，设计从用户运营到转化的完整链路。"
+  },
+  "agency-marketing-reddit-community-builder": {
+    "name": "Reddit 社区建设专家",
+    "description": "围绕 Reddit 文化开展真实社区互动，创作有价值的内容并维护长期关系，通过尊重社区规则的参与方式支持品牌沟通。"
+  },
+  "agency-marketing-seo-specialist": {
+    "name": "SEO 优化专家",
+    "description": "专注技术 SEO、内容优化、链接权威建设与自然搜索增长，依据数据制定搜索策略，为网站发展可持续的自然流量。"
+  },
+  "agency-marketing-short-video-editing-coach": {
+    "name": "短视频剪辑培训教练",
+    "description": "指导完整后期流程，使用 CapCut Pro、Premiere Pro、DaVinci Resolve 与 Final Cut Pro，覆盖镜头语言、调色、声音、特效、字幕及 AI 辅助剪辑，优化剪辑效率与多平台导出。"
+  },
+  "agency-marketing-social-media-strategist": {
+    "name": "社交媒体策略师",
+    "description": "为 LinkedIn、Twitter 等专业平台策划跨平台活动，建设社区、管理实时互动并发展思想领导力内容，协调品牌的专业社交表达。"
+  },
+  "agency-marketing-tiktok-strategist": {
+    "name": "TikTok 内容策略师",
+    "description": "围绕 TikTok 的平台文化与功能，策划易于传播的内容、优化推荐表现并建设社区，通过内容和互动支持品牌增长。"
+  },
+  "agency-marketing-twitter-engager": {
+    "name": "Twitter 互动增长专员",
+    "description": "专注 Twitter 实时互动、思想领导力与社区增长，通过真实参与对话和创作具有传播力的串文，逐步建立品牌的专业权威。"
+  },
+  "agency-marketing-video-optimization-specialist": {
+    "name": "视频内容优化专家",
+    "description": "专注 YouTube 推荐机制、受众留存、视频章节、缩略图构思及跨平台视频分发，结合内容结构与展示方式制定视频营销优化方案。"
+  },
+  "agency-marketing-wechat-official-account": {
+    "name": "微信公众号运营经理",
+    "description": "负责微信公众号内容营销、订阅者互动与转化优化，运用多格式内容和持续价值输出建立稳定的读者关系与社区。"
+  },
+  "agency-marketing-weibo-strategist": {
+    "name": "微博运营策略师",
+    "description": "负责新浪微博热点传播、超话社区、舆情监测、粉丝运营与广告投放，结合公共讨论平台的机制，为品牌扩大触达并维护持续增长。"
+  },
+  "agency-marketing-x-twitter-intelligence-analyst": {
+    "name": "X/Twitter 情报分析师",
+    "description": "利用公开信号与结构化数据流程开展 X/Twitter 研究、趋势识别和账号监测，整理具有证据支持的受众洞察，服务社交情报分析。"
+  },
+  "agency-marketing-xiaohongshu-specialist": {
+    "name": "小红书营销专家",
+    "description": "专注小红书生活方式内容、趋势策略与真实社区互动，通过精简内容和视觉叙事，发展适合平台审美及用户需求的传播方案。"
+  },
+  "agency-marketing-zhihu-strategist": {
+    "name": "知乎内容策略师",
+    "description": "专注知乎的专业观点表达、社区可信度与知识型互动，规划问答策略并通过真实专业分享建立品牌权威与持续参与。"
+  },
+  "agency-medical-billing-coding-specialist": {
+    "name": "医疗账单与编码专员",
+    "description": "处理 ICD-10-CM/PCS、CPT 与 HCPCS 编码、理赔提交、拒付管理、收入周期优化、合规审计及付款方合同分析，支持医疗机构的账单回收。"
+  },
+  "agency-narrative-designer": {
+    "name": "游戏叙事设计师",
+    "description": "围绕游戏设计文档规划故事系统、分支对话、世界观架构与环境叙事，使叙事设计与游戏整体目标一致，适配不同游戏引擎。"
+  },
+  "agency-operations-manager": {
+    "name": "业务运营经理",
+    "description": "运用精益、六西格玛与系统思维，开展流程梳理、产能规划、KPI 治理、供应商管理和组织效率优化，将复杂运营转化为可重复衡量的流程。"
+  },
+  "agency-organizational-psychologist": {
+    "name": "组织心理学专家",
+    "description": "依据实证框架分析团队互动、心理安全、职业倦怠风险和组织文化，协助管理者建设兼具绩效、韧性与心理安全的团队环境。"
+  },
+  "agency-paid-media-auditor": {
+    "name": "付费媒体审计师",
+    "description": "对 Google Ads、Microsoft Ads 与 Meta 账户执行两百余项检查，覆盖结构、追踪、竞价、素材、受众及竞争定位，输出按优先级排序的审计建议。"
+  },
+  "agency-paid-media-creative-strategist": {
+    "name": "广告创意策略师",
+    "description": "负责广告文案、RSA 优化、素材组设计和创意测试框架，覆盖 Google、Meta、Microsoft 与程序化平台，将投放数据转化为有说服力的信息表达。"
+  },
+  "agency-paid-media-paid-social-strategist": {
+    "name": "社交广告投放策略师",
+    "description": "覆盖 Meta、LinkedIn、TikTok、Pinterest、X 与 Snapchat，设计从潜客获取到再营销的全漏斗广告，按平台差异组织创意内容与受众策略，协调跨平台社交投放。"
+  },
+  "agency-paid-media-ppc-strategist": {
+    "name": "PPC 广告投放策略师",
+    "description": "为 Google、Microsoft 与 Amazon 设计大规模搜索、购物及 Performance Max 广告架构，规划账户结构、预算分配和竞价策略以适应不同投放规模。"
+  },
+  "agency-paid-media-programmatic-buyer": {
+    "name": "程序化与展示广告采购专家",
+    "description": "负责展示广告与程序化采购，覆盖 Google Display Network、DV360、媒体投放平台、电子通讯投放与赞助内容采购，并通过 Demandbase、6Sense 等实施 ABM 展示策略。"
+  },
+  "agency-paid-media-search-query-analyst": {
+    "name": "搜索词分析师",
+    "description": "分析搜索词、构建否定关键词体系并匹配查询意图，将原始付费搜索数据转化为优化行动，减少无效支出并提升高意向流量。"
+  },
+  "agency-paid-media-tracking-specialist": {
+    "name": "广告追踪与衡量专家",
+    "description": "规划转化追踪架构、标签管理与归因模型，覆盖 Google Tag Manager、GA4、Google Ads、Meta CAPI、LinkedIn Insight Tag 及服务端实施，核验转化记录，使广告支出能够被衡量。"
+  },
+  "agency-personal-growth-mentor": {
+    "name": "个人成长导师",
+    "description": "围绕目标澄清、习惯设计、策略决策与行动责任提供跨领域个人发展指导，强调明确目标和持续落实，避免空泛的励志表达。"
+  },
+  "agency-product-behavioral-nudge-engine": {
+    "name": "行为助推设计师",
+    "description": "运用行为心理学调整软件交互的节奏与风格，将用户动机及任务成功作为设计目标，优化交互方式以支持用户完成行动。"
+  },
+  "agency-product-dx-engineer": {
+    "name": "开发者体验工程师",
+    "description": "减少开发者获得首次成功前的多余步骤，优化 SDK 示例、入门流程、错误信息及反馈循环，使产品更贴近真实使用中的需求。"
+  },
+  "agency-product-feedback-synthesizer": {
+    "name": "用户反馈分析师",
+    "description": "收集、分析并整合多个渠道的用户反馈，提炼可执行的产品洞察，将定性反馈转化为可衡量的优先级与策略建议。"
+  },
+  "agency-product-manager": {
+    "name": "产品经理",
+    "description": "负责从需求探索、策略和路线图到相关方协调、市场进入与结果衡量的产品生命周期，连接业务目标、用户需求及技术条件，推动产品交付。"
+  },
+  "agency-product-sprint-prioritizer": {
+    "name": "迭代优先级规划师",
+    "description": "专注敏捷迭代计划、功能排序和资源分配，运用数据驱动的优先级框架，在团队交付速度与业务价值之间安排可执行的迭代目标。"
+  },
+  "agency-product-trend-researcher": {
+    "name": "市场趋势研究员",
+    "description": "识别新兴趋势、分析竞争格局并评估市场机会，整理可用于产品策略和创新决策的洞察，为团队判断方向提供市场情报。"
+  },
+  "agency-project-management-experiment-tracker": {
+    "name": "产品实验跟踪经理",
+    "description": "负责实验设计、执行跟踪与数据决策，管理 A/B 测试、功能实验及假设验证，通过系统实验和严谨分析检验产品方案。"
+  },
+  "agency-project-management-jira-workflow-steward": {
+    "name": "Jira 工作流治理专员",
+    "description": "在软件团队中规范与 Jira 关联的 Git 工作流，维护可追溯提交、结构化合并请求和兼顾发布安全的分支策略，支持交付管理。"
+  },
+  "agency-project-management-meeting-notes-specialist": {
+    "name": "会议纪要专员",
+    "description": "从会议转录或零散笔记中提取明确决策、行动事项及未决问题，将分散的信息整理为结构清楚的四部分会议摘要。"
+  },
+  "agency-project-management-project-shepherd": {
+    "name": "跨职能项目经理",
+    "description": "协调跨团队项目、进度与相关方，从构想到完成管理资源、风险及沟通，衔接不同团队和部门的工作，推动项目按计划交付。"
+  },
+  "agency-project-management-studio-operations": {
+    "name": "工作室运营经理",
+    "description": "负责工作室日常效率、流程优化与资源协调，维护生产力标准，并为不同团队配备所需工具和工作流程，支持持续顺畅的运营。"
+  }
+}

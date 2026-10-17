@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useMemo, useState, useSyncExternalStore } from 'react'
 import { useI18n } from '../i18n'
 import type { VisualEvent, VisualSnapshot } from '../types/visual'
@@ -22,6 +23,7 @@ function EventTimeline({
   onEventTypeFilterChange,
 }: EventTimelineProps) {
   const { t } = useI18n()
+  const wsText = useWorkspaceText()
   const events = useSyncExternalStore(store.subscribe, store.getSnapshot)
   const eventTypes = useMemo(
     () => ['all', ...Array.from(new Set(events.map(event => event.type)))],
@@ -81,7 +83,7 @@ function EventTimeline({
             value={eventTypeFilter}
             onChange={event => onEventTypeFilterChange(event.target.value)}
           >
-            {eventTypes.map(type => <option key={type} value={type}>{type}</option>)}
+            {eventTypes.map(type => <option key={type} value={type}>{wsText(type)}</option>)}
           </select>
         </div>
         <div className="event-log">
@@ -125,6 +127,7 @@ export function DevToolsOverlay({
   onClose,
 }: DevToolsOverlayProps) {
   const { t } = useI18n()
+  const wsText = useWorkspaceText()
   const [eventTypeFilter, setEventTypeFilter] = useState('all')
   if (!open) return null
 
@@ -157,7 +160,7 @@ export function DevToolsOverlay({
           {Object.entries(snapshot?.channels ?? {}).map(([name, info]) => (
             <div className="list-row" key={name}>
               <span>{name}</span>
-              <span className="muted">{String((info as { last_type?: string }).last_type ?? 'idle')}</span>
+              <span className="muted">{wsText(String((info as { last_type?: string }).last_type ?? 'idle'))}</span>
             </div>
           ))}
         </div>

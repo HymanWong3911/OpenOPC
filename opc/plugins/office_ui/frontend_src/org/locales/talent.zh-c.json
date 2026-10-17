@@ -1,0 +1,402 @@
+{
+  "agency-project-management-studio-producer": {
+    "name": "工作室制片统筹",
+    "description": "统筹创意与技术项目、资源分配和多项目组合，协调复杂的跨职能工作，使创意愿景与业务目标一致，并优化工作室运营。"
+  },
+  "agency-project-manager-senior": {
+    "name": "高级项目经理",
+    "description": "将需求规格转化为可执行任务，参考过往项目经验，控制现实可行的范围，严格落实规格要求，并避免后台流程。"
+  },
+  "agency-real-estate-buyer-seller": {
+    "name": "房地产买卖经纪助理",
+    "description": "为住宅及投资房产提供买方与卖方代理、房源管理、报价谈判、交易协调和交割支持，覆盖首次看房到最终交割的客户服务。"
+  },
+  "agency-recruitment-specialist": {
+    "name": "招聘专员",
+    "description": "熟悉中国主要招聘平台、人才评估框架和劳动法规，协助企业开展人才吸引、筛选与留存，并建设有竞争力的雇主品牌。"
+  },
+  "agency-report-distribution-agent": {
+    "name": "销售报告分发专员",
+    "description": "按销售区域参数，将汇总后的销售报告自动分发给对应销售代表，负责区域匹配与报告分发这一特定流程。"
+  },
+  "agency-research-synthesist": {
+    "name": "研究证据综合专家",
+    "description": "开展文献综述、来源评估与证据综合，将分散资料整理成结构清晰、权重如实的证据图谱，说明现有证据实际支持哪些结论。"
+  },
+  "agency-resume-tailor": {
+    "name": "简历优化顾问",
+    "description": "从求职者角度分析职位描述，将真实经历对应岗位要求，优化 ATS 关键词匹配并改写经历要点，保持资历与事实一致。"
+  },
+  "agency-retail-customer-returns": {
+    "name": "零售退换货专员",
+    "description": "处理门店、线上及全渠道零售的退货、换货和退款，负责政策执行、防欺诈、客户留存、供应商退货与退货分析，兼顾回收价值和客户忠诚度。"
+  },
+  "agency-roblox-avatar-creator": {
+    "name": "Roblox 虚拟形象创作者",
+    "description": "专注 Roblox UGC 与虚拟形象制作流程，掌握形象系统、UGC 物品制作、配饰绑定、纹理规范及 Creator Marketplace 提交流程。"
+  },
+  "agency-roblox-experience-designer": {
+    "name": "Roblox 体验设计师",
+    "description": "设计 Roblox 参与循环与 DataStore 成长系统，运用 Passes、Developer Products 和 UGC 等变现机制，提升体验中的玩家留存。"
+  },
+  "agency-roblox-systems-scripter": {
+    "name": "Roblox 系统脚本工程师",
+    "description": "运用 Luau、RemoteEvents/RemoteFunctions、DataStore 与模块架构，遵循客户端与服务器安全模型，构建可扩展的 Roblox 体验。"
+  },
+  "agency-sales-account-strategist": {
+    "name": "客户经营策略师",
+    "description": "负责成交后的客户拓展、利益相关者梳理、季度业务回顾与净收入留存，通过系统化扩展规划和多方关系经营，建立长期平台合作。"
+  },
+  "agency-sales-coach": {
+    "name": "销售教练",
+    "description": "围绕销售人员培养、销售管道评审、通话指导、交易策略及预测准确性开展辅导，用结构化方法与行为反馈改善人员和交易表现。"
+  },
+  "agency-sales-data-extraction-agent": {
+    "name": "销售数据提取专员",
+    "description": "监控 Excel 文件，提取本月至今（MTD）、本年至今（YTD）及年末销售指标，为内部实时销售报告提供数据。"
+  },
+  "agency-sales-deal-strategist": {
+    "name": "交易策略师",
+    "description": "面向复杂 B2B 销售周期，运用 MEDDPICC 评估商机资格，开展竞争定位和赢单规划，识别销售管道风险并支持预测评审。"
+  },
+  "agency-sales-discovery-coach": {
+    "name": "销售需求挖掘教练",
+    "description": "指导销售团队设计提问、梳理客户现状、量化需求差距并组织通话结构，通过系统化需求挖掘，识别客户真实的购买动机。"
+  },
+  "agency-sales-engineer": {
+    "name": "售前技术工程师",
+    "description": "负责技术需求挖掘、演示设计、POC 范围界定和竞争应对资料，将产品能力对应业务成果，推动客户的技术选型与成交。"
+  },
+  "agency-sales-offer-lead-gen-strategist": {
+    "name": "销售方案与获客策略师",
+    "description": "设计销售方案与获客资料，运用价值方程和多渠道线索获取方法，吸引合格买家，并通过客户、员工、代理机构和联盟伙伴扩大触达。"
+  },
+  "agency-sales-outbound-strategist": {
+    "name": "主动获客策略师",
+    "description": "依据客户信号定义理想客户画像，设计多渠道触达序列，通过研究驱动的个性化沟通开发商机，重点提高触达相关性。"
+  },
+  "agency-sales-outreach": {
+    "name": "B2B 销售拓客专员",
+    "description": "开展陌生客户开发、线索跟进、异议处理、方案撰写与销售管道管理，将数据驱动的客户定位与关系建立结合，促进咨询式成交。"
+  },
+  "agency-sales-pipeline-analyst": {
+    "name": "销售管道分析师",
+    "description": "分析销售管道健康度、交易推进速度和预测准确性，将 CRM 数据转化为可行动的商机洞察，提前揭示风险并支持销售辅导。"
+  },
+  "agency-sales-proposal-strategist": {
+    "name": "销售提案策略师",
+    "description": "将 RFP 与销售机会转化为有说服力的赢单叙事，设计核心优势主题、竞争定位和高层摘要，使提案兼顾响应要求与客户说服力。"
+  },
+  "agency-security-ai-generated-code-auditor": {
+    "name": "AI 生成代码安全审计员",
+    "description": "审查 AI 生成及对话式编程应用，发现硬编码密钥、行级安全缺陷和提示注入入口，按 CWE 记录发现并推动扫描、修复与复扫闭环。"
+  },
+  "agency-security-appsec-engineer": {
+    "name": "应用安全工程师",
+    "description": "通过威胁建模、安全代码审查、SAST/DAST 集成与开发者安全培训，将安全要求融入软件开发生命周期，促进安全编码实践。"
+  },
+  "agency-security-architect": {
+    "name": "安全架构师",
+    "description": "负责 Web、API、云原生及分布式系统的威胁建模、信任边界、纵深防御与风险评审；设计安全模型，由应用安全工程师承接 SAST/DAST 和 SDLC 工作。"
+  },
+  "agency-security-blockchain-security-auditor": {
+    "name": "区块链安全审计员",
+    "description": "面向 DeFi 协议与区块链应用审计智能合约，开展漏洞检测、形式化验证和漏洞利用分析，并编写完整的安全审计报告。"
+  },
+  "agency-security-cloud-security-architect": {
+    "name": "云安全架构师",
+    "description": "设计云原生零信任架构，在 AWS、Azure 与 GCP 中实施纵深防御，并从基础设施即代码管道建设初期落实安全控制。"
+  },
+  "agency-security-compliance-auditor": {
+    "name": "技术合规审计员",
+    "description": "专注 SOC 2、ISO 27001、HIPAA 和 PCI-DSS 技术合规审计，覆盖准备度评估、证据收集及认证阶段的审计工作。"
+  },
+  "agency-security-incident-responder": {
+    "name": "安全事件响应专家",
+    "description": "开展数字取证与安全事件响应，主导入侵调查、遏制活跃威胁、协调危机处置，并通过事后复盘分析降低同类事件再次发生的风险。"
+  },
+  "agency-security-penetration-tester": {
+    "name": "渗透测试员",
+    "description": "在授权范围内针对网络、Web 应用与云基础设施开展渗透测试、红队行动和漏洞评估，识别可被利用的安全缺陷。"
+  },
+  "agency-security-secrets-credential-engineer": {
+    "name": "密钥与凭证管理工程师",
+    "description": "负责密钥及凭证的检测、预防、保管、轮换和泄露响应全生命周期，推动应用使用短期、最小权限凭证，避免凭证进入代码。"
+  },
+  "agency-security-senior-secops": {
+    "name": "高级安全运维工程师",
+    "description": "先检查代码提交中的密钥和敏感数据暴露，再按组织标准实施或审计认证授权、令牌与 Cookie、HTTP/CORS/CSP、限流、密钥管理、输入校验和安全日志。"
+  },
+  "agency-security-threat-detection-engineer": {
+    "name": "威胁检测工程师",
+    "description": "为安全运营团队开发 SIEM 规则，映射 MITRE ATT&CK 覆盖范围，开展威胁狩猎与告警调优，并建设检测规则即代码管道。"
+  },
+  "agency-security-threat-intelligence-analyst": {
+    "name": "威胁情报分析师",
+    "description": "跟踪网络攻击组织，将攻击活动映射至 MITRE ATT&CK，编写可行动的威胁情报报告，并构建用于识别真实威胁的检测规则。"
+  },
+  "agency-specialized-chief-of-staff": {
+    "name": "高管事务统筹",
+    "description": "为创始人与高管过滤信息噪声、管理流程、落实一致性、分流决策并组织成果呈现，使高管能够清晰思考并关注关键事项。"
+  },
+  "agency-specialized-civil-engineer": {
+    "name": "土木与结构工程师",
+    "description": "覆盖 Eurocode、DIN、ACI、AISC、ASCE、AS/NZS、CSA、GB、IS、AIJ 等标准，负责结构分析、岩土设计、施工文档、规范合规及国际项目。"
+  },
+  "agency-specialized-codebase-archaeologist": {
+    "name": "代码库演变审查专家",
+    "description": "审查经 Claude、Cursor、Copilot、Windsurf 等 AI 工具长期修改的代码库，发现跨会话逻辑偏差、无效代码及文档与实现分歧。"
+  },
+  "agency-specialized-cultural-intelligence-strategist": {
+    "name": "文化适应策略师",
+    "description": "运用文化智商方法发现隐性排斥，研究全球文化语境及多重身份交织的用户需求，帮助软件在不同文化与身份群体中形成真实共鸣。"
+  },
+  "agency-specialized-developer-advocate": {
+    "name": "开发者关系专家",
+    "description": "建设开发者社区、创作技术内容并优化开发者体验，通过工程交流促进平台采用，连接内部产品与工程团队和外部开发者。"
+  },
+  "agency-specialized-document-generator": {
+    "name": "文档生成专家",
+    "description": "通过代码创建专业 PDF、PPTX、DOCX 和 XLSX 文件，处理格式排版、图表与数据可视化，生成结构清晰的文档成果。"
+  },
+  "agency-specialized-fedramp-rmf-compliance": {
+    "name": "FedRAMP 与 RMF 合规工程师",
+    "description": "负责 FedRAMP Rev5 与 20x 授权、NIST RMF 云安全合规，覆盖控制实施、独立评估、ATO、持续监控、POA&M、FIPS 199 分类与 OSCAL 材料，服务政府及受监管行业。"
+  },
+  "agency-specialized-focus-music-architect": {
+    "name": "专注音乐设计师",
+    "description": "专注器乐型专注音乐与神经声学提示设计，为生成式音频模型编写提示词，规划声景、BPM 曲线和双耳声层，支持深度认知专注。"
+  },
+  "agency-specialized-french-consulting-market": {
+    "name": "法国咨询市场顾问",
+    "description": "解析法国 ESN/SI 自由职业生态，涵盖利润模型、Malt 与 collective.work 平台机制、薪酬托管、费率定位及实际回款周期。"
+  },
+  "agency-specialized-korean-business-navigator": {
+    "name": "韩国商务文化顾问",
+    "description": "帮助外国专业人士理解韩国商务文化，掌握品议决策、察言观色、KakaoTalk 商务礼仪、层级关系及以关系建立为先的交易方式。"
+  },
+  "agency-specialized-master-plan-architect": {
+    "name": "总体实施规划架构师",
+    "description": "提供深入的架构教学、红队审视和风险批判，编写完整的 Markdown 实施计划，专注规划与技术教育，全程不执行代码。"
+  },
+  "agency-specialized-mcp-builder": {
+    "name": "MCP 开发工程师",
+    "description": "设计、构建并测试 Model Context Protocol 服务器，通过自定义工具、资源与提示词扩展 AI 智能体能力，负责 MCP 服务实现。"
+  },
+  "agency-specialized-model-qa": {
+    "name": "模型质量审计专家",
+    "description": "独立审查机器学习与统计模型，覆盖文档审阅、数据重建、结果复现、校准测试、可解释性分析、性能监控及可供审计的报告。"
+  },
+  "agency-specialized-pricing-analyst": {
+    "name": "定价分析师",
+    "description": "通过市场调研、竞品分析、成本结构评估与利润率优化建立定价模型，使价格决策依据数据，支持企业形成定价竞争力。"
+  },
+  "agency-specialized-salesforce-architect": {
+    "name": "Salesforce 架构师",
+    "description": "为企业级 Salesforce 组织设计解决方案，负责多云架构、集成模式、Governor Limits 平台限额、部署策略和数据模型治理。"
+  },
+  "agency-specialized-strategy-duel-agent": {
+    "name": "策略对决推演师",
+    "description": "运用博弈论与中国三十六计开展实时策略对决，在互动推演中分析各方行动与应对，支持对抗情境中的策略判断。"
+  },
+  "agency-specialized-workflow-architect": {
+    "name": "工作流架构师",
+    "description": "梳理系统、用户旅程和智能体交互的完整流程树，覆盖正常路径、分支、故障、恢复、交接契约与可观察状态，生成可实施和可测试的规格。"
+  },
+  "agency-study-abroad-advisor": {
+    "name": "留学规划顾问",
+    "description": "面向中国学生规划美英加澳、欧洲、香港及新加坡留学，覆盖本科至博士申请、选校、文书、背景提升、语言与标准化考试、签证和海外适应。"
+  },
+  "agency-supply-chain-strategist": {
+    "name": "供应链策略师",
+    "description": "立足中国制造生态，负责供应商开发、战略采购、质量控制与供应链数字化，帮助企业建设高效、有韧性且可持续的供应链。"
+  },
+  "agency-support-analytics-reporter": {
+    "name": "数据分析报告专家",
+    "description": "将原始数据转化为业务洞察，制作仪表板、开展统计分析并跟踪 KPI，通过数据可视化与报告，为业务战略决策提供支持。"
+  },
+  "agency-support-executive-summary-generator": {
+    "name": "高管摘要撰写专家",
+    "description": "运用 McKinsey SCQA、BCG 金字塔原理与 Bain 框架，将复杂业务材料转化为简明、可行动的高管摘要，支持管理层决策。"
+  },
+  "agency-support-finance-tracker": {
+    "name": "财务管理分析师",
+    "description": "负责财务规划、预算管理与经营绩效分析，维护企业财务健康、优化现金流，并提供支持业务增长的财务洞察。"
+  },
+  "agency-support-infrastructure-maintainer": {
+    "name": "基础设施运维专家",
+    "description": "维护支撑业务运营的可靠、可扩展基础设施，负责系统可靠性、性能优化和技术运维管理，兼顾安全、性能与成本效率。"
+  },
+  "agency-support-legal-compliance-checker": {
+    "name": "法律合规审查员",
+    "description": "审查业务运营、数据处理和内容创作是否符合相关法律、法规与行业标准，覆盖多个司法辖区的法律及合规要求。"
+  },
+  "agency-support-support-responder": {
+    "name": "客户支持专员",
+    "description": "提供多渠道客户支持、问题解决与主动关怀，改善用户体验，并通过具体服务互动，帮助客户形成积极的品牌体验。"
+  },
+  "agency-technical-artist": {
+    "name": "技术美术师",
+    "description": "负责美术资源到引擎的制作流程，掌握着色器、VFX 系统、LOD 流程、性能预算及跨引擎资源优化，衔接美术与技术实现。"
+  },
+  "agency-terminal-integration-specialist": {
+    "name": "终端集成工程师",
+    "description": "面向现代 Swift 应用开展终端模拟、文本渲染优化与 SwiftTerm 集成，负责应用中的终端显示和交互能力接入。"
+  },
+  "agency-testing-accessibility-auditor": {
+    "name": "无障碍审计员",
+    "description": "依据 WCAG 审查界面，使用辅助技术测试并定位使用障碍，落实包容性设计；以实际屏幕阅读器验证作为无障碍判断的重要依据。"
+  },
+  "agency-testing-api-tester": {
+    "name": "API 测试工程师",
+    "description": "开展 API 功能验证、性能测试与质量保障，覆盖系统接口和第三方集成，检查接口在不同应用场景中的正确性与表现。"
+  },
+  "agency-testing-evidence-collector": {
+    "name": "测试证据采集员",
+    "description": "通过截图等实际证据记录可复现问题，明确标记未测试范围，提供可核查的质量报告，避免以推测替代测试结果。"
+  },
+  "agency-testing-performance-benchmarker": {
+    "name": "性能基准测试专家",
+    "description": "测量、分析并改进应用与基础设施的系统性能，通过性能测试与基准评估识别优化空间，支持系统运行效率提升。"
+  },
+  "agency-testing-reality-checker": {
+    "name": "验收证据审查员",
+    "description": "以证据审查交付与生产就绪状态，默认标记为“仍需改进”，只有充分验证后才予以认可，避免缺乏依据的验收通过。"
+  },
+  "agency-testing-test-automation-engineer": {
+    "name": "测试自动化工程师",
+    "description": "使用 Playwright 与 Cypress 实现端到端自动化测试，优化选择器、消除不稳定测试，管理独立测试数据、CI 并行执行与追踪调试。"
+  },
+  "agency-testing-test-results-analyzer": {
+    "name": "测试结果分析师",
+    "description": "综合评估测试结果，分析质量指标并提取可行动的洞察，帮助团队依据测试活动发现问题、判断质量和确定后续改进方向。"
+  },
+  "agency-testing-tool-evaluator": {
+    "name": "技术工具评估专家",
+    "description": "评估、测试并推荐适用于业务的工具、软件与平台，结合实际使用表现判断技术方案，支持业务效率与生产力优化。"
+  },
+  "agency-testing-workflow-optimizer": {
+    "name": "业务流程优化专家",
+    "description": "分析各业务职能的工作流程，识别改进空间并推动流程优化与自动化，通过具体流程调整提高生产力和执行效率。"
+  },
+  "agency-unity-architect": {
+    "name": "Unity 架构师",
+    "description": "采用数据驱动的模块化设计，运用 ScriptableObjects、解耦系统与单一职责组件，为 Unity 项目建立可扩展架构。"
+  },
+  "agency-unity-editor-tool-developer": {
+    "name": "Unity 编辑器工具开发工程师",
+    "description": "运用 EditorWindows、PropertyDrawers、AssetPostprocessors 与 ScriptedImporters 开发 Unity 编辑器工具，实现制作管道自动化。"
+  },
+  "agency-unity-multiplayer-engineer": {
+    "name": "Unity 多人游戏工程师",
+    "description": "使用 Netcode for GameObjects 与 Unity Gaming Services（Relay/Lobby），实现客户端与服务器权限分工、延迟补偿和状态同步。"
+  },
+  "agency-unity-shader-graph-artist": {
+    "name": "Unity Shader Graph 特效师",
+    "description": "运用 Unity Shader Graph、HLSL 及 URP/HDRP 渲染管线，制作材质、实时视觉特效和自定义渲染通道。"
+  },
+  "agency-unreal-multiplayer-architect": {
+    "name": "Unreal 多人游戏架构师",
+    "description": "专注 Unreal Engine 网络系统，设计 Actor 复制、GameMode/GameState、服务器权威玩法与网络预测，并配置 UE5 专用服务器。"
+  },
+  "agency-unreal-systems-engineer": {
+    "name": "Unreal 系统工程师",
+    "description": "面向 AAA 级 Unreal Engine 项目优化性能与混合架构，运用 C++/Blueprint、Nanite、Lumen GI 和 Gameplay Ability System。"
+  },
+  "agency-unreal-technical-artist": {
+    "name": "Unreal 技术美术师",
+    "description": "使用 Material Editor、Niagara VFX 与 Procedural Content Generation，建设 UE5 视觉制作流程并衔接美术资源与引擎。"
+  },
+  "agency-unreal-world-builder": {
+    "name": "Unreal 开放世界构建专家",
+    "description": "运用 UE5 World Partition、Landscape、程序化植被、HLOD 和大型关卡流式加载，构建衔接顺畅的开放世界环境。"
+  },
+  "agency-visionos-spatial-engineer": {
+    "name": "visionOS 空间计算工程师",
+    "description": "开发原生 visionOS 空间计算体验，制作 SwiftUI 立体界面并落实 Liquid Glass 设计，负责空间界面的技术实现。"
+  },
+  "agency-xr-cockpit-interaction-specialist": {
+    "name": "XR 座舱交互专家",
+    "description": "为 XR 环境设计并开发沉浸式座舱控制系统，围绕座舱中的操作需求实现控制交互，专注座舱场景的沉浸体验。"
+  },
+  "agency-xr-immersive-developer": {
+    "name": "XR 沉浸式开发工程师",
+    "description": "运用 WebXR 和沉浸式技术开发基于浏览器的 AR、VR 与 XR 应用，负责浏览器端增强现实和虚拟现实体验实现。"
+  },
+  "agency-xr-interface-architect": {
+    "name": "XR 界面架构师",
+    "description": "面向沉浸式 AR、VR 与 XR 环境设计空间交互和界面策略，将空间中的用户操作需求转化为界面结构与交互设计。"
+  },
+  "agency-zk-steward": {
+    "name": "卡片笔记知识库管家",
+    "description": "以卢曼卡片笔记法维护知识库，按任务切换费曼、芒格等专家视角，落实原子笔记、关联与验证循环，支持知识链接、复杂任务拆解和跨领域决策。"
+  },
+  "ceo-strategist": {
+    "name": "CEO 战略负责人",
+    "description": "制定产品愿景，作出关键战略决策，协调跨职能团队的方向与行动，承担产品与组织发展的高层领导职责。"
+  },
+  "copywriter": {
+    "name": "文案策划师",
+    "description": "撰写有吸引力的文案，制定内容策略与传播信息，维护一致的表达语气，使不同内容延续清晰统一的沟通方式。"
+  },
+  "creative-director": {
+    "name": "创意总监",
+    "description": "制定创意方向，确保品牌表达一致，并维护各类创意成果的质量标准，统筹创意产出中的方向、品牌与品质要求。"
+  },
+  "cto-architect": {
+    "name": "CTO／技术架构师",
+    "description": "负责系统架构设计和技术选型，为工程团队提供指导，协调技术方向与团队能力建设，承担技术领导职责。"
+  },
+  "data-engineer": {
+    "name": "数据工程师",
+    "description": "建设数据管道并管理相关基础设施，维护数据质量和处理结果的可复现性，为可靠的数据流转提供工程支持。"
+  },
+  "devops-engineer": {
+    "name": "DevOps／平台工程师",
+    "description": "管理 CI/CD 管道、云架构与 Kubernetes，实施部署自动化，负责支撑软件交付和运行的平台基础设施。"
+  },
+  "editor-in-chief": {
+    "name": "主编",
+    "description": "管理编辑策略与内容日历，维护内容质量标准和发布节奏，统筹选题安排、编辑要求及持续内容生产。"
+  },
+  "fullstack-engineer": {
+    "name": "全栈工程师",
+    "description": "负责前端、后端、数据库与部署工作，将功能需求贯穿到各技术环节，实现从开发到交付的完整功能落地。"
+  },
+  "principal-investigator": {
+    "name": "研究项目负责人",
+    "description": "主导研究方向，提出研究假设，监督论文及研究成果发表，并指导研究人员，统筹研究项目的学术推进。"
+  },
+  "product-manager": {
+    "name": "产品经理",
+    "description": "定义功能规格、编写用户故事并确定需求待办优先级，连接业务与工程团队，将产品需求转化为明确的开发任务。"
+  },
+  "qa-engineer": {
+    "name": "软件质量工程师",
+    "description": "通过手工和自动化测试检查软件质量，跟踪缺陷并开展回归分析，协助团队识别问题和验证修复后的表现。"
+  },
+  "research-scientist": {
+    "name": "研究科学家",
+    "description": "设计实验、分析数据并撰写论文，依据实验与研究结果推进知识探索，持续拓展所在研究领域的认识边界。"
+  },
+  "security-engineer": {
+    "name": "安全工程师",
+    "description": "执行安全审计、漏洞扫描、合规检查和威胁建模，从不同角度识别系统安全风险，支持技术安全评估与防护工作。"
+  },
+  "seo-specialist": {
+    "name": "SEO 优化专员",
+    "description": "开展关键词研究，针对搜索引擎优化内容，并持续跟踪分析指标，依据搜索相关数据评估内容优化的效果。"
+  },
+  "social-media-manager": {
+    "name": "社交媒体运营经理",
+    "description": "管理社交平台内容分发、社区互动和交叉推广，围绕受众增长安排运营工作，促进内容触达与用户参与。"
+  },
+  "sre-lead": {
+    "name": "SRE 负责人",
+    "description": "管理服务等级目标（SLO）、事件响应和监控，提升系统韧性，承担站点可靠性工程中的运行保障与可靠性职责。"
+  },
+  "ui-ux-designer": {
+    "name": "UI/UX 设计师",
+    "description": "设计用户界面、制作原型并开展用户研究，将用户需求与视觉设计衔接，通过界面和交互方案表达产品体验。"
+  }
+}

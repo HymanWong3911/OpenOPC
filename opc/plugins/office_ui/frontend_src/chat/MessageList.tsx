@@ -1,3 +1,4 @@
+import { useChatText, localizeSystemLabel, localizeAcceptanceSummary, type ChatText } from '../lib/chatMessages'
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { AttachmentRefMeta, ChatMessage, CheckpointReplyMetadata, InteractionReplyReceipt } from '../types/chat'
 import type { ProgressEntry, RoleWorkItemSummary, Session, WorkItemProgressEntry } from '../types/kanban'
@@ -536,6 +537,7 @@ const ProgressRow = React.memo(function ProgressRow({ entry, showDate, dateStr, 
 
 interface WorkItemRowProps { msg: ChatMessage; showDate: boolean; dateStr: string }
 const WorkItemRow = React.memo(function WorkItemRow({ msg, showDate, dateStr }: WorkItemRowProps) {
+  const tr = useChatText()
   const workItem = parseWorkItemEvent(msg.content)
   if (!workItem) return null
   return (
@@ -546,7 +548,7 @@ const WorkItemRow = React.memo(function WorkItemRow({ msg, showDate, dateStr }: 
         <span className="work-item-divider-label">
           <span className="work-item-divider-icon">{workItem.icon}</span>
           {workItem.workItemName}
-          <span className="work-item-divider-action">{workItem.action}</span>
+          <span className="work-item-divider-action">{tr(workItem.action)}</span>
         </span>
         <div className="work-item-divider-line" />
       </div>
@@ -566,6 +568,7 @@ const SystemRow = React.memo(function SystemRow({ msg, showDate, dateStr }: Syst
 
 interface ContextRowProps { msg: ChatMessage; showDate: boolean; dateStr: string }
 const ContextRow = React.memo(function ContextRow({ msg, showDate, dateStr }: ContextRowProps) {
+  const tr = useChatText()
   return (
     <div>
       {showDate && <div className="msg-date-sep"><span>{dateStr}</span></div>}
@@ -573,7 +576,7 @@ const ContextRow = React.memo(function ContextRow({ msg, showDate, dateStr }: Co
         <div className="msg-avatar agent-avatar msg-avatar-context"><IconShield /></div>
         <div className="msg-body">
           <div className="msg-content-agent-card msg-context-card">
-            <div className="msg-context-label">Execution Context</div>
+            <div className="msg-context-label">{tr("Execution Context")}</div>
             <MarkdownBody content={msg.content} />
           </div>
         </div>
@@ -590,6 +593,7 @@ interface DraftRowProps {
   dateStr: string
 }
 const DraftRow = React.memo(function DraftRow({ text, timestamp, iteration, showDate, dateStr }: DraftRowProps) {
+  const tr = useChatText()
   return (
     <div>
       {showDate && <div className="msg-date-sep"><span>{dateStr}</span></div>}
@@ -597,13 +601,13 @@ const DraftRow = React.memo(function DraftRow({ text, timestamp, iteration, show
         <div className="msg-avatar agent-avatar msg-avatar-draft"><IconSparkle /></div>
         <div className="msg-body">
           <div className="msg-agent-header">
-            <span className="msg-sender">Live Reply</span>
+            <span className="msg-sender">{tr("Live Reply")}</span>
             <span className="msg-time" title={formatFullTime(timestamp)}>
               {formatTime(timestamp)}
             </span>
           </div>
           <div className="msg-content-agent-card msg-draft-card">
-            {iteration ? <div className="msg-draft-label">Turn {iteration}</div> : null}
+            {iteration ? <div className="msg-draft-label">{tr("Turn")}{' '}{iteration}</div> : null}
             <MarkdownBody content={text} collapseMode="never" />
           </div>
         </div>
@@ -623,6 +627,7 @@ interface UserRowProps {
   renderUserMarkdown: boolean
 }
 const UserRow = React.memo(function UserRow({ msg, showDate, dateStr, isGrouped, isCopied, onCopy, onImageClick, renderUserMarkdown }: UserRowProps) {
+  const tr = useChatText()
   return (
     <div>
       {showDate && <div className="msg-date-sep"><span>{dateStr}</span></div>}
@@ -638,7 +643,7 @@ const UserRow = React.memo(function UserRow({ msg, showDate, dateStr, isGrouped,
           <AttachmentBlock refs={(msg.metadata as any)?.attachment_refs} onImageClick={onImageClick} />
           <div className="msg-meta-user">
             <span className="msg-time" title={formatFullTime(msg.timestamp)}>{formatTime(msg.timestamp)}</span>
-            <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title="Copy">
+            <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title={tr("Copy")}>
               {isCopied ? <IconCheck /> : <IconCopy />}
             </button>
           </div>
@@ -822,8 +827,9 @@ interface SystemOpsRowProps {
 }
 
 const SystemOpsRow = React.memo(function SystemOpsRow({ msg, showDate, dateStr, classification }: SystemOpsRowProps) {
+  const tr = useChatText()
   const [expanded, setExpanded] = useState(false)
-  const hasDetails = msg.content.trim() !== `[${classification.label}] ${classification.summary}`.trim()
+  const hasDetails = msg.content.trim() !== `[${localizeSystemLabel(classification.label, tr)}] ${classification.summary}`.trim()
     && msg.content.trim().length > classification.summary.length + 4
   return (
     <div>
@@ -835,7 +841,7 @@ const SystemOpsRow = React.memo(function SystemOpsRow({ msg, showDate, dateStr, 
         tabIndex={hasDetails ? 0 : -1}
       >
         <span className="msg-ops-dot" aria-hidden="true" />
-        <span className="msg-ops-label">{classification.label}</span>
+        <span className="msg-ops-label">{localizeSystemLabel(classification.label, tr)}</span>
         {classification.summary && (
           <span className="msg-ops-summary" title={classification.summary}>{classification.summary}</span>
         )}
@@ -862,6 +868,7 @@ interface OpsBundleRowProps {
 }
 
 const OpsBundleRow = React.memo(function OpsBundleRow({ events, showDate, dateStr }: OpsBundleRowProps) {
+  const tr = useChatText()
   const [expanded, setExpanded] = useState(false)
   if (events.length === 0) return null
 
@@ -877,9 +884,9 @@ const OpsBundleRow = React.memo(function OpsBundleRow({ events, showDate, dateSt
     return acc
   }, {})
   const summary = Object.entries(counts)
-    .map(([label, count]) => `${count} ${label}`)
+    .map(([label, count]) => tr('{count} {kind}', { count, kind: tr(label) }))
     .join(' · ')
-  const title = `${events.length} technical event${events.length === 1 ? '' : 's'} hidden`
+  const title = tr(events.length === 1 ? '{count} technical event hidden' : '{count} technical events hidden', { count: events.length })
 
   return (
     <div>
@@ -901,7 +908,7 @@ const OpsBundleRow = React.memo(function OpsBundleRow({ events, showDate, dateSt
           {events.map(({ msg, classification }) => (
             <div key={msg.id} className={`msg-ops-bundle-event msg-ops-tone-${classification.tone}`}>
               <span className="msg-ops-dot" />
-              <span className="msg-ops-label">{classification.label}</span>
+              <span className="msg-ops-label">{localizeSystemLabel(classification.label, tr)}</span>
               <span className="msg-ops-summary">{classification.summary}</span>
               <span className="msg-ops-time" title={formatFullTime(msg.timestamp)}>{formatTime(msg.timestamp)}</span>
             </div>
@@ -921,20 +928,21 @@ interface ProjectUpdateRowProps {
   onCopy: (id: string, content: string) => void
 }
 
-function projectUpdateLabel(payload: ProjectUpdatePayload): string {
+function projectUpdateLabel(payload: ProjectUpdatePayload, tr: ChatText): string {
   if (payload.kind === 'review') {
-    const verdict = payload.verdict ? payload.verdict.replace(/_/g, ' ') : 'review'
-    return `Review · ${verdict}`
+    const verdict = payload.verdict ? tr(payload.verdict.replace(/_/g, ' ')) : tr('review')
+    return tr('Review · {verdict}', { verdict })
   }
-  if (payload.kind === 'report') return 'Report'
-  return 'Update'
+  if (payload.kind === 'report') return tr('Report')
+  return tr('Update')
 }
 
 const ProjectUpdateRow = React.memo(function ProjectUpdateRow({ msg, payload, showDate, dateStr, isCopied, onCopy }: ProjectUpdateRowProps) {
+  const tr = useChatText()
   const color = agentColor(msg.sender === 'system' ? (msg.senderName || 'OPC') : msg.sender)
-  const displayName = msg.senderDeleted ? '[Deleted]' : msg.senderName
-  const label = projectUpdateLabel(payload)
-  const summary = payload.summary || payload.acceptanceSummary || label
+  const displayName = msg.senderDeleted ? tr("[Deleted]") : msg.senderName
+  const label = projectUpdateLabel(payload, tr)
+  const summary = payload.summary || (payload.acceptanceSummary ? localizeAcceptanceSummary(payload.acceptanceSummary, tr) : label)
 
   return (
     <div>
@@ -952,14 +960,14 @@ const ProjectUpdateRow = React.memo(function ProjectUpdateRow({ msg, payload, sh
             <div className="msg-project-update-head">
               <span className="msg-project-update-label">{label}</span>
               {payload.acceptanceSummary && (
-                <span className="msg-project-update-chip">{payload.acceptanceSummary}</span>
+                <span className="msg-project-update-chip">{localizeAcceptanceSummary(payload.acceptanceSummary, tr)}</span>
               )}
             </div>
             {payload.title && <div className="msg-project-update-title">{payload.title}</div>}
             <MarkdownBody content={summary} className="msg-project-update-summary" />
             {payload.deliverables.length > 0 && (
               <div className="msg-project-update-section">
-                <div className="msg-project-update-section-label">Outputs</div>
+                <div className="msg-project-update-section-label">{tr("Outputs")}</div>
                 <div className="msg-project-update-artifacts">
                   {payload.deliverables.slice(0, 6).map((artifact, index) => (
                     <div key={`${artifact.path || artifact.name}-${index}`} className="msg-project-update-artifact">
@@ -975,7 +983,7 @@ const ProjectUpdateRow = React.memo(function ProjectUpdateRow({ msg, payload, sh
               <div className="msg-project-update-grid">
                 {payload.risks.length > 0 && (
                   <div className="msg-project-update-section">
-                    <div className="msg-project-update-section-label">Caveats</div>
+                    <div className="msg-project-update-section-label">{tr("Caveats")}</div>
                     <ul className="msg-project-update-list">
                       {payload.risks.map((risk, index) => <li key={`risk-${index}`}>{risk}</li>)}
                     </ul>
@@ -983,7 +991,7 @@ const ProjectUpdateRow = React.memo(function ProjectUpdateRow({ msg, payload, sh
                 )}
                 {payload.nextActions.length > 0 && (
                   <div className="msg-project-update-section">
-                    <div className="msg-project-update-section-label">Next</div>
+                    <div className="msg-project-update-section-label">{tr("Next")}</div>
                     <ul className="msg-project-update-list">
                       {payload.nextActions.map((action, index) => <li key={`next-${index}`}>{action}</li>)}
                     </ul>
@@ -992,8 +1000,8 @@ const ProjectUpdateRow = React.memo(function ProjectUpdateRow({ msg, payload, sh
               </div>
             )}
             <div className="msg-card-actions">
-              <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title="Copy raw update">
-                {isCopied ? <><IconCheck /> <span>Copied</span></> : <><IconCopy /> <span>Copy raw</span></>}
+              <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title={tr("Copy raw update")}>
+                {isCopied ? <><IconCheck /> <span>{tr("Copied")}</span></> : <><IconCopy /> <span>{tr("Copy raw")}</span></>}
               </button>
             </div>
           </div>
@@ -1016,8 +1024,9 @@ interface AgentRowProps {
   onInteractionReply?: (text: string, taskId?: string, metadata?: CheckpointReplyMetadata) => Promise<InteractionReplyReceipt>
 }
 const AgentRow = React.memo(function AgentRow({ msg, showDate, dateStr, isGrouped, isCopied, isCheckpointResponded, suppressCheckpointPanel, keepExpanded, onCopy, onInteractionReply }: AgentRowProps) {
+  const tr = useChatText()
   const isDeleted = !!msg.senderDeleted
-  const displayName = isDeleted ? '[Deleted]' : msg.senderName
+  const displayName = isDeleted ? tr("[Deleted]") : msg.senderName
   const color = agentColor(msg.sender === 'system' ? (msg.senderName || 'OPC') : msg.sender)
   const replyTaskId = msg.channelId.startsWith('session:')
     ? msg.channelId.slice('session:'.length)
@@ -1084,7 +1093,7 @@ const AgentRow = React.memo(function AgentRow({ msg, showDate, dateStr, isGroupe
               <span className="msg-time" title={formatFullTime(msg.timestamp)}>{formatTime(msg.timestamp)}</span>
             </div>
           )}
-          {msg.replyToId && <div className="msg-reply-indicator">Replying to previous message</div>}
+          {msg.replyToId && <div className="msg-reply-indicator">{tr("Replying to previous message")}</div>}
           {hasCheckpointPanel ? (
             <>
               {checkpointType === 'company_recruitment_confirmation' && (
@@ -1139,15 +1148,15 @@ const AgentRow = React.memo(function AgentRow({ msg, showDate, dateStr, isGroupe
                   responded={checkpointResponded}
                 />
               )}
-              {interactionSubmitting && <div className="ckpt-escalation-hint">Saving decision…</div>}
-              {interactionError && <div className="ckpt-escalation-hint" role="alert">{interactionError}</div>}
+              {interactionSubmitting && <div className="ckpt-escalation-hint">{tr("Saving decision…")}</div>}
+              {interactionError && <div className="ckpt-escalation-hint" role="alert">{tr(interactionError)}</div>}
             </>
           ) : (
             <div className="msg-content-agent-card" style={{ borderLeftColor: color }}>
               <MarkdownBody content={msg.content} collapseMode={keepExpanded ? 'never' : 'auto'} />
               <div className="msg-card-actions">
-                <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title="Copy message">
-                  {isCopied ? <><IconCheck /> <span>Copied</span></> : <><IconCopy /> <span>Copy</span></>}
+                <button className="msg-action-btn" onClick={() => onCopy(msg.id, msg.content)} title={tr("Copy message")}>
+                  {isCopied ? <><IconCheck /> <span>{tr("Copied")}</span></> : <><IconCopy /> <span>{tr("Copy")}</span></>}
                 </button>
                 {isGrouped && (
                   <span className="msg-time msg-time-inline" title={formatFullTime(msg.timestamp)}>{formatTime(msg.timestamp)}</span>
@@ -1205,6 +1214,7 @@ export const MessageList = React.memo(function MessageList({
   showRuntimeProgress = true,
   renderUserMarkdown = false,
 }: MessageListProps) {
+  const tr = useChatText()
   const scrollScope = scrollScopeProp ?? `${viewKind}:${detailMode}:${channelName}`
   const listRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -2034,8 +2044,8 @@ export const MessageList = React.memo(function MessageList({
           {!hasRenderableContent && (
             <div className="msg-welcome">
               <div className="msg-welcome-icon">{welcome.icon}</div>
-              <div className="msg-welcome-title">{channelName || welcome.title}</div>
-              <div className="msg-welcome-hint">{welcome.hint}</div>
+              <div className="msg-welcome-title">{channelName || tr(welcome.title)}</div>
+              <div className="msg-welcome-hint">{tr(welcome.hint)}</div>
             </div>
           )}
 
@@ -2043,13 +2053,13 @@ export const MessageList = React.memo(function MessageList({
             <div className="msg-history-hint">
               <button className="msg-history-load-btn" onClick={() => { void handleLoadOlder() }} disabled={loadingOlderHistory}>
                 {loadingOlderHistory
-                  ? 'Loading older messages...'
+                  ? tr("Loading older messages...")
                   : hiddenTimelineCount > 0
-                    ? `Load ${Math.min(VISIBLE_TIMELINE_STEP, hiddenTimelineCount)} older messages`
-                    : 'Load older messages'}
+                    ? tr('Load {count} older messages', { count: Math.min(VISIBLE_TIMELINE_STEP, hiddenTimelineCount) })
+                    : tr("Load older messages")}
               </button>
               <span className="msg-history-meta">
-                Showing {visibleTimelineItems.length} of {totalMessageCount ?? timelineItems.length}
+                {tr('Showing {shown} of {total}', { shown: visibleTimelineItems.length, total: totalMessageCount ?? timelineItems.length })}
               </span>
             </div>
           )}
@@ -2092,20 +2102,19 @@ export const MessageList = React.memo(function MessageList({
         <div className="msg-list-floating-actions">
           {pendingCheckpointMessages.length > 0 && (
             <button type="button" className="msg-list-float-btn msg-list-pending-btn" onClick={focusPendingCheckpoint}>
-              Pending actions · {pendingCheckpointMessages.length}
+              {tr("Pending actions ·")}{pendingCheckpointMessages.length}
             </button>
           )}
           {viewportMode === 'browsing' && !atStrictBottom && (
             <button type="button" className="msg-list-float-btn msg-list-latest-btn" onClick={jumpToLatest}>
-              {unseenCount > 0 ? `${unseenCount} new · ` : ''}Back to latest
-            </button>
+              {unseenCount > 0 ? tr('{count} new · ', { count: unseenCount }) : ''}{tr("Back to latest")}</button>
           )}
         </div>
       )}
 
       {lightboxUrl && (
         <div className="lightbox-overlay" onClick={() => setLightboxUrl(null)}>
-          <img className="lightbox-img" src={lightboxUrl} alt="Preview" />
+          <img className="lightbox-img" src={lightboxUrl} alt={tr("Preview")} />
         </div>
       )}
     </div>

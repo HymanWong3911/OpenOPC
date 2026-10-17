@@ -1,3 +1,4 @@
+import { useChatText } from '../lib/chatMessages'
 import React, { useCallback, useMemo, useState } from 'react'
 import type { ChatMessageMeta, CheckpointReplyMetadata } from '../types/chat'
 import { MarkdownBody } from './MarkdownBody'
@@ -39,13 +40,14 @@ function checkpointStatusLabel(status: string): string {
 export const DeliveryFeedbackPanel = React.memo(function DeliveryFeedbackPanel({
   meta, onReply, responded, submitting = false,
 }: DeliveryFeedbackPanelProps) {
+  const tr = useChatText()
   const isResponded = responded
   const [feedback, setFeedback] = useState('')
   const checkpointStatus = String(meta.checkpoint_status ?? '').trim().toLowerCase()
-  const resolvedLabel = checkpointStatusLabel(checkpointStatus)
+  const resolvedLabel = tr(checkpointStatusLabel(checkpointStatus))
   const prompt = String(meta.prompt ?? meta.summary ?? '').trim()
-  const baseTitle = String(meta.work_item_projection_title ?? firstLine(prompt) ?? 'Human Review').trim() || 'Human Review'
-  const title = `${baseTitle} (for self-evolution)`
+  const baseTitle = String(meta.work_item_projection_title ?? firstLine(prompt) ?? tr("Human Review")).trim() || tr("Human Review")
+  const title = tr('{title} (for self-evolution)', { title: baseTitle })
   const summary = String(meta.summary ?? '').trim()
   const activeSubagents = useMemo(
     () => (meta.active_subagents ?? []).filter((item) => !!item && typeof item === 'object'),
@@ -107,31 +109,31 @@ export const DeliveryFeedbackPanel = React.memo(function DeliveryFeedbackPanel({
         </div>
         <div className="ckpt-title">{title}</div>
         <span className="ckpt-badge ckpt-badge-scope">
-          {String(meta.feedback_scope ?? 'final').replace(/_/g, ' ')}
+          {tr(String(meta.feedback_scope ?? 'final').replace(/_/g, ' '))}
         </span>
         {isResponded && <span className="ckpt-badge ckpt-badge-responded">{resolvedLabel}</span>}
       </div>
 
       {summary && summary !== title && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Summary</div>
+          <div className="ckpt-section-title">{tr("Summary")}</div>
           <MarkdownBody content={summary} className="ckpt-markdown" />
         </div>
       )}
       {prompt && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Review Request</div>
+          <div className="ckpt-section-title">{tr("Review Request")}</div>
           <MarkdownBody content={prompt} className="ckpt-markdown" />
         </div>
       )}
 
       {hasRuntimeState && (
         <details className="ckpt-runtime-details">
-          <summary>Runtime State</summary>
+          <summary>{tr("Runtime State")}</summary>
           <div className="ckpt-runtime-body">
-            {worktreePath && <div>Worktree: <code>{worktreePath}</code></div>}
-            {activeSubagents.length > 0 && <div>Active subagents: {activeSubagents.length}</div>}
-            {permissionRequests.length > 0 && <div>Pending permission records: {permissionRequests.length}</div>}
+            {worktreePath && <div>{tr("Worktree:")}{' '}<code>{worktreePath}</code></div>}
+            {activeSubagents.length > 0 && <div>{tr("Active subagents:")}{' '}{activeSubagents.length}</div>}
+            {permissionRequests.length > 0 && <div>{tr("Pending permission records:")}{' '}{permissionRequests.length}</div>}
           </div>
         </details>
       )}
@@ -139,22 +141,19 @@ export const DeliveryFeedbackPanel = React.memo(function DeliveryFeedbackPanel({
       {!isResponded && (
         <div className="ckpt-actions ckpt-actions-inline-feedback">
           <button className="ckpt-btn ckpt-btn-approve" onClick={handleApprove} disabled={actionsDisabled}>
-            Fully Agree
-          </button>
+            {tr("Fully Agree")}</button>
           <button className="ckpt-btn ckpt-btn-cancel" onClick={handleIgnore} disabled={actionsDisabled}>
-            Ignore
-          </button>
+            {tr("Ignore")}</button>
           <textarea
             className="ckpt-feedback-input ckpt-feedback-inline-input"
-            placeholder="Feedback for self-evolution..."
+            placeholder={tr("Feedback for self-evolution...")}
             value={feedback}
             onChange={event => setFeedback(event.target.value)}
             disabled={actionsDisabled}
             rows={2}
           />
           <button className="ckpt-btn ckpt-btn-feedback" onClick={handleFeedback} disabled={actionsDisabled || !feedback.trim()}>
-            Send Feedback
-          </button>
+            {tr("Send Feedback")}</button>
         </div>
       )}
     </div>

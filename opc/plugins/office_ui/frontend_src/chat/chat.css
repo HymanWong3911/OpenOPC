@@ -5422,3 +5422,317 @@
   line-height: 1.4;
 }
 .ckpt-external-team-staffing b { color: var(--accent); }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.chat-page, .chat-fullpage, .chat-main) {
+  background: var(--ha-bg-canvas);
+  color: var(--ha-text-primary);
+  min-width: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-sidebar {
+  width: 264px;
+  min-width: 216px;
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-new-btn {
+  min-height: 36px;
+  margin: 16px 12px 12px;
+  border-radius: 8px;
+  border-color: var(--ha-action-primary);
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-new-btn:hover {
+  background: var(--ha-action-primary-hover);
+  border-color: var(--ha-action-primary-hover);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-nav-btn, .session-item) {
+  font-size: 13px;
+  line-height: 20px;
+  border-radius: 8px;
+  color: var(--ha-text-secondary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-nav-btn, .session-item):hover {
+  background: var(--ha-fill-hover);
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-nav-btn.active, .session-item.active) {
+  background: var(--ha-fill-selected);
+  border-left-color: var(--ha-accent);
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-item.session-item-child { font-size: 13px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-group-label {
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--ha-text-tertiary);
+  padding: 18px 16px 6px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-search-wrap {
+  min-height: 36px;
+  margin: 4px 12px 8px;
+  background: var(--ha-bg-canvas);
+  border: 1px solid var(--ha-border-default);
+  border-radius: 8px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-search {
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-search-wrap:focus-within {
+  border-color: var(--ha-border-strong);
+  outline: 2px solid var(--ha-focus-ring);
+  outline-offset: 2px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-unread-badge, .session-child-count) {
+  background: var(--ha-bg-raised);
+  color: var(--ha-text-secondary);
+  font-size: 12px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-search::placeholder, .msg-composer textarea::placeholder) {
+  color: var(--ha-text-tertiary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-header-bar, .chat-main-header) {
+  background: var(--ha-bg-canvas);
+  border-color: var(--ha-border-subtle);
+  padding: 14px 20px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-header-bar button, .task-header-bar select, .task-header-bar input,
+  .composer-mode-select, .composer-permission-default-btn, .composer-mode-chip,
+  .msg-list-float-btn, .msg-history-load-btn) {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  border-radius: 8px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-type-badge, .task-runtime-badge, .task-external-agent-badge,
+  .task-header-metrics, .composer-mode-inline-label, .composer-mode-chip-label) {
+  color: var(--ha-text-secondary);
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-resume-btn, .task-done-btn, .ckpt-btn-approve) {
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-resume-btn, .task-done-btn, .ckpt-btn-approve):hover:not(:disabled) {
+  background: var(--ha-action-primary-hover);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary-hover);
+  filter: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-stop-btn, .composer-stop-btn, .ckpt-btn-deny):hover {
+  background: var(--ha-danger-subtle);
+  color: var(--ha-danger);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-list { padding: 24px 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-welcome-icon {
+  color: var(--ha-text-primary);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-welcome-title { font-size: 20px; line-height: 30px; letter-spacing: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-welcome-hint { font-size: 15px; line-height: 26px; opacity: 1; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-avatar, .agent-avatar, .msg-avatar-context, .msg-avatar-draft) {
+  background: var(--ha-bg-surface) !important;
+  color: var(--ha-text-secondary) !important;
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 8px;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-sender { font-size: 13px; line-height: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-content-agent-card, .msg-row.agent:hover .msg-content-agent-card,
+  .msg-row.agent.grouped .msg-content-agent-card) {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 8px 0;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-content-agent {
+  color: var(--ha-text-reading);
+  font-size: 15px;
+  line-height: 26px;
+  overflow-wrap: anywhere;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-content-agent p, .msg-content-agent li) { line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-content-agent p { margin-bottom: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-content-agent h1, .msg-content-agent h2, .msg-content-agent h3) {
+  color: var(--ha-text-primary);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-content-agent a { color: var(--ha-accent-text); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-content-user {
+  background: var(--ha-bg-raised);
+  color: var(--ha-text-primary);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 15px;
+  line-height: 26px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-row.user.grouped .msg-content-user { border-radius: 14px; }
+.app-shell[data-theme="paper"] .msg-content-user { background: var(--ha-fill-selected); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-context-card, .msg-draft-card, .msg-project-update-card,
+  .msg-ops-details, .msg-ops-bundle-details) {
+  background: var(--ha-bg-subtle);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-content-agent code, .msg-content-user code, .code-block-wrap,
+  .msg-ops-details-pre, .task-header-time) {
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-content-agent pre, .msg-content-user pre, .code-block-wrap pre) {
+  background: var(--ha-bg-subtle) !important;
+  border-color: var(--ha-border-subtle);
+  line-height: 20px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-content-agent blockquote {
+  color: var(--ha-text-secondary);
+  background: var(--ha-bg-subtle);
+  border-left-color: var(--ha-border-strong);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-list-float-btn, .msg-history-load-btn) {
+  background: var(--ha-bg-raised);
+  border-color: var(--ha-border-default);
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.msg-list-float-btn:hover, .msg-history-load-btn:hover) {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-strong);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.progress-block, .ptl-block, .wi-progress-card, .ckpt-card) {
+  background: var(--ha-bg-subtle);
+  border-color: var(--ha-border-subtle);
+  border-radius: 10px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.work-item-divider-line, .work-item-divider-active .work-item-divider-line,
+  .work-item-divider-passed .work-item-divider-line, .work-item-divider-failed .work-item-divider-line,
+  .composer-mode-chip-popover-divider) { background: var(--ha-border-subtle); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ptl-live-shimmer, .ckpt-exp-bar) {
+  background: var(--ha-text-secondary);
+  animation: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.session-state-dot, .task-status-dot, .composer-status-indicator, .agent-status-dot,
+  .task-header-avatar) { box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-composer { padding: 8px 24px 24px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-composer .composer-input-area {
+  background: var(--ha-bg-surface);
+  border: 1px solid var(--ha-border-default);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.12);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-composer.focused .composer-input-area {
+  border-color: var(--ha-border-strong);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.12);
+  outline: 2px solid var(--ha-focus-ring);
+  outline-offset: 2px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .msg-composer .composer-input-area textarea {
+  font-size: 15px;
+  line-height: 26px;
+  padding: 16px 16px 4px;
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.composer-config-group, .composer-config-group[data-locked='true']) {
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+  flex-shrink: 1;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-mode-inline-label { font-size: 12px; font-weight: 400; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.composer-mode-inline[data-kind='mode'], .composer-mode-inline[data-kind='agent'],
+  .composer-mode-inline[data-kind='org'], .composer-mode-inline[data-kind='permissions'])
+  .composer-mode-inline-label { color: var(--ha-text-secondary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.composer-mode-select, .composer-mode-chip, .composer-mode-chip-icon,
+  .composer-mode-chip-popover-action-icon) {
+  color: var(--ha-text-primary);
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+  border-radius: 8px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.composer-mode-select:hover, .composer-mode-chip:hover) {
+  background: var(--ha-fill-hover);
+  border-color: var(--ha-border-default);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-mode-chip-popover {
+  background: var(--ha-bg-raised);
+  border-color: var(--ha-border-default);
+  border-radius: 12px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-mode-chip-popover-body { color: var(--ha-text-secondary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-mode-chip-popover-action { font-size: 13px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-send-btn {
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-send-btn:not(:disabled):hover {
+  background: var(--ha-action-primary-hover);
+  filter: none;
+  transform: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-send-btn:disabled {
+  background: var(--ha-fill-pressed);
+  color: var(--ha-text-disabled);
+  opacity: 1;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.attachment-chip, .composer-status) {
+  background: var(--ha-bg-subtle);
+  border-color: var(--ha-border-subtle);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.chat-page, .workspace-page) :is(button, select, input):focus-visible {
+  outline: 2px solid var(--ha-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+@container ctxpanel (max-width: 680px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-bottom { flex-wrap: wrap; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-config-group { flex-wrap: wrap; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .composer-mode-select { max-width: 168px; }
+}
+@media (max-width: 1100px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-sidebar { width: 240px; min-width: 216px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-header-bar, .chat-main-header) { padding: 12px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.chat-page, .workspace-page) *,
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.chat-page, .workspace-page) *::before,
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.chat-page, .workspace-page) *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-sidebar { width: 60px; min-width: 60px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-empty { display: none; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-new-btn { margin: 12px 12px 8px; padding: 8px; }
+}
+@media (max-width: 700px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-sidebar { width: 100%; min-width: 0; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .session-new-btn { margin: 8px; }
+}

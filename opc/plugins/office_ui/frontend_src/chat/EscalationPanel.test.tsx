@@ -3,7 +3,9 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import React from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
+import { renderToStaticMarkup as renderStaticMarkup } from 'react-dom/server'
+import { I18nProvider } from '../i18n'
+const renderToStaticMarkup = (element: React.ReactNode) => renderStaticMarkup(<I18nProvider initialLocale="en">{element}</I18nProvider>)
 
 import { EscalationPanel } from './EscalationPanel'
 

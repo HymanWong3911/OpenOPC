@@ -1,3 +1,4 @@
+import { useChatText, type ChatText } from '../lib/chatMessages'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type {
   AgentAnimStatus,
@@ -54,39 +55,39 @@ function statusSortKey(s: Session): number {
   return 4
 }
 
-function elapsed(ts: number): string {
+function elapsed(ts: number, tr: ChatText): string {
   const sec = Math.floor((Date.now() - ts) / 1000)
-  if (sec < 5) return 'now'
-  if (sec < 60) return `${sec}s`
+  if (sec < 5) return tr('now')
+  if (sec < 60) return tr('{count}s', { count: sec })
   const min = Math.floor(sec / 60)
-  if (min < 60) return `${min}m`
-  return `${Math.floor(min / 60)}h`
+  if (min < 60) return tr('{count}m', { count: min })
+  return tr('{count}h', { count: Math.floor(min / 60) })
 }
 
-function lastActivity(entries: ProgressEntry[]): string {
+function lastActivity(entries: ProgressEntry[], tr: ChatText): string {
   if (entries.length === 0) return '\u2014'
-  return elapsed(entries[entries.length - 1].timestamp)
+  return elapsed(entries[entries.length - 1].timestamp, tr)
 }
 
-function activitySummary(s: Session): string {
-  if (s.status === 'done') return 'Completed'
-  if (s.status === 'failed') return 'Failed'
-  if (s.status === 'cancelled') return 'Cancelled'
+function activitySummary(s: Session, tr: ChatText): string {
+  if (s.status === 'done') return tr('Completed')
+  if (s.status === 'failed') return tr('Failed')
+  if (s.status === 'cancelled') return tr('Cancelled')
 
   const st = agentStatusOf(s)
   if (st === 'tool_active' && s.currentTool) return s.currentTool
-  if (st === 'reflecting') return 'Thinking\u2026'
-  if (s.status === 'pending') return 'Pending'
+  if (st === 'reflecting') return tr('Thinking…')
+  if (s.status === 'pending') return tr('Pending')
 
   const log = s.progressLog
   if (log.length > 0) {
     const last = log[log.length - 1]
-    if (last.type === 'work_item_started') return `Work item: ${last.summary}`
+    if (last.type === 'work_item_started') return tr('Work item: {summary}', { summary: last.summary })
     if (last.type === 'tool_call') return last.summary
     if (last.detail) return last.detail.replace(/\s+/g, ' ').trim()
     return last.summary
   }
-  return 'Idle'
+  return tr('Idle')
 }
 
 function terminalIcon(status: string): string | null {
@@ -130,21 +131,21 @@ const ROLE_STATUS_SORT: Record<RoleAggregatedStatus, number> = {
   failed: 4,
 }
 
-function summarizeRoleActivity(summary: RoleWorkItemSummary): string {
-  if (summary.runtimeStatus === 'tool_active') return 'Running tool…'
-  if (summary.runtimeStatus === 'reflecting') return 'Thinking…'
-  const label = ROLE_STATUS_LABEL[summary.aggregatedStatus] ?? 'Pending'
+function summarizeRoleActivity(summary: RoleWorkItemSummary, tr: ChatText): string {
+  if (summary.runtimeStatus === 'tool_active') return tr('Running tool…')
+  if (summary.runtimeStatus === 'reflecting') return tr('Thinking…')
+  const label = tr(ROLE_STATUS_LABEL[summary.aggregatedStatus] ?? 'Pending')
   if (summary.aggregatedStatus === 'done') {
-    return `${label} · ${summary.workItems.length} work item${summary.workItems.length === 1 ? '' : 's'}`
+    return tr(summary.workItems.length === 1 ? '{label} · {count} work item' : '{label} · {count} work items', { label, count: summary.workItems.length })
   }
   return label
 }
 
-function lastRoleActivity(summary: RoleWorkItemSummary): string {
+function lastRoleActivity(summary: RoleWorkItemSummary, tr: ChatText): string {
   if (summary.workItems.length === 0) return '—'
   const ts = summary.workItems.reduce((max, w) => Math.max(max, w.updatedAt), 0)
   if (!ts) return '—'
-  return elapsed(ts)
+  return elapsed(ts, tr)
 }
 
 function roleWorkItemSessionStatus(row: RoleWorkItemRow): string | undefined {
@@ -163,6 +164,7 @@ function WorkItemActivitySections({
   fallbackEntries?: ProgressEntry[]
   sessionStatus?: string
 }) {
+  const tr = useChatText()
   const visibleSections = (sections ?? []).filter(section => (
     (section.entries?.length ?? 0) > 0 || !!section.runtimeTaskId
   ))
@@ -191,7 +193,7 @@ function WorkItemActivitySections({
                   expandedByDefault
                 />
               ) : (
-                <div className="wf-role-turn-empty-activity">No runtime activity yet</div>
+                <div className="wf-role-turn-empty-activity">{tr("No runtime activity yet")}</div>
               )}
             </section>
           )
@@ -201,7 +203,7 @@ function WorkItemActivitySections({
   }
 
   if (!fallbackEntries || fallbackEntries.length === 0) {
-    return <div className="wf-role-turn-empty-activity">No runtime activity yet</div>
+    return <div className="wf-role-turn-empty-activity">{tr("No runtime activity yet")}</div>
   }
   return (
     <AgentProgressBlock
@@ -221,6 +223,7 @@ function AgentWorkPanelRoleView({
   onOpenChildDetail?: (taskId: string) => void
   onOpenExecutionPanel?: (taskId: string) => void
 }) {
+  const tr = useChatText()
   const [selectedRoleKey, setSelectedRoleKey] = useState<string | null>(null)
   const [selectedWorkItemId, setSelectedWorkItemId] = useState<string | null>(null)
   const [filter, setFilter] = useState<StatusFilter>('all')
@@ -276,10 +279,9 @@ function AgentWorkPanelRoleView({
     <div className="awp">
       <div className="awp-header">
         <span className="awp-title">
-          Agents
-          <span className="awp-count">
+          {tr("Agents")}<span className="awp-count">
             {activeCount > 0
-              ? `${activeCount}/${summaries.length} active`
+              ? tr('{active}/{total} active', { active: activeCount, total: summaries.length })
               : `${summaries.length}`}
           </span>
         </span>
@@ -289,15 +291,15 @@ function AgentWorkPanelRoleView({
             value={filter}
             onChange={e => setFilter(e.target.value as StatusFilter)}
           >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="idle">Idle / Done</option>
-            <option value="pending">Pending</option>
+            <option value="all">{tr("All")}</option>
+            <option value="active">{tr("Active")}</option>
+            <option value="idle">{tr("Idle / Done")}</option>
+            <option value="pending">{tr("Pending")}</option>
           </select>
           <button
             className={`awp-search-toggle${showSearch ? ' active' : ''}`}
             onClick={() => setShowSearch(v => !v)}
-            title="Search agents"
+            title={tr("Search agents")}
           >
             <IconSearch />
           </button>
@@ -309,7 +311,7 @@ function AgentWorkPanelRoleView({
           <input
             className="awp-search-input"
             type="text"
-            placeholder="Search agents or work items..."
+            placeholder={tr("Search agents or work items...")}
             value={search}
             onChange={e => setSearch(e.target.value)}
             autoFocus
@@ -331,23 +333,23 @@ function AgentWorkPanelRoleView({
                 setSelectedRoleKey(prev => (prev === summary.roleKey ? null : summary.roleKey))
                 setSelectedWorkItemId(null)
               }}
-              title={`${summary.roleName} — ${ROLE_STATUS_LABEL[summary.aggregatedStatus]}`}
+              title={`${summary.roleName} — ${tr(ROLE_STATUS_LABEL[summary.aggregatedStatus])}`}
             >
               <span className={`awp-dot${isLive ? ' awp-dot-active' : ''} awp-dot-${summary.aggregatedStatus}`} />
               <div className="awp-row-info">
                 <span className="awp-row-name">{summary.roleName}</span>
                 <span className="awp-row-projection">
-                  {summary.workItems.length} work item{summary.workItems.length === 1 ? '' : 's'}
+                  {tr(summary.workItems.length === 1 ? '{count} work item' : '{count} work items', { count: summary.workItems.length })}
                 </span>
               </div>
-              <span className="awp-row-activity">{summarizeRoleActivity(summary)}</span>
-              <span className="awp-row-time">{lastRoleActivity(summary)}</span>
+              <span className="awp-row-activity">{summarizeRoleActivity(summary, tr)}</span>
+              <span className="awp-row-time">{lastRoleActivity(summary, tr)}</span>
             </button>
           )
         })}
         {sorted.length === 0 && (
           <div className="awp-empty">
-            {search ? 'No matching agents' : 'No agents in this filter'}
+            {search ? tr("No matching agents") : tr("No agents in this filter")}
           </div>
         )}
       </div>
@@ -361,14 +363,14 @@ function AgentWorkPanelRoleView({
               </div>
               <div className="awp-detail-meta">
                 <span className="awp-detail-name">{selected.roleName}</span>
-                <span className="awp-detail-role">{ROLE_STATUS_LABEL[selected.aggregatedStatus]}</span>
+                <span className="awp-detail-role">{tr(ROLE_STATUS_LABEL[selected.aggregatedStatus])}</span>
               </div>
             </div>
             <div className="awp-detail-actions">
               <button
                 className="awp-detail-close"
                 onClick={() => { setSelectedRoleKey(null); setSelectedWorkItemId(null) }}
-                title="Close detail"
+                title={tr("Close detail")}
               >
                 <IconClose />
               </button>
@@ -378,7 +380,7 @@ function AgentWorkPanelRoleView({
             <div className="awp-detail-section">
               <div className="awp-detail-section-label">
                 <IconTimeline />
-                <span>Work items</span>
+                <span>{tr("Work items")}</span>
               </div>
               <ul className="wf-role-turns">
                 {selected.workItems.map((row) => {
@@ -394,13 +396,13 @@ function AgentWorkPanelRoleView({
                         onClick={() => setSelectedWorkItemId(prev => (prev === row.workItemId ? null : row.workItemId))}
                       >
                         <span className={`wf-role-turn-column wf-role-turn-column-${columnId}`}>
-                          {row.kanbanColumn.replace('-', ' ').replace(/^./, c => c.toUpperCase())}
+                          {tr(row.kanbanColumn.replace('-', ' ').replace(/^./, c => c.toUpperCase()))}
                         </span>
                         <span className="wf-role-turn-title">
-                          {row.isReviewTarget && <span className="wf-role-turn-tag">Review</span>}
+                          {row.isReviewTarget && <span className="wf-role-turn-tag">{tr("Review")}</span>}
                           {row.title}
                         </span>
-                        <span className="wf-role-turn-time">{elapsed(row.updatedAt)}</span>
+                        <span className="wf-role-turn-time">{elapsed(row.updatedAt, tr)}</span>
                         <span className="wf-role-turn-chevron">
                           <IconChevron down={expanded} />
                         </span>
@@ -423,8 +425,7 @@ function AgentWorkPanelRoleView({
                                 }
                               }}
                             >
-                              Open runtime session
-                            </button>
+                              {tr("Open runtime session")}</button>
                           )}
                         </div>
                       )}
@@ -434,7 +435,7 @@ function AgentWorkPanelRoleView({
               </ul>
             </div>
             {selectedWorkItem === null && selected.workItems.length === 0 && (
-              <div className="awp-detail-empty">No work items yet</div>
+              <div className="awp-detail-empty">{tr("No work items yet")}</div>
             )}
           </div>
         </div>
@@ -444,6 +445,7 @@ function AgentWorkPanelRoleView({
 }
 
 function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenExecutionPanel }: AgentWorkPanelLegacyViewProps) {
+  const tr = useChatText()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [filter, setFilter] = useState<StatusFilter>('all')
   const [search, setSearch] = useState('')
@@ -508,10 +510,9 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
       {/* Header */}
       <div className="awp-header">
         <span className="awp-title">
-          Agents
-          <span className="awp-count">
+          {tr("Agents")}<span className="awp-count">
             {activeCount > 0
-              ? `${activeCount}/${sessions.length} active`
+              ? tr('{active}/{total} active', { active: activeCount, total: sessions.length })
               : `${sessions.length}`}
           </span>
         </span>
@@ -521,15 +522,15 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
             value={filter}
             onChange={e => setFilter(e.target.value as StatusFilter)}
           >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="idle">Idle / Done</option>
-            <option value="pending">Pending</option>
+            <option value="all">{tr("All")}</option>
+            <option value="active">{tr("Active")}</option>
+            <option value="idle">{tr("Idle / Done")}</option>
+            <option value="pending">{tr("Pending")}</option>
           </select>
           <button
             className={`awp-search-toggle${showSearch ? ' active' : ''}`}
             onClick={() => setShowSearch(v => !v)}
-            title="Search agents"
+            title={tr("Search agents")}
           >
             <IconSearch />
           </button>
@@ -541,7 +542,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
           <input
             className="awp-search-input"
             type="text"
-            placeholder="Search agents..."
+            placeholder={tr("Search agents...")}
             value={search}
             onChange={e => setSearch(e.target.value)}
             autoFocus
@@ -566,7 +567,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
               className={`awp-row${isSelected ? ' awp-row-selected' : ''}${isActive ? ' awp-row-active' : ''}${isTerminal ? ` awp-row-terminal ${tCls}` : ''}`}
               onClick={() => handleSelect(s.taskId)}
               onDoubleClick={() => onOpenChildDetail?.(s.taskId)}
-              title={onOpenChildDetail ? 'Click to inspect, click again or double-click to open full context' : undefined}
+              title={onOpenChildDetail ? tr("Click to inspect, click again or double-click to open full context") : undefined}
             >
               {tIcon ? (
                 <span className={`awp-terminal-icon ${tCls}`}>{tIcon}</span>
@@ -577,14 +578,14 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
                 <span className="awp-row-name">{agentName}</span>
                 {projectionLabel && <span className="awp-row-projection">{projectionLabel}</span>}
               </div>
-              <span className="awp-row-activity">{activitySummary(s)}</span>
-              <span className="awp-row-time">{lastActivity(s.progressLog)}</span>
+              <span className="awp-row-activity">{activitySummary(s, tr)}</span>
+              <span className="awp-row-time">{lastActivity(s.progressLog, tr)}</span>
             </button>
           )
         })}
         {sorted.length === 0 && (
           <div className="awp-empty">
-            {search ? 'No matching agents' : 'No agents in this filter'}
+            {search ? tr("No matching agents") : tr("No agents in this filter")}
           </div>
         )}
       </div>
@@ -611,7 +612,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
                 )}
                 {selected.selectedExecutionAgent && (
                   <span className="awp-detail-employee">
-                    Agent: {executionAgentLabel(selected.selectedExecutionAgent)}
+                    {tr("Agent:")}{executionAgentLabel(selected.selectedExecutionAgent)}
                   </span>
                 )}
                 {selected.workItemProjectionId && (
@@ -626,7 +627,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
                 <button
                   className="awp-detail-expand"
                   onClick={() => onOpenChildDetail(selected.taskId)}
-                  title="Open full context"
+                  title={tr("Open full context")}
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                     <path d="M2.5 3.25h9a1 1 0 011 1v5.5a1 1 0 01-1 1h-4l-2.75 2v-2h-2.25a1 1 0 01-1-1v-5.5a1 1 0 011-1Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
@@ -638,7 +639,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
                 <button
                   className="awp-detail-expand"
                   onClick={() => onOpenExecutionPanel(selected.taskId)}
-                  title="Open execution panel"
+                  title={tr("Open execution panel")}
                 >
                   <IconTimeline />
                 </button>
@@ -646,7 +647,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
               <button
                 className="awp-detail-close"
                 onClick={() => setSelectedTaskId(null)}
-                title="Close detail"
+                title={tr("Close detail")}
               >
                 <IconClose />
               </button>
@@ -658,7 +659,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
               <div className="awp-detail-section">
                 <div className="awp-detail-section-label">
                   <IconHandoff />
-                  <span>Handoff</span>
+                  <span>{tr("Handoff")}</span>
                 </div>
                 <div className="msg-content-agent-card">
                   <MarkdownBody content={selected.handoffContext} className="awp-detail-handoff awp-detail-handoff-markdown" />
@@ -669,7 +670,7 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
             <div className="awp-detail-section">
               <div className="awp-detail-section-label">
                 <IconTimeline />
-                <span>Activity</span>
+                <span>{tr("Activity")}</span>
               </div>
               <AgentProgressBlock
                 entries={selected.progressLog}
@@ -681,14 +682,14 @@ function AgentWorkPanelLegacyView({ sessions, agents, onOpenChildDetail, onOpenE
                 expandedByDefault
               />
               {selected.progressLog.length === 0 && !selected.agentStatus && !TERMINAL_SESSION_STATUSES.has(selected.status) && (
-                <div className="awp-detail-empty">No activity recorded yet</div>
+                <div className="awp-detail-empty">{tr("No activity recorded yet")}</div>
               )}
             </div>
 
             {TERMINAL_SESSION_STATUSES.has(selected.status) && RESULT_BANNER[selected.status] && (
               <div className={`awp-result-banner ${RESULT_BANNER[selected.status].cls}`}>
                 <span className="awp-result-icon">{terminalIcon(selected.status)}</span>
-                <span>{RESULT_BANNER[selected.status].text}</span>
+                <span>{tr(RESULT_BANNER[selected.status].text)}</span>
               </div>
             )}
           </div>

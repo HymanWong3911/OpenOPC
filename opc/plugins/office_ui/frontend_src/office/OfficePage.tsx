@@ -81,6 +81,7 @@ export const OfficePage = memo(function OfficePage({
   const [editingOfficeName, setEditingOfficeName] = useState<string | null>(null)
   const [officeNameDraft, setOfficeNameDraft] = useState('')
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const roomRefs = useRef(new Map<string, HTMLElement>())
 
   useEffect(() => {
     const select = (agentId: string) => { setSelectedAgentId(agentId) }
@@ -88,12 +89,31 @@ export const OfficePage = memo(function OfficePage({
     return () => { bridge.off('agentSelected', select) }
   }, [bridge])
 
+  const hasRuntimeMain = agents.some(agent => agent.agent_id === 'openopc-main')
+  const allCards = useMemo(
+    // An empty scene's decorative fallback is not a real team member.
+    () => bridge.getCharacterCards().filter(card => card.id !== 'openopc-main' || hasRuntimeMain),
+    [bridge, revision, hasRuntimeMain],
+  )
   const cards = useMemo(() => {
-    const all = bridge.getCharacterCards()
-    const visible = showSubagents ? all : all.filter(card => !card.isSubagent)
+    const visible = showSubagents ? allCards : allCards.filter(card => !card.isSubagent)
     return visible.slice().sort((left, right) => left.displayName.localeCompare(right.displayName))
-  }, [bridge, revision, showSubagents])
+  }, [allCards, showSubagents])
   const offices = useMemo(() => getOffices(), [revision])
+  const memberState = (card: (typeof cards)[number]) => {
+    const agent = agents.find(item => item.agent_id === card.id)
+    const state = agent?.runtime_status ?? agent?.status ?? card.state
+    return state === 'type' ? 'tool_active' : state === 'think' || state === 'reflect' ? 'reflecting' : state
+  }
+  const memberTool = (card: (typeof cards)[number]) => {
+    const agent = agents.find(item => item.agent_id === card.id)
+    return agent ? agent.current_tool : card.currentTool
+  }
+  const activeStates = new Set(['running', 'working', 'thinking', 'tool_active', 'reflecting'])
+  const activeMembers = cards.filter(card => activeStates.has(memberState(card))).length
+  const seatIds = new Set(offices.flatMap(office => getOfficeDeskSeats(office.id).map(seat => seat.id)))
+  const seatCount = seatIds.size
+  const occupiedSeatCount = new Set(allCards.map(card => card.seatId).filter((id): id is string => !!id && seatIds.has(id))).size
   const selectedCard = cards.find(card => card.id === selectedAgentId) ?? null
   const selectedAgentSeats = useMemo(
     () => selectedCard ? bridge.getSeatsForOffice(selectedCard.officeId) : [],
@@ -121,15 +141,73 @@ export const OfficePage = memo(function OfficePage({
 
   return (
     <main className={`main-grid${active ? '' : ' hidden'}${sidebarCollapsed ? ' sidebar-collapsed' : ''}`}>
-      <section className="canvas-wrap">
-        <PhaserGame bridge={bridge} active={active} />
-        <button
-          className="canvas-float-btn"
-          onClick={() => setShowSubagents(value => !value)}
-          title={showSubagents ? t('office.hideSubagents') : t('office.showSubagents')}
-        >
-          {showSubagents ? '👥' : '👤'}
-        </button>
+      <section className="canvas-wrap office-visual-host">
+        {/* The scene currently owns office/seat synchronization; keep it mounted behind the team UI. */}
+        <div className="office-pixel-layer is-concealed" aria-hidden="true">
+          <PhaserGame bridge={bridge} active={active} />
+        </div>
+        <div className="office-view-switch" role="group" aria-label={t('officeView.filters')}>
+          <button className="office-subagent-filter" aria-pressed={showSubagents} onClick={() => setShowSubagents(value => !value)}>{showSubagents ? t('office.hideSub') : t('office.showSub')}</button>
+        </div>
+          <div className="office-overview">
+            <header className="office-overview-header">
+              <p className="office-overview-eyebrow">{t('officeView.eyebrow')}</p>
+              <h1>{t('officeView.title')}</h1>
+              <p>{t('officeView.description')}</p>
+            </header>
+            <div className="office-overview-metrics">
+              <article><strong>{cards.length}</strong><span>{t('officeView.members')}</span></article>
+              <article><strong>{activeMembers}</strong><span>{t('officeView.active')}</span></article>
+              <article><strong>{Math.max(0, seatCount - occupiedSeatCount)}</strong><span>{t('officeView.availableSeats')}</span></article>
+            </div>
+            <div className="office-room-grid">
+              {offices.map(office => {
+                const seats = getOfficeDeskSeats(office.id)
+                const members = allCards.filter(card => card.officeId === office.id)
+                const occupiedSeats = new Set(members.map(card => card.seatId).filter(id => seats.some(seat => seat.id === id))).size
+                return (
+                  <section className="office-room-card" key={office.id} ref={node => { if (node) roomRefs.current.set(office.id, node); else roomRefs.current.delete(office.id) }}>
+                    <div className="office-room-card-heading"><h2>{office.name}</h2><span>{t('officeView.occupancy', { used: occupiedSeats, total: seats.length })}</span></div>
+                    <div className="office-seat-grid">
+                      {seats.map((seat, index) => {
+                        const member = members.find(card => card.seatId === seat.id)
+                        return member && (showSubagents || !member.isSubagent) ? (
+                          <button className={`office-seat occupied${selectedAgentId === member.id ? ' selected' : ''}`} key={seat.id} onClick={() => selectAgent(member.id)} title={`${member.displayName} · ${seat.id}`}>
+                            <span className="office-seat-label">{String(index + 1).padStart(2, '0')}</span>
+                            <span className="office-seat-name">{member.displayName}</span>
+                          </button>
+                        ) : (
+                          <div className={`office-seat ${member ? 'occupied' : 'vacant'}`} key={seat.id} title={seat.id}><span className="office-seat-label">{String(index + 1).padStart(2, '0')}</span><span className="office-seat-name">{t(member ? 'officeView.occupied' : 'officeView.vacant')}</span></div>
+                        )
+                      })}
+                    </div>
+                  </section>
+                )
+              })}
+            </div>
+            <section className="office-member-section">
+              <h2>{t('officeView.members')}</h2><p>{t('officeView.memberHint')}</p>
+              <div className="office-member-table">
+                <div className="office-member-table-header" aria-hidden="true">
+                  {(['member', 'state', 'task', 'tool', 'room'] as const).map(key => <span key={key}>{t(`officeView.${key}`)}</span>)}
+                </div>
+                {cards.map(card => {
+                  const state = memberState(card)
+                  const statusClass = activeStates.has(state) ? 'is-active' : state === 'error' || state === 'failed' ? 'is-error' : state === 'done' ? 'is-done' : ''
+                  return (
+                    <button className={`office-member-row${selectedAgentId === card.id ? ' selected' : ''}`} key={card.id} onClick={() => selectAgent(card.id)}>
+                      <span className="office-member-identity"><span className="office-member-avatar" aria-hidden="true">{card.displayName.slice(0, 2).toUpperCase()}</span><span>{card.displayName}</span></span>
+                      <span className={`office-member-status ${statusClass}`}>{translateMaybe('agent.status', state) || state}</span>
+                      <span className="office-member-task">{card.taskSummary || t('officeView.noTask')}</span>
+                      <span className="office-member-tool">{memberTool(card) || '—'}</span>
+                      <span>{offices.find(office => office.id === card.officeId)?.name || '—'}</span>
+                    </button>
+                  )
+                })}
+                {cards.length === 0 && <p className="office-member-empty">{t('officeView.noMembers')}</p>}
+              </div>
+            </section>
+          </div>
         <button
           className="sidebar-collapse-btn"
           onClick={onToggleSidebar}
@@ -144,7 +222,7 @@ export const OfficePage = memo(function OfficePage({
         <div className="sidebar-body">
           <div className="team-panel">
             <div className="mode-info-bar">
-              <span className="mode-badge">{execMode === 'company' ? `${execMode}/${companyProfile}` : modeLabel}</span>
+              <span className="mode-badge">{modeLabel}</span>
               <span className="mode-hint">
                 {isOrgMode ? t('office.modeHint.org') : t('office.modeHint.switch')}
               </span>
@@ -155,11 +233,13 @@ export const OfficePage = memo(function OfficePage({
             </div>
             <div className="office-cards">
               {offices.map(office => {
-                const deskCount = getOfficeDeskSeats(office.id).length
+                const seats = getOfficeDeskSeats(office.id)
+                const deskCount = seats.length
                 const assignedCards = cards.filter(card => card.officeId === office.id)
+                const occupiedCount = new Set(allCards.filter(card => card.officeId === office.id && seats.some(seat => seat.id === card.seatId)).map(card => card.seatId)).size
                 const otherAgents = cards.filter(card => card.officeId !== office.id && !card.isSubagent)
                 return (
-                  <div key={office.id} className="office-card" onClick={() => bridge.panToOffice(office.id)}>
+                  <div key={office.id} className="office-card" onClick={() => roomRefs.current.get(office.id)?.scrollIntoView({ block: 'nearest' })}>
                     <div className="office-card-header">
                       {editingOfficeName === office.id ? (
                         <input
@@ -190,7 +270,7 @@ export const OfficePage = memo(function OfficePage({
                           </button>
                         </>
                       )}
-                      <span className="office-capacity">{assignedCards.length}/{deskCount}</span>
+                      <span className="office-capacity">{occupiedCount}/{deskCount}</span>
                     </div>
                     <div className="office-agents">
                       {assignedCards.map(card => (
@@ -203,7 +283,7 @@ export const OfficePage = memo(function OfficePage({
                           {card.displayName.slice(0, 8)}
                         </span>
                       ))}
-                      {isOrgMode && assignedCards.length < deskCount && otherAgents.length > 0 && (
+                      {isOrgMode && occupiedCount < deskCount && otherAgents.length > 0 && (
                         <select
                           className="assign-dropdown"
                           value=""
@@ -275,14 +355,14 @@ export const OfficePage = memo(function OfficePage({
                 <div className="agent-detail-name">{selectedCard.displayName}</div>
                 <div className="agent-detail-row">
                   <span className="detail-label">{t('common.state')}</span>
-                  <span className="detail-value">{translateMaybe('agent.status', selectedCard.state) || selectedCard.state}</span>
+                  <span className="detail-value">{translateMaybe('agent.status', memberState(selectedCard)) || memberState(selectedCard)}</span>
                 </div>
                 <div className="agent-detail-row">
                   <span className="detail-label">{t('common.tool')}</span>
-                  <span className="detail-value">{selectedCard.currentTool ?? '—'}</span>
+                  <span className="detail-value">{memberTool(selectedCard) || '—'}</span>
                 </div>
                 <div className="agent-detail-row">
-                  <span className="detail-label">{t('common.task')}</span>
+                  <span className="detail-label">{t('officeView.task')}</span>
                   <span className="detail-value">{selectedCard.taskSummary ?? '—'}</span>
                 </div>
                 <div className="agent-detail-row">
@@ -334,7 +414,7 @@ export const OfficePage = memo(function OfficePage({
                       className={`agent-row-simple ${selectedAgentId === card.id ? 'selected' : ''}`}
                       onClick={() => selectAgent(card.id)}
                     >
-                      {card.isSubagent && <span className="sub-badge">SUB</span>}
+                      {card.isSubagent && <span className="sub-badge">{t('office.subBadge')}</span>}
                       <span className="agent-name">{card.displayName}</span>
                       <span className="agent-spec">{card.state}{card.currentTool ? ` · ${card.currentTool}` : ''}</span>
                     </button>

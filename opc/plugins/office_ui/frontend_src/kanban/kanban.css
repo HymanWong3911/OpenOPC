@@ -1296,3 +1296,81 @@ pre.exec-section-content {
   background: color-mix(in srgb, var(--text-secondary) 10%, transparent);
   margin-left: auto;
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-board { background: var(--ha-bg-canvas); gap: 16px; padding: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-column {
+  background: var(--ha-bg-subtle);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 10px;
+  min-width: 280px;
+  max-width: 320px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-column-header { background: transparent; border-color: var(--ha-border-subtle); padding: 14px 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-col-label { font-size: 13px; line-height: 20px; letter-spacing: 0; text-transform: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-col-count { background: var(--ha-bg-surface); color: var(--ha-text-secondary); font-size: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-col-body { padding: 10px; gap: 10px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-card {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-card:hover { border-color: var(--ha-border-strong); box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-card.is-dragging { border-color: var(--ha-accent); box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-card-title { font-size: 15px; line-height: 26px; font-weight: 500; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.kanban-card-id, .agent-status-id, .team-tree-glyph, .team-copy-id) {
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  letter-spacing: 0;
+  font-size: 12px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-assignee-badge {
+  background: var(--ha-bg-raised);
+  color: var(--ha-text-secondary);
+  border: 1px solid var(--ha-border-default);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-col-add:hover {
+  color: var(--ha-text-primary);
+  background: var(--ha-fill-hover);
+  border-color: var(--ha-border-strong);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.board-selector, .agent-status-bar, .execution-panel) {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.board-tab, .team-activity-tabs button, .team-filter-row button, .execution-panel button) { font-size: 13px; border-radius: 8px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .board-tab.active {
+  background: var(--ha-fill-selected);
+  color: var(--ha-text-primary);
+  border-color: var(--ha-border-default);
+  box-shadow: inset 0 -2px 0 var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-run-selector button.active, .team-leader-row) {
+  background: var(--ha-fill-selected);
+  border-color: var(--ha-border-strong);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .team-run-selector button.active { box-shadow: inset 2px 0 0 var(--ha-accent); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-run-selector button b, .team-state-running, .team-leader-delegation,
+  .team-formation-icon, .team-formation-card.formed) {
+  color: var(--ha-text-secondary);
+  background: var(--ha-bg-subtle);
+  border-color: var(--ha-border-subtle);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .team-leader-delegation header { color: var(--ha-text-secondary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-formation-card, .team-task-card, .team-output-card) { background: var(--ha-bg-surface); border-color: var(--ha-border-subtle); box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-task-card strong, .team-member-main strong, .team-timeline-event strong) { font-size: 13px; line-height: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .team-output-content { font-size: 15px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .team-task-board { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.kanban-board, .execution-panel, .team-activity-panel) :is(button, input, select):focus-visible {
+  outline: 2px solid var(--ha-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.kanban-board, .execution-panel, .team-activity-panel) * { animation: none !important; transition: none !important; }
+}

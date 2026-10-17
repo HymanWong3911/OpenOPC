@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
 /**
  * StructureEditor — top-level wrapper for Team sub-tab's role editor.
  *
@@ -8,7 +10,7 @@
  *   - keyboard shortcuts: Escape (close Inspector), Delete (delete selected
  *     role in Canvas mode), F (fit view to graph), ⌘D (duplicate selected)
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { OrgRole, OrgEmployee, SavedOrgSummary } from '../types/visual'
 import { OrgVersionSwitcher } from './OrgVersionSwitcher'
 import { RoleInspector, type RoleUpdatePatch } from './RoleInspector'
@@ -52,6 +54,8 @@ export function StructureEditor({
   savedOrgsList, activeSavedOrg, currentOrgVersion, versionAtLoad,
   onSavedOrgsList, onSavedOrgSaveAs, onSavedOrgLoad, onSavedOrgDelete,
 }: StructureEditorProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [view, setView] = useState<EditorView>('canvas')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const canvasRef = useRef<StructureCanvasHandle>(null)
@@ -82,9 +86,9 @@ export function StructureEditor({
     let id = 'new_role'
     let suffix = 1
     while (existingIds.has(id)) { suffix += 1; id = `new_role_${suffix}` }
-    onAddRole(id, 'New Role', '', 'owner', null)
+    onAddRole(id, msg('New Role'), '', 'owner', null)
     setSelectedId(id)
-  }, [roles, onAddRole, isCustomMode])
+  }, [roles, onAddRole, isCustomMode, msg])
 
   /** Duplicate the currently-selected role (⌘D). */
   const handleDuplicateSelected = useCallback(() => {
@@ -93,9 +97,9 @@ export function StructureEditor({
     let id = `${selectedRole.role_id}_copy`
     let suffix = 1
     while (existingIds.has(id)) { suffix += 1; id = `${selectedRole.role_id}_copy_${suffix}` }
-    onAddRole(id, `${selectedRole.name} (copy)`, selectedRole.responsibility, selectedRole.reports_to, selectedRole.icon)
+    onAddRole(id, msg('{name} (copy)', { name: selectedRole.name }), selectedRole.responsibility, selectedRole.reports_to, selectedRole.icon)
     setSelectedId(id)
-  }, [roles, onAddRole, selectedRole, isCustomMode])
+  }, [roles, onAddRole, selectedRole, isCustomMode, msg])
 
   /**
    * Keyboard shortcuts (scoped to StructureEditor via a wrapper ref +
@@ -140,24 +144,24 @@ export function StructureEditor({
   return (
     <div className="se-container" ref={rootRef}>
       <div className="se-toolbar">
-        <div className="se-view-switcher" role="tablist" aria-label="Editor view">
+        <div className="se-view-switcher" role="tablist" aria-label={msg("Editor view")}>
           <button
             role="tab"
             aria-selected={view === 'canvas'}
             className={`se-view-btn${view === 'canvas' ? ' is-active' : ''}`}
             onClick={() => setView('canvas')}
-          >Canvas</button>
+          >{msg("Canvas")}</button>
           <button
             role="tab"
             aria-selected={view === 'table'}
             className={`se-view-btn${view === 'table' ? ' is-active' : ''}`}
             onClick={() => setView('table')}
-          >Table</button>
+          >{msg("Table")}</button>
         </div>
         <div className={`se-toolbar-actions${isCustomMode ? '' : ' se-toolbar-actions--readonly'}`}>
           {isCustomMode ? (
             <div className="se-saved-org-control">
-              <span className="se-toolbar-label">Saved org</span>
+              <span className="se-toolbar-label">{msg("Saved org")}</span>
               <OrgVersionSwitcher
                 savedOrgs={savedOrgsList ?? null}
                 activeName={activeSavedOrg ?? null}
@@ -169,17 +173,19 @@ export function StructureEditor({
               />
             </div>
           ) : (
-            <span className="se-readonly-pill">Read-only corporate</span>
+            <span className="se-readonly-pill">{msg("Read-only corporate")}</span>
           )}
           <div className="se-toolbar-divider" aria-hidden />
           {view === 'canvas' && (
             <button className="btn btn-ghost btn-sm" onClick={handleAutoLayout}>
-              Auto-layout
+
+              {msg("Auto-layout")}
             </button>
           )}
           {isCustomMode && (
             <button className="btn btn-primary btn-sm" onClick={handleAddRoleQuick}>
-              + Add role
+
+              {msg("+ Add role")}
             </button>
           )}
         </div>

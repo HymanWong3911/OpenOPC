@@ -933,3 +933,152 @@
 .mkt-pill:focus:not(:focus-visible) {
   outline: none;
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab { background: var(--ha-bg-canvas); color: var(--ha-text-primary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-header {
+  background: var(--ha-bg-canvas);
+  border-color: var(--ha-border-subtle);
+  padding: 24px 28px 20px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-title { font-size: 28px; line-height: 40px; font-weight: 600; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-eyebrow { font-size: 12px; letter-spacing: 0; font-weight: 500; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-version-badge, .org-profile-badge, .org-meta-pill, .org-meta-code,
+  .org-state-badge, .org-stat) {
+  background: var(--ha-bg-surface);
+  color: var(--ha-text-secondary);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-version-badge, .org-meta-code) { font-family: var(--ha-font-mono, 'Geist Mono', monospace); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-switcher-select {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+  font-size: 13px;
+  min-height: 36px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-create-trigger {
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary);
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-create-trigger:hover { background: var(--ha-action-primary-hover); border-color: var(--ha-action-primary-hover); box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-create-trigger-icon { color: inherit; background: transparent; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtabs { background: var(--ha-bg-canvas); border-color: var(--ha-border-subtle); padding: 12px 28px 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtab { font-size: 13px; line-height: 20px; border-radius: 8px 8px 0 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtab--active {
+  background: var(--ha-fill-selected);
+  color: var(--ha-text-primary);
+  border-color: var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-subtab--active .org-subtab-icon, .org-subtab--active .org-subtab-count) { color: var(--ha-text-primary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtab--active .org-subtab-count { background: var(--ha-bg-surface); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab-content { padding: 24px 28px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-create-backdrop { background: var(--ha-bg-overlay); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-create-modal { background: var(--ha-bg-surface); border-color: var(--ha-border-default); border-radius: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-create-field input, .org-create-member-row input, .org-create-member-row select, .org-create-member-row textarea) {
+  background: var(--ha-bg-canvas);
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+  font-size: 13px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.btn, .oc-btn-primary, .oc-btn-ghost, .oc-btn-danger, .mkt-btn, .mkt-btn-primary,
+  .mkt-btn-ghost, .pkg-btn, .pkg-btn-primary, .pkg-btn-secondary, .pkg-btn-danger, .pkg-btn-ghost,
+  .cfg-io-btn, .cfg-io-btn-primary, .cfg-io-btn-ghost, .tm-detail-hire-btn) {
+  min-height: 32px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.btn-primary, .oc-btn-primary, .mkt-btn-primary, .pkg-btn-primary,
+  .cfg-io-btn-primary, .tm-detail-hire-btn) {
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.btn-primary, .oc-btn-primary, .mkt-btn-primary, .pkg-btn-primary,
+  .cfg-io-btn-primary, .tm-detail-hire-btn):hover:not(:disabled) {
+  background: var(--ha-action-primary-hover);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary-hover);
+  opacity: 1;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.btn-danger, .oc-btn-danger, .pkg-btn-danger):hover:not(:disabled) {
+  background: var(--ha-danger-subtle);
+  color: var(--ha-danger);
+}
+.app-shell[data-theme="openopc"] :is(.btn-primary .btn-icon, .btn-primary .pkg-btn-icon,
+  .btn-primary .cfg-io-btn-icon, .oc-btn-primary img, .mkt-btn-primary img,
+  .pkg-btn-primary .pkg-btn-icon, .cfg-io-btn-primary .cfg-io-btn-icon) { filter: brightness(0); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab :is(button, select, input, textarea):focus-visible {
+  outline: 2px solid var(--ha-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+@media (max-width: 1100px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-header { padding: 20px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtabs { padding-left: 20px; padding-right: 20px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab-content { padding: 20px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-control-panel { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab *, :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab *::before, :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab *::after { animation: none !important; transition: none !important; }
+}
+
+/* A desktop width basis must not become vertical space in the mobile stack. */
+@media (max-width: 760px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-header {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 20px 16px;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-header-main, .org-control-panel, .org-stats-strip) {
+    flex: 0 0 auto;
+    min-width: 0;
+    width: 100%;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-control-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 12px;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-switcher {
+    flex: 0 0 auto;
+    min-width: 0;
+    gap: 6px;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-title {
+    max-width: 100%;
+    font-size: 24px;
+    line-height: 34px;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: anywhere;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-stats-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 8px;
+  }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-meta-code { max-width: 100%; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-subtabs { padding-left: 16px; padding-right: 16px; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-tab-content { padding: 16px; }
+}

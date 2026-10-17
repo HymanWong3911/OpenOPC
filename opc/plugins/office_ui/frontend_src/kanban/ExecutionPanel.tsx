@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type {
   ProgressEntry,
@@ -82,6 +83,7 @@ function ActivitySections({
   fallbackEntries?: ProgressEntry[]
   sessionStatus?: string
 }) {
+  const wsText = useWorkspaceText()
   const visibleSections = (sections ?? []).filter(section => (
     (section.entries?.length ?? 0) > 0 || !!section.runtimeTaskId
   ))
@@ -110,7 +112,7 @@ function ActivitySections({
                   expandedByDefault
                 />
               ) : (
-                <div className="exec-section-empty">No runtime activity yet</div>
+                <div className="exec-section-empty">{wsText("No runtime activity yet")}</div>
               )}
             </section>
           )
@@ -120,7 +122,7 @@ function ActivitySections({
   }
 
   if (!fallbackEntries || fallbackEntries.length === 0) {
-    return <div className="exec-section-empty">No activity recorded yet</div>
+    return <div className="exec-section-empty">{wsText("No activity recorded yet")}</div>
   }
   return (
     <AgentProgressBlock
@@ -138,6 +140,7 @@ export function ExecutionPanel({
   agents,
   onClose,
 }: ExecutionPanelProps) {
+  const wsText = useWorkspaceText()
   const rows = useMemo(() => (
     role.workItems
       .slice()
@@ -208,10 +211,10 @@ export function ExecutionPanel({
             <h3 className="exec-panel-title">{roleName}</h3>
             <span className={`exec-badge ${headerBadge.cls}`}>{headerBadge.label}</span>
             <span className="exec-panel-task-count">
-              {rows.length} Work Item{rows.length === 1 ? '' : 's'}
+              {rows.length} {wsText("Work Item")}{rows.length === 1 ? '' : wsText("s")}
             </span>
           </div>
-          <button className="exec-panel-close" onClick={onClose} title="Close (Esc)">
+          <button className="exec-panel-close" onClick={onClose} title={wsText("Close (Esc)")}>
             <IconClose />
           </button>
         </div>
@@ -231,7 +234,7 @@ export function ExecutionPanel({
 
         <div className="exec-panel-body">
           {rows.length === 0 && (
-            <div className="exec-section-empty">No work items yet</div>
+            <div className="exec-section-empty">{wsText("No work items yet")}</div>
           )}
           {rows.map((row, index) => {
             const isFocused = row.workItemId === focusedRowKey
@@ -248,12 +251,12 @@ export function ExecutionPanel({
                   type="button"
                   className="exec-task-card-header"
                   onClick={() => toggleExpanded(row.workItemId)}
-                  title={isExpanded ? 'Collapse' : 'Expand'}
+                  title={isExpanded ? wsText("Collapse") : wsText("Expand")}
                 >
-                  <span className="exec-task-card-index">Work item #{index + 1}</span>
+                  <span className="exec-task-card-index">{wsText("Work item #")}{index + 1}</span>
                   <span className="exec-task-card-title">{row.title || row.workItemId}</span>
-                  <span className={`exec-badge ${badge.cls}`}>{badge.label}</span>
-                  <span className="exec-task-card-time">{formatRelativeTime(row.updatedAt)}</span>
+                  <span className={`exec-badge ${badge.cls}`}>{wsText(badge.label)}</span>
+                  <span className="exec-task-card-time">{wsText(formatRelativeTime(row.updatedAt))}</span>
                   <span className={`exec-task-card-chevron${isExpanded ? ' open' : ''}`} aria-hidden="true">
                     ▸
                   </span>
@@ -263,17 +266,17 @@ export function ExecutionPanel({
                   <div className="exec-task-card-body">
                     <div className="exec-task-card-projection">
                       <IconWorkItem />
-                      <span>{humanize(row.kind) || 'Work item'}</span>
+                      <span>{wsText(humanize(row.kind) || 'Work Item')}</span>
                       {row.workItemProjectionId && <code>{row.workItemProjectionId}</code>}
-                      {row.executionTurnId && <span className="exec-inline-tag">Execution Turn</span>}
-                      {row.isReviewTarget && <span className="exec-inline-tag">Review target</span>}
+                      {row.executionTurnId && <span className="exec-inline-tag">{wsText("Execution Turn")}</span>}
+                      {row.isReviewTarget && <span className="exec-inline-tag">{wsText("Review target")}</span>}
                       {row.executorRoleName && <span>{row.executorRoleName}</span>}
                     </div>
 
                     <div className="exec-section">
                       <div className="exec-section-header">
                         <IconTimeline />
-                        <span>Activity</span>
+                        <span>{wsText("Activity")}</span>
                         <span className="exec-section-count">{activityCount}</span>
                       </div>
                       <div className="exec-section-content exec-activity-scroll">

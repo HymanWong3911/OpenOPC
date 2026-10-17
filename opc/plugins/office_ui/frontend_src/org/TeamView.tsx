@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type { OrgRole, OrgEmployee, SavedOrgSummary } from '../types/visual'
 import { StructureEditor } from './StructureEditor'
 import { resolveRoleIcon } from './roleIcons'
@@ -23,6 +25,8 @@ interface QuickStartProps {
 }
 
 function QuickStartWizard({ onComplete, onSwitchToTab }: QuickStartProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [step, setStep] = useState(1)
   const [members, setMembers] = useState<Array<{ name: string; resp: string; parent: string }>>([
     { name: '', resp: '', parent: 'owner' },
@@ -51,15 +55,15 @@ function QuickStartWizard({ onComplete, onSwitchToTab }: QuickStartProps) {
       <div className="qs-header">
         <img src={ICON.rocket} alt="" className="qs-header-icon" />
         <div>
-          <h3 className="qs-header-title">Build Your Team</h3>
-          <p className="qs-header-sub">Create an org team in a few steps, or <button className="qs-link-btn" onClick={() => onSwitchToTab('architecture')}>use a template</button></p>
+          <h3 className="qs-header-title">{msg("Build Your Team")}</h3>
+          <p className="qs-header-sub">{msg("Create an org team in a few steps, or")} <button className="qs-link-btn" onClick={() => onSwitchToTab('architecture')}>{msg("use a template")}</button></p>
         </div>
       </div>
 
       <div className="qs-progress">
         {[
-          { n: 1, icon: ICON.people, label: 'Team Members' },
-          { n: 2, icon: ICON.check, label: 'Preview' },
+          { n: 1, icon: ICON.people, label: msg("Team Members") },
+          { n: 2, icon: ICON.check, label: msg("Preview") },
         ].map(s => (
           <div key={s.n} className={`qs-step${step === s.n ? ' qs-step-active' : step > s.n ? ' qs-step-done' : ''}`}>
             <img src={s.icon} alt="" className="qs-step-icon" />
@@ -70,24 +74,24 @@ function QuickStartWizard({ onComplete, onSwitchToTab }: QuickStartProps) {
 
       {step === 1 && (
         <div className="qs-panel">
-          <h4>Who's on your team?</h4>
-          <p className="qs-hint">Add each team member with their name and what they do.</p>
+          <h4>{msg("Who's on your team?")}</h4>
+          <p className="qs-hint">{msg("Add each team member with their name and what they do.")}</p>
           <div className="qs-members">
             {members.map((m, i) => (
               <div key={i} className="qs-member-row">
-                <input className="qs-member-name" value={m.name} placeholder="Role name (e.g. Engineer)"
+                <input className="qs-member-name" value={m.name} placeholder={msg("Role name (e.g. Engineer)")}
                   onChange={e => updateMember(i, 'name', e.target.value)} />
-                <input className="qs-member-resp" value={m.resp} placeholder="What do they do?"
+                <input className="qs-member-resp" value={m.resp} placeholder={msg("What do they do?")}
                   onChange={e => updateMember(i, 'resp', e.target.value)} />
                 <select className="qs-member-parent" value={m.parent}
                   onChange={e => updateMember(i, 'parent', e.target.value)}>
-                  <option value="owner">Reports to you</option>
+                  <option value="owner">{msg("Reports to you")}</option>
                   {memberNames.filter(n => n !== m.name.trim()).map(n => (
-                    <option key={n} value={n}>{`Managed by ${n}`}</option>
+                    <option key={n} value={n}>{msg('Managed by {name}', { name: n })}</option>
                   ))}
                 </select>
                 {members.length > 1 && (
-                  <button className="qs-remove-btn" onClick={() => removeMember(i)} title="Remove">
+                  <button className="qs-remove-btn" onClick={() => removeMember(i)} title={msg("Remove")}>
                     <img src={ICON.trash} alt="" className="qs-remove-icon" />
                   </button>
                 )}
@@ -95,12 +99,13 @@ function QuickStartWizard({ onComplete, onSwitchToTab }: QuickStartProps) {
             ))}
           </div>
           <button className="qs-add-member" onClick={addMember}>
-            <img src={ICON.addPerson} alt="" className="qs-add-icon" /> Add another member
+            <img src={ICON.addPerson} alt="" className="qs-add-icon" /> {msg("Add another member")}
           </button>
           <div className="qs-nav">
             <span />
             <button className="oc-btn-primary" onClick={() => setStep(2)} disabled={validMembers.length === 0}>
-              Next: Preview →
+
+              {msg("Next: Preview →")}
             </button>
           </div>
         </div>
@@ -108,28 +113,28 @@ function QuickStartWizard({ onComplete, onSwitchToTab }: QuickStartProps) {
 
       {step === 2 && (
         <div className="qs-panel">
-          <h4>Your team at a glance</h4>
+          <h4>{msg("Your team at a glance")}</h4>
           <div className="qs-preview">
             <div className="qs-preview-section">
-              <h5>Team ({validMembers.length} members)</h5>
+              <h5>{msg('Team ({count} members)', { count: validMembers.length })}</h5>
               {validMembers.map((m, i) => (
                 <div key={i} className="qs-preview-member">
                   <strong>{m.name}</strong>
                   {m.resp && <span className="qs-preview-resp"> — {m.resp}</span>}
                   <span className="qs-preview-parent">
-                    {m.parent === 'owner' ? ' (reports to you)' : ` (managed by ${m.parent})`}
+                    {m.parent === 'owner' ? msg(" (reports to you)") : msg(' (managed by {name})', { name: m.parent })}
                   </span>
                 </div>
               ))}
             </div>
             <div className="qs-preview-section">
-              <h5>Actor Runtime</h5>
-              <p>Seat routing and delegation will be derived from your reporting structure and any team seats you configure later.</p>
+              <h5>{msg("Actor Runtime")}</h5>
+              <p>{msg("Seat routing and delegation will be derived from your reporting structure and any team seats you configure later.")}</p>
             </div>
           </div>
           <div className="qs-nav">
-            <button className="oc-btn-ghost" onClick={() => setStep(1)}>← Back</button>
-            <button className="oc-btn-primary qs-create-btn" onClick={handleFinish}>Create Team</button>
+            <button className="oc-btn-ghost" onClick={() => setStep(1)}>{msg("← Back")}</button>
+            <button className="oc-btn-primary qs-create-btn" onClick={handleFinish}>{msg("Create Team")}</button>
           </div>
         </div>
       )}
@@ -175,6 +180,8 @@ export function TeamView({
   savedOrgsList, activeSavedOrg, currentOrgVersion, versionAtLoad,
   onSavedOrgsList, onSavedOrgSaveAs, onSavedOrgLoad, onSavedOrgDelete,
 }: TeamViewProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [quickStartPending, setQuickStartPending] = useState(false)
   const [showExportForm, setShowExportForm] = useState(false)
   const [exportId, setExportId] = useState('')
@@ -248,7 +255,7 @@ export function TeamView({
   }
 
   const handleReset = () => {
-    if (!confirm('This will remove all org roles, employees, and work-item templates. Continue?')) return
+    if (!confirm(msg("This will remove all org roles, employees, and work-item templates. Continue?"))) return
     onResetArchitecture?.()
   }
 
@@ -274,7 +281,7 @@ export function TeamView({
         {quickStartPending ? (
           <div className="qs-wizard">
             <div className="qs-loading">
-              <span className="spinner-inline" /> Setting up your team...
+              <span className="spinner-inline" /> {msg("Setting up your team...")}
             </div>
           </div>
         ) : (
@@ -288,25 +295,26 @@ export function TeamView({
     <div className="team-view">
       <div className={`team-command-bar${isCustomMode ? ' team-command-bar--editable' : ' team-command-bar--readonly'}`}>
         <div className="team-command-copy">
-          <span className="team-command-eyebrow">{isCustomMode ? 'Saved org workspace' : 'Corporate baseline'}</span>
-          <span className="team-command-title">{isCustomMode ? 'Editable company architecture' : 'Built-in company architecture'}</span>
+          <span className="team-command-eyebrow">{isCustomMode ? msg("Saved org workspace") : msg("Corporate baseline")}</span>
+          <span className="team-command-title">{isCustomMode ? msg("Editable company architecture") : msg("Built-in company architecture")}</span>
         </div>
         <div className="team-command-metrics">
-          <span><b>{assignedRoleCount}</b> staffed roles</span>
-          <span><b>{vacantRoleCount}</b> vacant</span>
-          <span><b>{linkedEmployeeCount}</b> in office</span>
+          <span><b>{assignedRoleCount}</b> {msg("staffed roles")}</span>
+          <span><b>{vacantRoleCount}</b> {msg("vacant")}</span>
+          <span><b>{linkedEmployeeCount}</b> {msg("in office")}</span>
         </div>
         {isCustomMode && (
           <div className="team-command-actions">
             <button className="myorg-inline-btn" onClick={() => onSwitchToTab('employees')}>
-              <img src={ICON.addPerson} alt="" className="myorg-inline-icon" /> Hire Talent
+              <img src={ICON.addPerson} alt="" className="myorg-inline-icon" /> {msg("Hire Talent")}
             </button>
             <button className="btn btn-ghost btn-sm" onClick={() => setShowExportForm(true)}>
-              Export Package
+
+              {msg("Export Package")}
             </button>
             {onResetArchitecture && (
               <button className="myorg-reset-btn" onClick={handleReset}>
-                <img src={ICON.trash} alt="" className="myorg-reset-icon" /> Reset
+                <img src={ICON.trash} alt="" className="myorg-reset-icon" /> {msg("Reset")}
               </button>
             )}
           </div>
@@ -315,7 +323,8 @@ export function TeamView({
 
       {!isCustomMode && (
         <div className="team-readonly-strip">
-          Corporate role structure is fixed. Execution scope can still bind a role subtree to one JiuwenSwarm-team.
+
+          {msg("Corporate role structure is fixed. Execution scope can still bind a role subtree to one JiuwenSwarm-team.")}
         </div>
       )}
 
@@ -343,18 +352,18 @@ export function TeamView({
       {/* Export form */}
       {showExportForm && (
         <div className="myorg-form">
-          <h4 className="myorg-form-title">Export as .opcpkg</h4>
-          <div className="oc-form-row"><label>Package ID</label>
+          <h4 className="myorg-form-title">{msg("Export as .opcpkg")}</h4>
+          <div className="oc-form-row"><label>{msg("Package ID")}</label>
             <input value={exportId} onChange={e => setExportId(e.target.value)} placeholder="my-architecture" /></div>
-          <div className="oc-form-row"><label>Name</label>
-            <input value={exportName} onChange={e => setExportName(e.target.value)} placeholder="My Architecture" /></div>
-          <div className="oc-form-row"><label>Description</label>
-            <input value={exportDesc} onChange={e => setExportDesc(e.target.value)} placeholder="An org team structure" /></div>
-          <div className="oc-form-row"><label>Version</label>
+          <div className="oc-form-row"><label>{msg("Name")}</label>
+            <input value={exportName} onChange={e => setExportName(e.target.value)} placeholder={msg("My Architecture")} /></div>
+          <div className="oc-form-row"><label>{msg("Description")}</label>
+            <input value={exportDesc} onChange={e => setExportDesc(e.target.value)} placeholder={msg("An org team structure")} /></div>
+          <div className="oc-form-row"><label>{msg("Version")}</label>
             <input value={exportVersion} onChange={e => setExportVersion(e.target.value)} /></div>
           <div className="oc-form-actions">
-            <button className="oc-btn-primary" onClick={handleExport} disabled={!exportId.trim() || !exportName.trim()}>Export</button>
-            <button className="oc-btn-ghost" onClick={() => setShowExportForm(false)}>Cancel</button>
+            <button className="oc-btn-primary" onClick={handleExport} disabled={!exportId.trim() || !exportName.trim()}>{msg("Export")}</button>
+            <button className="oc-btn-ghost" onClick={() => setShowExportForm(false)}>{msg("Cancel")}</button>
           </div>
         </div>
       )}
@@ -363,10 +372,10 @@ export function TeamView({
       <div className="myorg-section">
         <div className="myorg-section-header">
           <img src={ICON.team} alt="" className="myorg-section-icon" />
-          <h3 className="myorg-section-title">Team Roster</h3>
-          <span className="myorg-section-count">{employees.length} members</span>
+          <h3 className="myorg-section-title">{msg("Team Roster")}</h3>
+          <span className="myorg-section-count">{employees.length} {msg("members")}</span>
           <span className="myorg-section-spacer" />
-          <span className="myorg-section-note">{assignedRoleCount}/{roles.length} staffed</span>
+          <span className="myorg-section-note">{assignedRoleCount}/{roles.length} {msg("staffed")}</span>
         </div>
         <div className="team-roster-grid">
           {roles.map(r => {
@@ -377,35 +386,35 @@ export function TeamView({
                 <div className="team-roster-card-header">
                   <img src={resolveRoleIcon(r.icon)} alt="" className="team-roster-card-icon" />
                   <span className="team-roster-role-name">{r.name}</span>
-                  <span className="team-roster-count">{externallyCovered ? 'team' : (emps.length || 'vacant')}</span>
+                  <span className="team-roster-count">{externallyCovered ? msg("team") : (emps.length || msg('vacant'))}</span>
                 </div>
                 {externallyCovered ? (
                   <div className="team-roster-external">
-                    <b>{r.external_team_boundary ? 'JiuwenSwarm-team boundary' : 'Covered by external team'}</b>
+                    <b>{r.external_team_boundary ? msg("JiuwenSwarm-team boundary") : msg("Covered by external team")}</b>
                     <span>{r.external_team_boundary
-                      ? 'No separate role recruitment; JiuwenSwarm-team manages internal staffing.'
-                      : `Inherited from ${r.external_team_boundary_role_id ?? 'team boundary'}.`}</span>
+                      ? msg("No separate role recruitment; JiuwenSwarm-team manages internal staffing.")
+                      : msg('Inherited from {role}.', { role: r.external_team_boundary_role_id ?? msg('team boundary') })}</span>
                   </div>
                 ) : emps.length > 0 ? emps.map(e => (
                   <div key={e.employee_id} className="team-roster-emp">
                     <img src={ICON.person} alt="" className="team-roster-emp-avatar" />
                     <div className="team-roster-emp-info">
                       <span className="team-roster-emp-name">{e.name}</span>
-                      <span className={`team-roster-seniority team-roster-seniority--${e.seniority}`}>{e.seniority}</span>
+                      <span className={`team-roster-seniority team-roster-seniority--${e.seniority}`}>{msg(e.seniority)}</span>
                     </div>
                     {e.linked_agent_id ? (
-                      <span className="team-roster-badge team-roster-badge--active">In Office</span>
+                      <span className="team-roster-badge team-roster-badge--active">{msg("In Office")}</span>
                     ) : onImportEmployee && e.role_id ? (
                       <button className="team-roster-deploy-btn" onClick={() => onImportEmployee(e.employee_id)}
-                        title="Add this employee to the office workspace">
-                        <img src={ICON.deploy} alt="" className="team-roster-deploy-icon" /> Deploy
+                        title={msg("Add this employee to the office workspace")}>
+                        <img src={ICON.deploy} alt="" className="team-roster-deploy-icon" /> {msg("Deploy")}
                       </button>
                     ) : null}
                   </div>
                 )) : (
                   <div className="team-roster-vacant">
-                    <span className="team-roster-vacant-text">No members yet</span>
-                    {isCustomMode && <button className="team-roster-hire-btn" onClick={() => onSwitchToTab('employees')}>Hire</button>}
+                    <span className="team-roster-vacant-text">{msg("No members yet")}</span>
+                    {isCustomMode && <button className="team-roster-hire-btn" onClick={() => onSwitchToTab('employees')}>{msg("Hire")}</button>}
                   </div>
                 )}
               </div>

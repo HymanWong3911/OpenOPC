@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type {
   CommsStatePayload,
@@ -27,6 +28,7 @@ export function CommsPanel({
   pollIntervalMs = 30000,
   embedded = false,
 }: CommsPanelProps) {
+  const wsText = useWorkspaceText()
   const [selectedPath, setSelectedPath] = useState<string | null>(null)
 
   // Auto-refresh fallback. onRefresh goes through a ref so the interval
@@ -72,9 +74,8 @@ export function CommsPanel({
         }}
       >
         <span style={{ fontWeight: 600, fontSize: 13, flex: 1 }}>
-          Agent Communications
-        </span>
-        {totalUnread > 0 && <Badge color="var(--accent, #3498db)">{totalUnread} unread</Badge>}
+          {wsText("Agent Communications")}</span>
+        {totalUnread > 0 && <Badge color="var(--accent, #3498db)">{totalUnread} {wsText("unread")}</Badge>}
         <button
           onClick={onRefresh}
           style={{
@@ -87,17 +88,16 @@ export function CommsPanel({
             borderRadius: 4,
           }}
         >
-          Refresh
-        </button>
+          {wsText("Refresh")}</button>
       </div>
 
       {/* Body */}
       {!state ? (
-        <EmptyState>Loading communications...</EmptyState>
+        <EmptyState>{wsText("Loading communications...")}</EmptyState>
       ) : !state.available ? (
-        <EmptyState>Not available{state.reason ? `: ${state.reason}` : ''}</EmptyState>
+        <EmptyState>{wsText("Not available")}{state.reason ? `: ${state.reason}` : ''}</EmptyState>
       ) : state.empty ? (
-        <EmptyState>No communications yet. They will appear once agents start collaborating.</EmptyState>
+        <EmptyState>{wsText("No communications yet. They will appear once agents start collaborating.")}</EmptyState>
       ) : (
         <CommsBody
           state={state}
@@ -128,6 +128,7 @@ function CommsBody({
   selectedPath: string | null
   onSelectMessage: (path: string) => void
 }) {
+  const wsText = useWorkspaceText()
   const hasRoles = (state.roles?.length ?? 0) > 0
   const hasMeetings = (state.meetings?.length ?? 0) > 0
   const hasFailures = (state.recent_failures?.length ?? 0) > 0
@@ -135,7 +136,7 @@ function CommsBody({
   return (
     <div style={{ padding: '4px 0' }}>
       {hasFailures && (
-        <Section title="Failures">
+        <Section title={wsText("Failures")}>
           {(state.recent_failures || []).map((f, i) => (
             <div
               key={`${f.recorded_at || 'f'}-${i}`}
@@ -171,7 +172,7 @@ function CommsBody({
       )}
 
       {hasMeetings && (
-        <Section title="Meetings">
+        <Section title={wsText("Meetings")}>
           {(state.meetings || []).map((m) => (
             <div
               key={m.meeting_id}
@@ -189,15 +190,14 @@ function CommsBody({
                 </Badge>
                 <strong style={{ fontSize: 12, flex: 1 }}>{m.topic}</strong>
                 <span style={{ fontSize: 11, color: 'var(--text-dim, #888)' }}>
-                  {m.entry_count} entries
-                </span>
+                  {m.entry_count} {wsText("entries")}</span>
               </div>
               <div style={{ fontSize: 11, color: 'var(--text-secondary, #999)', marginTop: 3 }}>
-                by {m.organizer} &middot; {m.participants.join(', ')}
+                {wsText("by ")}{m.organizer} &middot; {m.participants.join(', ')}
               </div>
               {m.decision && (
                 <div style={{ fontSize: 11, marginTop: 3, color: 'var(--green, #27ae60)' }}>
-                  Decision: {m.decision}
+                  {wsText("Decision: ")}{m.decision}
                 </div>
               )}
             </div>
@@ -206,7 +206,7 @@ function CommsBody({
       )}
 
       {!hasRoles && !hasMeetings && !hasFailures && (
-        <EmptyState>No communication activity yet.</EmptyState>
+        <EmptyState>{wsText("No communication activity yet.")}</EmptyState>
       )}
     </div>
   )
@@ -225,6 +225,7 @@ function RoleSection({
   selectedPath: string | null
   onSelectMessage: (path: string) => void
 }) {
+  const wsText = useWorkspaceText()
   const [expanded, setExpanded] = useState(true)
   const hasAnyMessages =
     role.unread_count > 0 || (role.recent_seen?.length ?? 0) > 0 || (role.recent_outbox?.length ?? 0) > 0
@@ -263,13 +264,12 @@ function RoleSection({
       >
         <span style={{ fontSize: 10, width: 10 }}>{expanded ? '▼' : '▶'}</span>
         <span style={{ flex: 1, fontWeight: 600, fontSize: 12 }}>{roleName}</span>
-        {role.has_blocking && <Badge color="var(--red, #e74c3c)">BLOCKING</Badge>}
+        {role.has_blocking && <Badge color="var(--red, #e74c3c)">{wsText("BLOCKING")}</Badge>}
         {role.unread_count > 0 && (
-          <Badge color="var(--accent, #3498db)">{role.unread_count} new</Badge>
+          <Badge color="var(--accent, #3498db)">{role.unread_count} {wsText("new")}</Badge>
         )}
         <span style={{ fontSize: 11, color: 'var(--text-dim, #666)' }}>
-          {role.seen_count} read &middot; {role.outbox_count} sent
-        </span>
+          {role.seen_count} {wsText("read · ")}{role.outbox_count} {wsText("sent")}</span>
       </div>
 
       {expanded && hasAnyMessages && (
@@ -285,21 +285,20 @@ function RoleSection({
             }}
           >
             <TabButton active={activeTab === 'unread'} onClick={() => setActiveTab('unread')}>
-              Unread ({role.unread_count})
+              {wsText("Unread (")}{role.unread_count})
             </TabButton>
             <TabButton active={activeTab === 'history'} onClick={() => setActiveTab('history')}>
-              Read ({role.recent_seen?.length ?? 0})
+              {wsText("Read (")}{role.recent_seen?.length ?? 0})
             </TabButton>
             <TabButton active={activeTab === 'sent'} onClick={() => setActiveTab('sent')}>
-              Sent ({role.recent_outbox?.length ?? 0})
+              {wsText("Sent (")}{role.recent_outbox?.length ?? 0})
             </TabButton>
           </div>
 
           {/* Message list */}
           {messages.length === 0 ? (
             <div style={{ padding: '8px 0', fontSize: 11, color: 'var(--text-dim, #666)' }}>
-              No messages.
-            </div>
+              {wsText("No messages.")}</div>
           ) : (
             <div style={{ maxHeight: 280, overflow: 'auto' }}>
               {messages.map((m) => (
@@ -329,6 +328,7 @@ function MessageRow({
   selected: boolean
   onClick: () => void
 }) {
+  const wsText = useWorkspaceText()
   const isSent = message.bucket === 'sent'
   const direction = isSent
     ? `To: ${message.to || '?'}`
@@ -355,7 +355,7 @@ function MessageRow({
           <span style={{ color: 'var(--text, #ddd)' }}>{message.subject}</span>
         </span>
         {message.blocking && (
-          <span style={{ fontSize: 9, color: 'var(--red, #e74c3c)', fontWeight: 700 }}>BLK</span>
+          <span style={{ fontSize: 9, color: 'var(--red, #e74c3c)', fontWeight: 700 }}>{wsText("BLK")}</span>
         )}
         <span style={{ fontSize: 10, color: 'var(--text-dim, #666)', flexShrink: 0 }}>
           {message.sent_at?.slice(11, 19) || ''}
@@ -374,6 +374,7 @@ function MessageViewer({
   message: CommsMessagePayload
   onClose: () => void
 }) {
+  const wsText = useWorkspaceText()
   return (
     <div
       style={{
@@ -402,8 +403,7 @@ function MessageViewer({
             borderRadius: 4,
           }}
         >
-          Close
-        </button>
+          {wsText("Close")}</button>
       </div>
       <div
         style={{
@@ -416,14 +416,14 @@ function MessageViewer({
         }}
       >
         <span>
-          From: <strong>{(message.header.from as string) || '?'}</strong>
+          {wsText("From: ")}<strong>{(message.header.from as string) || '?'}</strong>
         </span>
         <span>
-          To: <strong>{(message.header.to as string) || '?'}</strong>
+          {wsText("To: ")}<strong>{(message.header.to as string) || '?'}</strong>
         </span>
         <span>{(message.header.sent_at as string) || ''}</span>
         {message.header.blocking && (
-          <Badge color="var(--red, #e74c3c)">BLOCKING</Badge>
+          <Badge color="var(--red, #e74c3c)">{wsText("BLOCKING")}</Badge>
         )}
       </div>
       <pre

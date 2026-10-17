@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
 /**
  * RoleInspector — Figma-style floating property panel (D4).
  *
@@ -13,7 +15,7 @@
  * Edits are debounced 500ms and batched into a single onUpdateRole call per
  * quiescence window.
  */
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { OrgRole, OrgEmployee } from '../types/visual'
 import { TASK_AGENT_OPTIONS, executionAgentLabel } from '../lib/externalAgents'
 import { ROLE_ICON_KEYS, ROLE_ICONS, resolveRoleIcon, type RoleIconKey } from './roleIcons'
@@ -91,6 +93,8 @@ export function RoleInspector({
   role, allRoles, employees, readOnly, teamBindingEditable = true, organizationId,
   onUpdateRole, onBindExternalTeam, onUnbindExternalTeam, onDeleteRole, onClose,
 }: RoleInspectorProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [name, setName] = useState(role.name)
   const [responsibility, setResponsibility] = useState(role.responsibility)
   const [reportsTo, setReportsTo] = useState(role.reports_to)
@@ -259,19 +263,19 @@ export function RoleInspector({
   }
 
   return (
-    <aside className="ri-panel" aria-label={`Inspector for role ${role.name}`}>
+    <aside className="ri-panel" aria-label={msg('Inspector for role {name}', { name: role.name })}>
       <header className="ri-panel-header">
         <img src={resolveRoleIcon(iconKey)} alt="" className="ri-panel-icon" />
         <div className="ri-panel-title-wrap">
-          <h3 className="ri-panel-title">{name || '(unnamed)'}</h3>
+          <h3 className="ri-panel-title">{name || msg('(unnamed)')}</h3>
           <code className="ri-panel-id">{role.role_id}</code>
         </div>
-        <button className="btn btn-ghost btn-sm ri-panel-close" onClick={onClose} title="Close (Esc)">✕</button>
+        <button className="btn btn-ghost btn-sm ri-panel-close" onClick={onClose} title={msg("Close (Esc)")}>✕</button>
       </header>
 
       <div className="ri-panel-body">
-        <InspectorGroup title="Identity" defaultExpanded>
-          <InspectorField label="Name">
+        <InspectorGroup title={msg("Identity")} defaultExpanded>
+          <InspectorField label={msg("Name")}>
             <input
               className="ri-text-input"
               value={name}
@@ -279,7 +283,7 @@ export function RoleInspector({
               disabled={readOnly}
             />
           </InspectorField>
-          <InspectorField label="Responsibility">
+          <InspectorField label={msg("Responsibility")}>
             <textarea
               className="ri-textarea"
               rows={3}
@@ -288,26 +292,26 @@ export function RoleInspector({
               disabled={readOnly}
             />
           </InspectorField>
-          <InspectorField label="Icon">
+          <InspectorField label={msg("Icon")}>
             <IconPicker value={iconKey} onChange={handleIconChange} readOnly={readOnly} />
           </InspectorField>
         </InspectorGroup>
 
-        <InspectorGroup title="Hierarchy" defaultExpanded>
-          <InspectorField label="Reports to">
+        <InspectorGroup title={msg("Hierarchy")} defaultExpanded>
+          <InspectorField label={msg("Reports to")}>
             <select
               className="ri-select"
               value={reportsTo}
               onChange={e => handleReportsToChange(e.target.value)}
               disabled={readOnly}
             >
-              <option value="owner">You (Owner)</option>
+              <option value="owner">{msg("You (Owner)")}</option>
               {otherRoles.map(r => (
                 <option key={r.role_id} value={r.role_id}>{r.name}</option>
               ))}
             </select>
           </InspectorField>
-          <InspectorField label="Can delegate to">
+          <InspectorField label={msg("Can delegate to")}>
             <MultiSelect
               allIds={otherRoles.map(r => r.role_id)}
               labelFor={(id) => otherRoles.find(r => r.role_id === id)?.name ?? id}
@@ -316,21 +320,21 @@ export function RoleInspector({
               readOnly={readOnly}
             />
           </InspectorField>
-          <InspectorField label="Employees assigned">
+          <InspectorField label={msg("Employees assigned")}>
             <span className="ri-meta-value">{employeeCount}</span>
           </InspectorField>
         </InspectorGroup>
 
-        <InspectorGroup title={`Tools (${tools.size})`}>
+        <InspectorGroup title={msg('Tools ({count})', { count: tools.size })}>
           <ToolChecklist tools={tools} onToggle={toggleTool} readOnly={readOnly} />
         </InspectorGroup>
 
-        <InspectorGroup title={`Prompts (${promptRefCount})`}>
-          <InspectorField label="Prompt refs / inline">
+        <InspectorGroup title={msg('Prompts ({count})', { count: promptRefCount })}>
+          <InspectorField label={msg("Prompt refs / inline")}>
             <textarea
               className="ri-textarea ri-textarea-mono"
               rows={5}
-              placeholder="One prompt ref or inline instruction per line"
+              placeholder={msg("One prompt ref or inline instruction per line")}
               value={promptRefs}
               onChange={e => handlePromptRefsChange(e.target.value)}
               disabled={readOnly}
@@ -338,8 +342,8 @@ export function RoleInspector({
           </InspectorField>
         </InspectorGroup>
 
-        <InspectorGroup title="Runtime policy" defaultExpanded>
-          <InspectorField label="Execution scope">
+        <InspectorGroup title={msg("Runtime policy")} defaultExpanded>
+          <InspectorField label={msg("Execution scope")}>
             <div className="ri-scope-options">
               <label className="ri-scope-option">
                 <input
@@ -350,8 +354,8 @@ export function RoleInspector({
                   disabled={!teamBindingEditable || teamMutationPending || isCoveredDescendant}
                 />
                 <span>
-                  <b>This role only</b>
-                  <small>Choose one executor for this organizational seat.</small>
+                  <b>{msg("This role only")}</b>
+                  <small>{msg("Choose one executor for this organizational seat.")}</small>
                 </span>
               </label>
               <label className="ri-scope-option">
@@ -363,8 +367,8 @@ export function RoleInspector({
                   disabled={!teamBindingEditable || teamMutationPending || isCoveredDescendant}
                 />
                 <span>
-                  <b>This role and descendants</b>
-                  <small>One opaque JiuwenSwarm-team; no covered roles are recruited separately.</small>
+                  <b>{msg("This role and descendants")}</b>
+                  <small>{msg("One opaque JiuwenSwarm-team; no covered roles are recruited separately.")}</small>
                 </span>
               </label>
             </div>
@@ -372,8 +376,8 @@ export function RoleInspector({
 
           {isCoveredDescendant && (
             <div className="ri-team-notice">
-              This role is covered by the JiuwenSwarm-team at <code>{role.external_team_boundary_role_id}</code>.
-              Its staffing and executor are inherited from that boundary.
+
+              {msg("This role is covered by the JiuwenSwarm-team at")} <code>{role.external_team_boundary_role_id}</code>{msg(". Its staffing and executor are inherited from that boundary.")}
             </div>
           )}
 
@@ -384,7 +388,8 @@ export function RoleInspector({
                 <code>{role.external_team_binding_id}</code>
               </div>
               <div className="ri-team-card-copy">
-                OPC dispatches to <code>{role.role_id}</code>; JiuwenSwarm-team manages its internal leader and members.
+
+                {msg("OPC dispatches to")} <code>{role.role_id}</code>{msg("; JiuwenSwarm-team manages its internal leader and members.")}
               </div>
               <div className="ri-team-covered-list">
                 {coveredRoles.map(item => (
@@ -395,25 +400,26 @@ export function RoleInspector({
               </div>
               {capabilityManifest && (
                 <div className="ri-team-capabilities">
-                  <b>Compiled capability contract</b>
+                  <b>{msg("Compiled capability contract")}</b>
                   <span>{capabilityManifest.capabilities.length > 0
                     ? capabilityManifest.capabilities.join(' · ')
-                    : 'Derived from the covered role responsibilities shown above.'}</span>
+                    : msg("Derived from the covered role responsibilities shown above.")}</span>
                   {capabilityManifest.deliverables.length > 0 && (
-                    <span>Deliverables: {capabilityManifest.deliverables.join(' · ')}</span>
+                    <span>{msg("Deliverables:")} {capabilityManifest.deliverables.join(' · ')}</span>
                   )}
                   <code title={capabilityManifest.manifest_hash}>
-                    manifest {capabilityManifest.manifest_hash.slice(0, 12)}
+
+                    {msg("manifest")} {capabilityManifest.manifest_hash.slice(0, 12)}
                   </code>
                 </div>
               )}
             </div>
           )}
 
-          {!isCoveredByExternalTeam && <InspectorField label="Execution strategy">
+          {!isCoveredByExternalTeam && <InspectorField label={msg("Execution strategy")}>
             <div className="ri-radio-group">
               {EXECUTION_STRATEGIES.map(opt => (
-                <label key={opt.value} className="ri-radio" title={opt.hint}>
+                <label key={opt.value} className="ri-radio" title={msg(opt.hint)}>
                   <input
                     type="radio"
                     name={`exec-strategy-${role.role_id}`}
@@ -422,49 +428,49 @@ export function RoleInspector({
                     onChange={() => handleExecStrategyChange(opt.value)}
                     disabled={readOnly}
                   />
-                  {opt.label}
+                  {msg(opt.label)}
                 </label>
               ))}
             </div>
           </InspectorField>}
           {!isCoveredByExternalTeam && execStrategy === 'external' && (
-            <InspectorField label="Preferred external agent">
+            <InspectorField label={msg("Preferred external agent")}>
               <select
                 className="ri-select"
                 value={extAgent ?? ''}
                 onChange={e => handleExtAgentChange(e.target.value || null)}
                 disabled={readOnly}
               >
-                <option value="">(any)</option>
+                <option value="">{msg("(any)")}</option>
                 {extAgent === 'jiuwenswarm' && (
-                  <option value="jiuwenswarm">JiuwenSwarm-team (select Team scope above)</option>
+                  <option value="jiuwenswarm">{msg("JiuwenSwarm-team (select Team scope above)")}</option>
                 )}
                 {EXTERNAL_AGENTS.map(a => <option key={a} value={a}>{executionAgentLabel(a)}</option>)}
               </select>
               {extAgent === 'jiuwenswarm' && (
-                <span className="ri-field-hint">This legacy role-only value is ambiguous. Select “This role and descendants” above to create the Team binding.</span>
+                <span className="ri-field-hint">{msg("This legacy role-only value is ambiguous. Select “This role and descendants” above to create the Team binding.")}</span>
               )}
             </InspectorField>
           )}
           {!isExternalTeamBoundary && readOnly && !isCoveredDescendant && (
             <div className="ri-team-notice">
-              Corporate role structure is fixed. Choose its single-role executor in the Company staffing step,
-              or bind this entire subtree to JiuwenSwarm-team here.
+
+              {msg("Corporate role structure is fixed. Choose its single-role executor in the Company staffing step, or bind this entire subtree to JiuwenSwarm-team here.")}
             </div>
           )}
         </InspectorGroup>
 
-        <InspectorGroup title="Advanced">
-          <InspectorField label="Role type">
-            <span className="ri-meta-value">{role.role_type ?? 'worker'}</span>
+        <InspectorGroup title={msg("Advanced")}>
+          <InspectorField label={msg("Role type")}>
+            <span className="ri-meta-value">{msg(role.role_type ?? 'worker')}</span>
           </InspectorField>
-          <InspectorField label="Skills">
+          <InspectorField label={msg("Skills")}>
             <span className="ri-meta-value">
-              {role.skill_refs && role.skill_refs.length > 0 ? role.skill_refs.join(', ') : '(none)'}
+              {role.skill_refs && role.skill_refs.length > 0 ? role.skill_refs.join(', ') : msg("(none)")}
             </span>
           </InspectorField>
-          <InspectorField label="Artifact contract">
-            <span className="ri-meta-value">{role.artifact_contract_ref ?? '(none)'}</span>
+          <InspectorField label={msg("Artifact contract")}>
+            <span className="ri-meta-value">{role.artifact_contract_ref ?? msg('(none)')}</span>
           </InspectorField>
         </InspectorGroup>
       </div>
@@ -476,7 +482,7 @@ export function RoleInspector({
             onClick={handleDelete}
             onBlur={() => setConfirmDelete(false)}
           >
-            {confirmDelete ? 'Confirm delete?' : 'Delete role'}
+            {confirmDelete ? msg("Confirm delete?") : msg("Delete role")}
           </button>
         </footer>
       )}
@@ -517,6 +523,8 @@ function IconPicker({ value, onChange, readOnly }: {
   onChange: (v: string | null) => void
   readOnly?: boolean
 }) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [open, setOpen] = useState(false)
   return (
     <div className="ri-icon-picker">
@@ -533,7 +541,7 @@ function IconPicker({ value, onChange, readOnly }: {
           <button
             className={`ri-icon-option${value === null ? ' is-active' : ''}`}
             onClick={() => { onChange(null); setOpen(false) }}
-            title="Default icon"
+            title={msg("Default icon")}
           >
             <img src={ROLE_ICONS.generic} alt="" />
           </button>
@@ -560,6 +568,8 @@ function MultiSelect({ allIds, labelFor, selected, onToggle, readOnly }: {
   onToggle: (id: string) => void
   readOnly?: boolean
 }) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [open, setOpen] = useState(false)
   const available = allIds.filter(id => !selected.has(id))
 
@@ -570,14 +580,14 @@ function MultiSelect({ allIds, labelFor, selected, onToggle, readOnly }: {
           <span key={id} className="ri-chip">
             {labelFor(id)}
             {!readOnly && (
-              <button className="ri-chip-x" onClick={() => onToggle(id)} title="Remove">×</button>
+              <button className="ri-chip-x" onClick={() => onToggle(id)} title={msg("Remove")}>×</button>
             )}
           </span>
         ))}
         {!readOnly && available.length > 0 && (
-          <button className="ri-chip-add" onClick={() => setOpen(o => !o)}>+ Add</button>
+          <button className="ri-chip-add" onClick={() => setOpen(o => !o)}>{msg("+ Add")}</button>
         )}
-        {selected.size === 0 && readOnly && <span className="ri-meta-value">(none)</span>}
+        {selected.size === 0 && readOnly && <span className="ri-meta-value">{msg("(none)")}</span>}
       </div>
       {open && !readOnly && (
         <div className="ri-multiselect-popover">
@@ -599,11 +609,13 @@ function ToolChecklist({ tools, onToggle, readOnly }: {
   onToggle: (name: string) => void
   readOnly?: boolean
 }) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   return (
     <div className="ri-toolcheck">
       {TOOL_GROUPS.map(g => (
         <fieldset key={g.prefix} className="ri-toolcheck-group">
-          <legend className="ri-toolcheck-legend">{g.label}</legend>
+          <legend className="ri-toolcheck-legend">{msg(g.label)}</legend>
           <div className="ri-toolcheck-items">
             {g.tools.map(t => (
               <label key={t} className="ri-toolcheck-item">

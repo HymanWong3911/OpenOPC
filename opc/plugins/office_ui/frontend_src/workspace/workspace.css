@@ -1808,3 +1808,81 @@
   font-style: italic;
   margin: 4px 0;
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.workspace-page, .workspace-board) { background: var(--ha-bg-canvas); min-width: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit, .ctx-panel, .ctx-header, .ctx-session-strip) {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .project-cockpit { padding: 16px; gap: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .project-cockpit.embedded { background: transparent; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit-panel, .project-cockpit-team-card, .ctx-multi-card) {
+  background: var(--ha-bg-surface);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 10px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit-panel header, .ctx-multi-card-header) { border-color: var(--ha-border-subtle); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit-title strong, .project-cockpit-team-title strong) { font-size: 15px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit-label, .project-cockpit-inline-text, .project-cockpit-seat-role,
+  .project-cockpit-seat-id, .project-cockpit-team-title span, .ctx-tab,
+  .ctx-session-chip-title, .ctx-session-view-btn) {
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.project-cockpit-metrics span, .project-cockpit-summary span,
+  .project-cockpit-team-meta span, .project-cockpit-seat-row) {
+  background: var(--ha-bg-subtle);
+  color: var(--ha-text-secondary);
+  border-color: var(--ha-border-subtle);
+  border-radius: 8px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .ctx-header { height: 44px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .ctx-tab { padding: 8px 12px; border-radius: 8px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .ctx-tab.active {
+  background: var(--ha-fill-selected);
+  color: var(--ha-text-primary);
+  box-shadow: inset 0 -2px 0 var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ctx-session-chip, .ctx-session-view-btn) {
+  border-radius: 8px;
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-default);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ctx-session-chip.active, .ctx-session-view-btn.active) {
+  background: var(--ha-fill-selected);
+  border-color: var(--ha-border-strong);
+  box-shadow: inset 2px 0 0 var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .ctx-session-chip-unread {
+  background: var(--ha-bg-raised);
+  color: var(--ha-text-secondary);
+  font-size: 12px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .ctx-multi-card.focused {
+  border-color: var(--ha-accent);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .kanban-card.is-selected {
+  border-color: var(--ha-accent);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.task-detail, .td-section, .td-info-grid, .comms-message) {
+  border-color: var(--ha-border-subtle);
+  color: var(--ha-text-primary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.td-description, .td-body, .comms-message-body) { font-size: 15px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.td-code, .td-agent-id, .comms-message-id) {
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  font-size: 13px;
+}
+@media (max-width: 1100px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .project-cockpit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .project-cockpit-grid--team { grid-template-columns: minmax(0, 1fr); }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .project-cockpit-team-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+}

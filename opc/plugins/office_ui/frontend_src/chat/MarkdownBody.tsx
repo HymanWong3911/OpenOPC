@@ -1,3 +1,4 @@
+import { useChatText } from '../lib/chatMessages'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -17,6 +18,7 @@ function CodeBlock({
   children?: React.ReactNode
   forceExpanded?: boolean
 }) {
+  const tr = useChatText()
   const [copied, setCopied] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const text = String(children).replace(/\n$/, '')
@@ -34,9 +36,9 @@ function CodeBlock({
   return (
     <div className="code-block-wrap">
       <div className="code-block-header">
-        <span className="code-block-lang">{lang || 'code'}{needsTruncation ? ` (${lines.length} lines)` : ''}</span>
+        <span className="code-block-lang">{lang || tr('code')}{needsTruncation ? ` (${tr('{count} lines', { count: lines.length })})` : ''}</span>
         <button className="code-block-copy" onClick={handleCopy}>
-          {copied ? <><IconCheck /> <span>Copied</span></> : <><IconCopy /> <span>Copy</span></>}
+          {copied ? <><IconCheck /> <span>{tr("Copied")}</span></> : <><IconCopy /> <span>{tr("Copy")}</span></>}
         </button>
       </div>
       <pre><code className={className}>
@@ -44,7 +46,7 @@ function CodeBlock({
           <>
             {lines.slice(0, CODE_BLOCK_PEEK_LINES).join('\n') + '\n'}
             <span className="code-block-omitted" onClick={() => setExpanded(true)}>
-              {'... +'}{omittedCount}{' lines (click to expand)'}
+              {'... +'}{omittedCount}{' '}{tr('lines (click to expand)')}
             </span>
             {'\n' + lines.slice(-CODE_BLOCK_PEEK_LINES).join('\n')}
           </>
@@ -54,7 +56,7 @@ function CodeBlock({
       </code></pre>
       {needsTruncation && !forceExpanded && expanded && (
         <button className="code-block-collapse-btn" onClick={() => setExpanded(false)}>
-          Collapse ({lines.length} lines)
+          {tr('Collapse ({count} lines)', { count: lines.length })}
         </button>
       )}
     </div>
@@ -90,6 +92,7 @@ export const MarkdownBody = React.memo(function MarkdownBody({
   className?: string
   collapseMode?: MarkdownCollapseMode
 }) {
+  const tr = useChatText()
   // Also repairs historical Jiuwen messages already persisted before the
   // adapter-side stream normalizer was added.
   const normalizedContent = restoreCollapsedMarkdown(content)
@@ -127,13 +130,12 @@ export const MarkdownBody = React.memo(function MarkdownBody({
       </ReactMarkdown>
       {collapsible && collapsed && (
         <button className="msg-collapse-toggle" onClick={() => setCollapsed(false)}>
-          Show more ({lineCount} lines, {(charCount / 1000).toFixed(1)}k chars)
+          {tr('Show more ({lines} lines, {chars}k chars)', { lines: lineCount, chars: (charCount / 1000).toFixed(1) })}
         </button>
       )}
       {collapsible && !collapsed && (
         <button className="msg-collapse-toggle" onClick={() => setCollapsed(true)}>
-          Show less
-        </button>
+          {tr("Show less")}</button>
       )}
     </div>
   )

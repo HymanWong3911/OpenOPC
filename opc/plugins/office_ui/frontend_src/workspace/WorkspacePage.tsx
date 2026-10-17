@@ -1187,6 +1187,7 @@ export function WorkspacePage({
     handleOpenWorkItemSession(executionTurnId)
   }, [handleOpenWorkItemSession, onOpenExecutionPanel])
 
+  const showWelcome = effectiveView.kind === 'activity' && !activeSessionId && !activeSession && activeBoardTasks.length === 0 && !boardFollowsSession
   const isSecretary = effectiveView.kind === 'secretary'
   const channelName = isSecretary ? t('workspace.channel.secretary') : activeSession ? activeSession.title : t('workspace.channel.activity')
 
@@ -1229,7 +1230,28 @@ export function WorkspacePage({
               onSelect={handleBoardSelect}
             />
           )}
-          {boardFollowsSession && !boardStore.activeBoard ? (
+          {showWelcome ? (
+            <section className="workspace-welcome" aria-labelledby="workspace-welcome-title">
+              <div className="workspace-welcome-main">
+                <p className="workspace-welcome-eyebrow">{t('welcome.eyebrow')}</p>
+                <h1 id="workspace-welcome-title">{t('welcome.title')}</h1>
+                <p className="workspace-welcome-description">{t('welcome.description')}</p>
+                <div className="workspace-welcome-actions">
+                  <button className="workspace-welcome-primary" onClick={onCreateSession}>{t('session.newChat')}<span aria-hidden="true">↗</span></button>
+                  {onNavigateToOrg && <button className="workspace-welcome-secondary" onClick={onNavigateToOrg}>{t('welcome.roles')}</button>}
+                </div>
+              </div>
+              <div className="workspace-welcome-guide">
+                {(['conversation', 'team', 'progress'] as const).map((item, index) => (
+                  <div className="workspace-welcome-guide-item" key={item}>
+                    <span className="workspace-welcome-step">0{index + 1}</span>
+                    <h2>{t(`welcome.${item}`)}</h2>
+                    <p>{t(`welcome.${item}Description`)}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : boardFollowsSession && !boardStore.activeBoard ? (
             <div className="kanban-empty-state">
               <p>{t('workspace.selectRuntimeSession')}</p>
             </div>

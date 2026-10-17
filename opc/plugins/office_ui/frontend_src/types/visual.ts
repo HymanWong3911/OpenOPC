@@ -54,6 +54,8 @@ export interface OrgCreateMemberInput {
   responsibility?: string
   prompt?: string
   reports_to_index?: number | null
+  /** Staff this new role using an existing talent template. */
+  template_id?: string
 }
 
 export interface OrgSavedCreatePayload {

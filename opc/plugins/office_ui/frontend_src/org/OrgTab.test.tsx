@@ -116,7 +116,7 @@ assert.match(
 )
 assert.match(
   createModalSrc,
-  /<textarea[\s\S]+placeholder="Prompt optional"/,
+  /<textarea[\s\S]+placeholder=(?:"Prompt optional"|\{msg\("Prompt optional"\)\})/,
   'OrgCreateModal must render an optional prompt textarea for each role',
 )
 assert.match(
