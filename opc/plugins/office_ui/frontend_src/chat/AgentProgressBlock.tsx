@@ -1,3 +1,4 @@
+import { useChatText, type ChatText } from '../lib/chatMessages'
 import React, { useMemo, useState } from 'react'
 import type { ProgressEntry, ProgressEntryType } from '../types/kanban'
 import { progressEntryKey } from '../lib/progressEntryKey'
@@ -39,13 +40,13 @@ const ENTRY_CONFIG: Record<ProgressEntryType, { icon: React.ReactNode; color: st
 
 const COLLAPSED_COUNT = 5
 
-function elapsed(ts: number): string {
+function elapsed(ts: number, tr: ChatText): string {
   const sec = Math.floor((Date.now() - ts) / 1000)
-  if (sec < 5) return 'just now'
-  if (sec < 60) return `${sec}s ago`
+  if (sec < 5) return tr('just now')
+  if (sec < 60) return tr('{count}s ago', { count: sec })
   const min = Math.floor(sec / 60)
-  if (min < 60) return `${min}m ago`
-  return `${Math.floor(min / 60)}h ago`
+  if (min < 60) return tr('{count}m ago', { count: min })
+  return tr('{count}h ago', { count: Math.floor(min / 60) })
 }
 
 function normalizeNestedJson(value: unknown): unknown {
@@ -90,6 +91,7 @@ function formatToolDetail(detail: string): string {
 }
 
 export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElapsedMs, lastToolSummary, sessionStatus, expandedByDefault }: AgentProgressBlockProps) {
+  const tr = useChatText()
   const [expanded, setExpanded] = useState(!!expandedByDefault)
 
   const isTerminal = !!sessionStatus && TERMINAL_STATUSES.has(sessionStatus)
@@ -119,7 +121,7 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
             {isToolActive ? <IconTool /> : <IconSparkle />}
           </span>
           <span className="ptl-live-text">
-            {isToolActive ? 'Running' : 'Thinking'}
+            {isToolActive ? tr("Running") : tr("Thinking")}
           </span>
           {isToolActive && currentTool && (
             <code className="ptl-live-tool-name">{currentTool}</code>
@@ -135,7 +137,7 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
       {/* ── Last tool result summary ──────────────────── */}
       {lastToolSummary && !isToolActive && (
         <div className="ptl-last-tool-summary">
-          <span className="ptl-last-tool-label">Last tool result:</span>
+          <span className="ptl-last-tool-label">{tr("Last tool result:")}</span>
           <span className="ptl-last-tool-text">{lastToolSummary}</span>
         </div>
       )}
@@ -144,7 +146,7 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
       {hiddenCount > 0 && (
         <button className="ptl-expand" onClick={() => setExpanded(true)}>
           <IconChevron />
-          <span>{hiddenCount} earlier step{hiddenCount > 1 ? 's' : ''}</span>
+          <span>{tr(hiddenCount > 1 ? '{count} earlier steps' : '{count} earlier step', { count: hiddenCount })}</span>
         </button>
       )}
 
@@ -179,7 +181,7 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
             {sessionStatus === 'done' ? '\u2713' : sessionStatus === 'failed' ? '\u2717' : '\u2014'}
           </span>
           <span className="ptl-completion-text">
-            {sessionStatus === 'done' ? 'Completed' : sessionStatus === 'failed' ? 'Failed' : 'Cancelled'}
+            {sessionStatus === 'done' ? tr("Completed") : sessionStatus === 'failed' ? tr("Failed") : tr("Cancelled")}
           </span>
         </div>
       )}
@@ -188,13 +190,13 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
       {expanded && filteredEntries.length > COLLAPSED_COUNT && (
         <button className="ptl-expand" onClick={() => setExpanded(false)}>
           <IconChevron down />
-          <span>Show less</span>
+          <span>{tr("Show less")}</span>
         </button>
       )}
       {!expanded && hiddenCount > 0 && (
         <button className="ptl-expand" onClick={() => setExpanded(true)}>
           <IconChevron />
-          <span>Show more ({hiddenCount} earlier step{hiddenCount > 1 ? 's' : ''})</span>
+          <span>{tr(hiddenCount > 1 ? 'Show more ({count} earlier steps)' : 'Show more ({count} earlier step)', { count: hiddenCount })}</span>
         </button>
       )}
     </div>
@@ -202,6 +204,7 @@ export function AgentProgressBlock({ entries, agentStatus, currentTool, toolElap
 }
 
 export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard({ entry }: { entry: ProgressEntry }) {
+  const tr = useChatText()
   const [expanded, setExpanded] = useState(false)
   const cfg = ENTRY_CONFIG[entry.type] || ENTRY_CONFIG.status_change
   const hasToolDetail = entry.type === 'tool_call' && !!entry.detail
@@ -217,9 +220,9 @@ export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard
           }}
           type="button"
         >
-          <span className="ptl-label" style={{ color: cfg.color }}>{cfg.label}</span>
+          <span className="ptl-label" style={{ color: cfg.color }}>{tr(cfg.label)}</span>
           <code className="ptl-tool-badge">{entry.summary}</code>
-          <span className="ptl-time">{elapsed(entry.timestamp)}</span>
+          <span className="ptl-time">{elapsed(entry.timestamp, tr)}</span>
           {hasToolDetail && (
             <span className="ptl-tool-chevron">
               <IconChevron down={expanded} />
@@ -242,9 +245,9 @@ export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard
           onClick={() => { if (hasDetail) setExpanded(prev => !prev) }}
           type="button"
         >
-          <span className="ptl-label" style={{ color: cfg.color }}>{cfg.label}</span>
+          <span className="ptl-label" style={{ color: cfg.color }}>{tr(cfg.label)}</span>
           <code className="ptl-tool-badge">{entry.summary}</code>
-          <span className="ptl-time">{elapsed(entry.timestamp)}</span>
+          <span className="ptl-time">{elapsed(entry.timestamp, tr)}</span>
           {hasDetail && (
             <span className="ptl-tool-chevron">
               <IconChevron down={expanded} />
@@ -266,9 +269,9 @@ export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard
           onClick={() => setExpanded(prev => !prev)}
           type="button"
         >
-          <span className="ptl-label" style={{ color: cfg.color }}>{cfg.label}</span>
+          <span className="ptl-label" style={{ color: cfg.color }}>{tr(cfg.label)}</span>
           <span className="ptl-summary">{entry.summary}</span>
-          <span className="ptl-time">{elapsed(entry.timestamp)}</span>
+          <span className="ptl-time">{elapsed(entry.timestamp, tr)}</span>
           <span className="ptl-tool-chevron">
             <IconChevron down={expanded} />
           </span>
@@ -289,9 +292,9 @@ export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard
           onClick={() => { if (hasDetail) setExpanded(prev => !prev) }}
           type="button"
         >
-          <span className="ptl-label" style={{ color: cfg.color }}>{cfg.label}</span>
-          <span className="ptl-summary">{entry.summary || 'Verification'}</span>
-          <span className="ptl-time">{elapsed(entry.timestamp)}</span>
+          <span className="ptl-label" style={{ color: cfg.color }}>{tr(cfg.label)}</span>
+          <span className="ptl-summary">{entry.summary || tr("Verification")}</span>
+          <span className="ptl-time">{elapsed(entry.timestamp, tr)}</span>
           {hasDetail && (
             <span className="ptl-tool-chevron">
               <IconChevron down={expanded} />
@@ -308,9 +311,9 @@ export const AgentProgressEntryCard = React.memo(function AgentProgressEntryCard
   return (
     <>
       <div className="ptl-row">
-        <span className="ptl-label" style={{ color: cfg.color }}>{cfg.label}</span>
+        <span className="ptl-label" style={{ color: cfg.color }}>{tr(cfg.label)}</span>
         <span className="ptl-summary">{entry.summary}</span>
-        <span className="ptl-time">{elapsed(entry.timestamp)}</span>
+        <span className="ptl-time">{elapsed(entry.timestamp, tr)}</span>
       </div>
       {entry.detail && (
         <div className="ptl-detail">{entry.detail}</div>

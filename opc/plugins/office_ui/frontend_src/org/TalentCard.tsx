@@ -1,4 +1,7 @@
+import React from 'react'
 import type { TalentTemplate } from '../types/visual'
+import { useI18n } from '../i18n'
+import { getTalentPresentation, getTalentTagLabel, talentMessages } from '../lib/talentLocalization'
 
 interface TalentCardProps {
   template: TalentTemplate
@@ -16,6 +19,10 @@ function monogram(name: string): string {
 }
 
 export function TalentCard({ template: t, hiringId, onHire, onClick }: TalentCardProps) {
+  const { locale } = useI18n()
+  const presentation = getTalentPresentation(t, locale)
+  const messages = talentMessages(locale)
+  const showOriginalName = locale === 'zh-CN' && presentation.name !== t.name
   const isHiring = hiringId === t.template_id
   const avatarStyle = t.color
     ? {
@@ -34,7 +41,7 @@ export function TalentCard({ template: t, hiringId, onHire, onClick }: TalentCar
   const overflow = chipPool.length - visibleChips.length
 
   return (
-    <div className="tm-card" onClick={() => onClick(t)}>
+    <div className="tm-card" data-locale={locale} onClick={() => onClick(t)}>
       <div className="tm-card-head">
         <div className="tm-card-avatar" style={avatarStyle} aria-hidden>
           {t.emoji ? (
@@ -45,23 +52,24 @@ export function TalentCard({ template: t, hiringId, onHire, onClick }: TalentCar
         </div>
         <div className="tm-card-head-text">
           <div className="tm-card-name-row">
-            <span className="tm-card-name" title={t.name}>{t.name}</span>
+            <span className="tm-card-name" title={presentation.name}>{presentation.name}</span>
             {t.preferred_external_agent && (
               <span
                 className="tm-card-agent-badge"
-                title={`Agent: ${t.preferred_external_agent}`}
+                title={`${messages.agent}: ${t.preferred_external_agent}`}
               >
                 {t.preferred_external_agent}
               </span>
             )}
           </div>
-          {t.category && <span className="tm-card-category">{t.category}</span>}
+          {showOriginalName && <span className="tm-card-original-name" lang="en">{t.name}</span>}
+          {presentation.category && <span className="tm-card-category">{presentation.category}</span>}
         </div>
       </div>
 
       <div className="tm-card-body">
-        {t.vibe && <div className="tm-card-vibe">"{t.vibe}"</div>}
-        {t.description && <div className="tm-card-desc">{t.description}</div>}
+        {presentation.vibe && <div className="tm-card-vibe">"{presentation.vibe}"</div>}
+        {presentation.description && <div className="tm-card-desc">{presentation.description}</div>}
       </div>
 
       {visibleChips.length > 0 && (
@@ -81,7 +89,7 @@ export function TalentCard({ template: t, hiringId, onHire, onClick }: TalentCar
           disabled={isHiring}
           onClick={(e) => { e.stopPropagation(); onHire(t.template_id) }}
         >
-          {isHiring ? <><span className="spinner-inline" /> Hiring</> : 'Hire →'}
+          {isHiring ? <><span className="spinner-inline" /> {messages.hiring}</> : messages.hire}
         </button>
       </div>
     </div>

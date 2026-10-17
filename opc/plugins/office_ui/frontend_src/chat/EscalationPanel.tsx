@@ -1,3 +1,4 @@
+import { useChatText } from '../lib/chatMessages'
 import React, { useCallback, useMemo } from 'react'
 import type { ChatMessageMeta, CheckpointReplyMetadata, InteractionOption } from '../types/chat'
 import { MarkdownBody } from './MarkdownBody'
@@ -39,20 +40,21 @@ function checkpointStatusLabel(status: string): string {
 export const EscalationPanel = React.memo(function EscalationPanel({
   meta, onReply, responded, submitting = false,
 }: EscalationPanelProps) {
+  const tr = useChatText()
   const isResponded = responded
   const checkpointStatus = String(meta.checkpoint_status ?? '').trim().toLowerCase()
-  const resolvedLabel = checkpointStatusLabel(checkpointStatus)
+  const resolvedLabel = tr(checkpointStatusLabel(checkpointStatus))
   const prompt = String(meta.prompt ?? meta.summary ?? '')
   const lines = useMemo(
     () => prompt.split('\n').map((line) => line.trim()).filter(Boolean),
     [prompt],
   )
-  const title = firstLine(prompt).replace(/^\[[^\]]+\]\s*/, '') || 'Action Required'
+  const title = firstLine(prompt).replace(/^\[[^\]]+\]\s*/, '') || tr("Action Required")
   const isPermission = ['tool_permission', 'action_permission'].includes(String(meta.checkpoint_type ?? ''))
   const displayTitle = meta.checkpoint_type === 'tool_permission'
-    ? 'Tool Authorization'
+    ? tr("Tool Authorization")
     : meta.checkpoint_type === 'action_permission'
-      ? 'Action Authorization'
+      ? tr("Action Authorization")
       : title
   const permissionBadge = isPermission
     ? String(meta.checkpoint_type).replace(/_/g, ' ')
@@ -97,14 +99,14 @@ export const EscalationPanel = React.memo(function EscalationPanel({
         </div>
         <div className="ckpt-title">{displayTitle}</div>
         <span className="ckpt-badge ckpt-badge-scope">
-          {permissionBadge}
+          {tr(permissionBadge)}
         </span>
         {isResponded && <span className="ckpt-badge ckpt-badge-responded">{resolvedLabel}</span>}
       </div>
 
       {summary && summary !== title && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Summary</div>
+          <div className="ckpt-section-title">{tr("Summary")}</div>
           <MarkdownBody
             content={summary}
             className="ckpt-markdown"
@@ -115,7 +117,7 @@ export const EscalationPanel = React.memo(function EscalationPanel({
 
       {request && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Request</div>
+          <div className="ckpt-section-title">{tr("Request")}</div>
           {isPermission ? (
             <pre className="ckpt-permission-verbatim"><code>{request}</code></pre>
           ) : (
@@ -126,11 +128,11 @@ export const EscalationPanel = React.memo(function EscalationPanel({
 
       {hasRuntimeState && (
         <details className="ckpt-runtime-details">
-          <summary>Runtime State</summary>
+          <summary>{tr("Runtime State")}</summary>
           <div className="ckpt-runtime-body">
-            {worktreePath && <div>Worktree: <code>{worktreePath}</code></div>}
-            {activeSubagents.length > 0 && <div>Active subagents: {activeSubagents.length}</div>}
-            {permissionRequests.length > 0 && <div>Pending permission records: {permissionRequests.length}</div>}
+            {worktreePath && <div>{tr("Worktree:")}{' '}<code>{worktreePath}</code></div>}
+            {activeSubagents.length > 0 && <div>{tr("Active subagents:")}{' '}{activeSubagents.length}</div>}
+            {permissionRequests.length > 0 && <div>{tr("Pending permission records:")}{' '}{permissionRequests.length}</div>}
           </div>
         </details>
       )}
@@ -144,7 +146,7 @@ export const EscalationPanel = React.memo(function EscalationPanel({
               onClick={() => handleReply(option)}
               disabled={submitting}
             >
-              {option.label || option.id}
+              {isPermission || meta.checkpoint_type === 'company_work_item_gate' ? tr(option.label || option.id) : option.label || option.id}
             </button>
           ))}
         </div>
@@ -152,7 +154,7 @@ export const EscalationPanel = React.memo(function EscalationPanel({
 
       {!isResponded && meta.default_action && (
         <div className="ckpt-escalation-hint">
-          Default on timeout: <code>{meta.default_action}</code>
+          {tr("Default on timeout:")}<code>{tr(meta.default_action)}</code>
         </div>
       )}
     </div>

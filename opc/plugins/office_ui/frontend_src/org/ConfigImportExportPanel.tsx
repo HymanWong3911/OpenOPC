@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import React, { useEffect, useRef, useState, type ChangeEvent } from 'react'
 
 /* ── Inline SVG icon data-URIs ──────────────────────────────────── */
 const ICON = {
@@ -19,6 +21,8 @@ interface ConfigImportExportPanelProps {
 export function ConfigImportExportPanel({
   onExport, onImport, configExportYaml, importPreview, importError,
 }: ConfigImportExportPanelProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [yamlText, setYamlText] = useState('')
   const [fileName, setFileName] = useState<string | null>(null)
   const [dryRunDone, setDryRunDone] = useState(false)
@@ -80,7 +84,7 @@ export function ConfigImportExportPanel({
 
   const handleApply = () => {
     if (!dryRunDone || !yamlText.trim()) return
-    if (!confirm('Apply this config? The current company architecture will be overwritten.')) return
+    if (!confirm(msg("Apply this config? The current company architecture will be overwritten."))) return
     onImport(yamlText, false)
     setDryRunDone(false)
     setYamlText('')
@@ -96,18 +100,18 @@ export function ConfigImportExportPanel({
   return (
     <div className="cfg-io-panel" data-testid="config-import-export-panel">
       <div className="cfg-io-header">
-        <h3 className="cfg-io-title">Config Import / Export</h3>
-        <p className="cfg-io-subtitle">Download the current company architecture as YAML, or upload one to replace it.</p>
+        <h3 className="cfg-io-title">{msg("Config Import / Export")}</h3>
+        <p className="cfg-io-subtitle">{msg("Download the current company architecture as YAML, or upload one to replace it.")}</p>
       </div>
 
       {/* Export */}
       <div className="cfg-io-section">
         <div className="cfg-io-section-header">
           <img src={ICON.download} alt="" className="cfg-io-section-icon" />
-          <span className="cfg-io-section-title">Download current config</span>
+          <span className="cfg-io-section-title">{msg("Download current config")}</span>
         </div>
         <button className="cfg-io-btn cfg-io-btn-primary" onClick={handleExport}>
-          <img src={ICON.download} alt="" className="cfg-io-btn-icon" /> Download YAML
+          <img src={ICON.download} alt="" className="cfg-io-btn-icon" /> {msg("Download YAML")}
         </button>
       </div>
 
@@ -115,20 +119,20 @@ export function ConfigImportExportPanel({
       <div className="cfg-io-section">
         <div className="cfg-io-section-header">
           <img src={ICON.upload} alt="" className="cfg-io-section-icon" />
-          <span className="cfg-io-section-title">Upload config</span>
+          <span className="cfg-io-section-title">{msg("Upload config")}</span>
         </div>
 
         <div className="cfg-io-upload-row">
           <label className="cfg-io-file-label">
             <input type="file" accept=".yaml,.yml" onChange={handleFile} className="cfg-io-file-input" />
-            <span className="cfg-io-file-btn">Choose file…</span>
+            <span className="cfg-io-file-btn">{msg("Choose file…")}</span>
             <span className="cfg-io-file-name">{fileName ?? 'no file selected'}</span>
           </label>
         </div>
 
         <textarea
           className="cfg-io-textarea"
-          placeholder="…or paste YAML here"
+          placeholder={msg("…or paste YAML here")}
           value={yamlText}
           onChange={e => setYamlText(e.target.value)}
           spellCheck={false}
@@ -139,15 +143,17 @@ export function ConfigImportExportPanel({
           <button className="cfg-io-btn cfg-io-btn-ghost"
             onClick={handleDryRun}
             disabled={!yamlText.trim()}>
-            Dry run
+
+            {msg("Dry run")}
           </button>
           <button className="cfg-io-btn cfg-io-btn-primary"
             onClick={handleApply}
             disabled={!dryRunDone || !yamlText.trim()}>
-            Apply
+
+            {msg("Apply")}
           </button>
           {yamlText && (
-            <button className="cfg-io-btn cfg-io-btn-ghost" onClick={handleClear}>Clear</button>
+            <button className="cfg-io-btn cfg-io-btn-ghost" onClick={handleClear}>{msg("Clear")}</button>
           )}
         </div>
 
@@ -156,18 +162,18 @@ export function ConfigImportExportPanel({
           <div className="cfg-io-preview">
             <img src={ICON.check} alt="" className="cfg-io-preview-icon" />
             <div className="cfg-io-preview-body">
-              <div className="cfg-io-preview-title">Dry run OK — ready to apply</div>
+              <div className="cfg-io-preview-title">{msg("Dry run OK — ready to apply")}</div>
               <div className="cfg-io-preview-stats">
                 <span className="cfg-io-preview-stat">
-                  <span className="cfg-io-stat-label">Roles added</span>
+                  <span className="cfg-io-stat-label">{msg("Roles added")}</span>
                   <span className="cfg-io-stat-value">{importPreview.roles_added}</span>
                 </span>
                 <span className="cfg-io-preview-stat">
-                  <span className="cfg-io-stat-label">Roles removed</span>
+                  <span className="cfg-io-stat-label">{msg("Roles removed")}</span>
                   <span className="cfg-io-stat-value">{importPreview.roles_removed}</span>
                 </span>
                 <span className="cfg-io-preview-stat">
-                  <span className="cfg-io-stat-label">Employees changed</span>
+                  <span className="cfg-io-stat-label">{msg("Employees changed")}</span>
                   <span className="cfg-io-stat-value">{importPreview.employees_changed}</span>
                 </span>
               </div>
@@ -180,7 +186,7 @@ export function ConfigImportExportPanel({
           <div className="cfg-io-error">
             <img src={ICON.warn} alt="" className="cfg-io-error-icon" />
             <div className="cfg-io-error-body">
-              <div className="cfg-io-error-title">Validation failed</div>
+              <div className="cfg-io-error-title">{msg("Validation failed")}</div>
               <pre className="cfg-io-error-text">{importError}</pre>
             </div>
           </div>

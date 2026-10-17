@@ -1,3 +1,4 @@
+import { useChatText } from '../lib/chatMessages'
 import React, { useCallback, useMemo, useState } from 'react'
 import type {
   ChatMessageMeta,
@@ -50,11 +51,12 @@ function normalizeQuestion(raw: TaskUserInputQuestion, index: number): TaskUserI
 export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
   meta, onReply, responded,
 }: TaskUserInputPanelProps) {
+  const tr = useChatText()
   const [reply, setReply] = useState('')
   const [answers, setAnswers] = useState<Record<string, QuestionState>>({})
   const isResponded = responded
 
-  const title = String(meta.work_item_projection_title ?? meta.work_item_projection_id ?? 'Input Needed').trim() || 'Input Needed'
+  const title = String(meta.work_item_projection_title ?? meta.work_item_projection_id ?? tr('Input Needed')).trim() || tr('Input Needed')
   const summary = String(meta.summary ?? '').trim()
   const prompt = String(meta.prompt ?? '').trim()
   const contextNote = String(meta.context_note ?? '').trim()
@@ -164,26 +166,26 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
           </svg>
         </div>
         <div className="ckpt-title">{title}</div>
-        <span className="ckpt-badge ckpt-badge-scope">awaiting input</span>
-        {isResponded && <span className="ckpt-badge ckpt-badge-responded">Responded</span>}
+        <span className="ckpt-badge ckpt-badge-scope">{tr("awaiting input")}</span>
+        {isResponded && <span className="ckpt-badge ckpt-badge-responded">{tr("Responded")}</span>}
       </div>
 
       {summary && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Summary</div>
+          <div className="ckpt-section-title">{tr("Summary")}</div>
           <MarkdownBody content={summary} className="ckpt-markdown" />
         </div>
       )}
       {prompt && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Request</div>
+          <div className="ckpt-section-title">{tr("Request")}</div>
           <MarkdownBody content={prompt} className="ckpt-markdown" />
         </div>
       )}
 
       {usesChoiceMode ? (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Questions</div>
+          <div className="ckpt-section-title">{tr("Questions")}</div>
           <div className="ckpt-choice-list">
             {inputQuestions.map((question) => {
               const state = answers[question.id] ?? { freeformText: '' }
@@ -219,8 +221,8 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
                         >
                           <span className="ckpt-choice-letter">D</span>
                           <span className="ckpt-choice-copy">
-                            <span className="ckpt-choice-label">Other</span>
-                            <span className="ckpt-choice-desc">Enter a custom answer</span>
+                            <span className="ckpt-choice-label">{tr("Other")}</span>
+                            <span className="ckpt-choice-desc">{tr("Enter a custom answer")}</span>
                           </span>
                         </button>
                       )}
@@ -229,7 +231,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
                   {showOtherInput && (
                     <textarea
                       className="ckpt-feedback-input ckpt-other-field"
-                      placeholder="Type your answer..."
+                      placeholder={tr("Type your answer...")}
                       value={state.freeformText}
                       onChange={(event) => setFreeformAnswer(question.id, event.target.value)}
                       rows={3}
@@ -242,7 +244,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
         </div>
       ) : questions.length > 0 && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Questions</div>
+          <div className="ckpt-section-title">{tr("Questions")}</div>
           <ul className="ckpt-task-list">
             {questions.map((question) => <li key={question}>{question}</li>)}
           </ul>
@@ -251,7 +253,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
 
       {requiredFields.length > 0 && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Required Fields</div>
+          <div className="ckpt-section-title">{tr("Required Fields")}</div>
           <div className="ckpt-task-tags">
             {requiredFields.map((field) => <span key={field} className="ckpt-field-tag">{field}</span>)}
           </div>
@@ -260,7 +262,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
 
       {contextNote && (
         <div className="ckpt-section">
-          <div className="ckpt-section-title">Context</div>
+          <div className="ckpt-section-title">{tr("Context")}</div>
           <MarkdownBody content={contextNote} className="ckpt-markdown ckpt-markdown-muted" />
         </div>
       )}
@@ -268,15 +270,15 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
 
       {hasRuntimeState && (
         <details className="ckpt-runtime-details">
-          <summary>Runtime State</summary>
+          <summary>{tr("Runtime State")}</summary>
           <div className="ckpt-runtime-body">
-            {requestingRoleId && <div>Requester: <code>{requestingRoleId}</code></div>}
-            {requestingWorkItemId && <div>Work item: <code>{requestingWorkItemId}</code></div>}
-            {requestingTaskId && <div>Task: <code>{requestingTaskId}</code></div>}
-            {seatId && <div>Seat: <code>{seatId}</code></div>}
-            {worktreePath && <div>Worktree: <code>{worktreePath}</code></div>}
-            {activeSubagents.length > 0 && <div>Active subagents: {activeSubagents.length}</div>}
-            {permissionRequests.length > 0 && <div>Pending permission records: {permissionRequests.length}</div>}
+            {requestingRoleId && <div>{tr("Requester:")}{' '}<code>{requestingRoleId}</code></div>}
+            {requestingWorkItemId && <div>{tr("Work item:")}{' '}<code>{requestingWorkItemId}</code></div>}
+            {requestingTaskId && <div>{tr("Task:")}{' '}<code>{requestingTaskId}</code></div>}
+            {seatId && <div>{tr("Seat:")}{' '}<code>{seatId}</code></div>}
+            {worktreePath && <div>{tr("Worktree:")}{' '}<code>{worktreePath}</code></div>}
+            {activeSubagents.length > 0 && <div>{tr("Active subagents:")}{' '}{activeSubagents.length}</div>}
+            {permissionRequests.length > 0 && <div>{tr("Pending permission records:")}{' '}{permissionRequests.length}</div>}
           </div>
         </details>
       )}
@@ -286,7 +288,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
           {usesChoiceMode ? null : (
             <textarea
               className="ckpt-feedback-input"
-              placeholder="Reply with the missing input to continue..."
+              placeholder={tr("Reply with the missing input to continue...")}
               value={reply}
               onChange={(e) => setReply(e.target.value)}
               rows={3}
@@ -298,8 +300,7 @@ export const TaskUserInputPanel = React.memo(function TaskUserInputPanel({
               onClick={usesChoiceMode ? handleSubmitStructured : handleSubmitLegacy}
               disabled={usesChoiceMode ? !canSubmitStructured : !reply.trim()}
             >
-              Send Reply
-            </button>
+              {tr("Send Reply")}</button>
           </div>
         </div>
       )}

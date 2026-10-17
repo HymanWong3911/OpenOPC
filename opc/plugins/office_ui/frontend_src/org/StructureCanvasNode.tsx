@@ -1,4 +1,6 @@
-import { memo } from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import React, { memo } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import { resolveRoleIcon } from './roleIcons'
 
@@ -26,6 +28,8 @@ export interface StructureCanvasNodeData {
  * the card reads consistently under Paper, OpenOPC, etc.
  */
 export const StructureCanvasNode = memo(function StructureCanvasNode({ data }: { data: StructureCanvasNodeData }) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const stateClass = [
     'oc-canvas-node',
     data.isOwner && 'is-owner',
@@ -51,7 +55,7 @@ export const StructureCanvasNode = memo(function StructureCanvasNode({ data }: {
           />
         </div>
         <div className="oc-canvas-node-text">
-          <span className="oc-canvas-node-name">{data.name}</span>
+          <span className="oc-canvas-node-name">{data.isOwner ? msg('You (Owner)') : data.name}</span>
           {data.externalTeamLabel && (
             <span className="oc-canvas-node-team" title={data.externalTeamLabel}>
               {data.externalTeamBoundary ? 'JiuwenSwarm-team' : data.externalTeamLabel}

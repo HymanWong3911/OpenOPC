@@ -1,3 +1,4 @@
+import { useChatText } from '../lib/chatMessages'
 import React, { useCallback } from 'react'
 import type { ChatMessageMeta } from '../types/chat'
 
@@ -22,6 +23,7 @@ const RISK_COLORS: Record<string, string> = {
 export const ReorgPanel = React.memo(function ReorgPanel({
   meta, onReply, responded,
 }: ReorgPanelProps) {
+  const tr = useChatText()
   const isResponded = responded
 
   const handleApprove = useCallback(() => {
@@ -52,14 +54,14 @@ export const ReorgPanel = React.memo(function ReorgPanel({
             <path d="M8 9.5V10" />
           </svg>
         </div>
-        <div className="ckpt-title">{meta.title || 'Company Reorg'}</div>
-        {isResponded && <span className="ckpt-badge ckpt-badge-responded">Responded</span>}
+        <div className="ckpt-title">{meta.title || tr("Company Reorg")}</div>
+        {isResponded && <span className="ckpt-badge ckpt-badge-responded">{tr("Responded")}</span>}
       </div>
 
       <div className="ckpt-reorg-badges">
-        <span className="ckpt-badge ckpt-badge-scope">{SCOPE_LABELS[scope] || scope}</span>
+        <span className="ckpt-badge ckpt-badge-scope">{tr(SCOPE_LABELS[scope] || scope)}</span>
         <span className="ckpt-badge" style={{ color: RISK_COLORS[risk] || 'var(--text-secondary)', borderColor: RISK_COLORS[risk] || 'var(--border)' }}>
-          Risk: {risk.charAt(0).toUpperCase() + risk.slice(1)}
+          {tr("Risk:")}{tr(risk.charAt(0).toUpperCase() + risk.slice(1))}
         </span>
       </div>
 
@@ -68,10 +70,10 @@ export const ReorgPanel = React.memo(function ReorgPanel({
 
       {roleChanges.length > 0 && (
         <div className="ckpt-changes-section">
-          <div className="ckpt-changes-title">Role Changes</div>
+          <div className="ckpt-changes-title">{tr("Role Changes")}</div>
           {roleChanges.map((rc, i) => (
             <div key={i} className="ckpt-change-row">
-              <span className={`ckpt-change-action ckpt-action-${rc.action}`}>{rc.action}</span>
+              <span className={`ckpt-change-action ckpt-action-${rc.action}`}>{tr(rc.action)}</span>
               <span className="ckpt-change-id">{rc.role_id}</span>
               {rc.replacement_role_id && (
                 <>
@@ -87,10 +89,10 @@ export const ReorgPanel = React.memo(function ReorgPanel({
 
       {projectionChanges.length > 0 && (
         <div className="ckpt-changes-section">
-          <div className="ckpt-changes-title">Work Item Projection Changes</div>
+          <div className="ckpt-changes-title">{tr("Work Item Projection Changes")}</div>
           {projectionChanges.map((change, i) => (
             <div key={i} className="ckpt-change-row">
-              <span className={`ckpt-change-action ckpt-action-${change.action}`}>{change.action}</span>
+              <span className={`ckpt-change-action ckpt-action-${change.action}`}>{tr(change.action)}</span>
               <span className="ckpt-change-id">{change.work_item_projection_id}</span>
               {change.replacement_work_item_projection_id && (
                 <>
@@ -106,16 +108,16 @@ export const ReorgPanel = React.memo(function ReorgPanel({
 
       {Object.keys(impact).length > 0 && (
         <div className="ckpt-impact">
-          {impact.affected_tasks != null && <span>Tasks affected: {impact.affected_tasks}</span>}
-          {impact.affected_roles != null && <span>Roles affected: {impact.affected_roles}</span>}
-          {impact.migration_count != null && <span>Migrations: {impact.migration_count}</span>}
+          {impact.affected_tasks != null && <span>{tr("Tasks affected:")}{' '}{impact.affected_tasks}</span>}
+          {impact.affected_roles != null && <span>{tr("Roles affected:")}{' '}{impact.affected_roles}</span>}
+          {impact.migration_count != null && <span>{tr("Migrations:")}{' '}{impact.migration_count}</span>}
         </div>
       )}
 
       {!isResponded && (
         <div className="ckpt-actions">
-          <button className="ckpt-btn ckpt-btn-approve" onClick={handleApprove}>Approve Reorg</button>
-          <button className="ckpt-btn ckpt-btn-deny" onClick={handleDeny}>Deny</button>
+          <button className="ckpt-btn ckpt-btn-approve" onClick={handleApprove}>{tr("Approve Reorg")}</button>
+          <button className="ckpt-btn ckpt-btn-deny" onClick={handleDeny}>{tr("Deny")}</button>
         </div>
       )}
     </div>

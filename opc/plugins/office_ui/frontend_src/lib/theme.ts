@@ -1,10 +1,5 @@
 export const THEMES = [
-  { name: 'midnight' },
-  { name: 'neon' },
   { name: 'paper' },
-  { name: 'retro' },
-  { name: 'terminal' },
-  { name: 'cozy' },
   { name: 'openopc', default: true },
 ] as const
 

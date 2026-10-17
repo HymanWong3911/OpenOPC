@@ -1,8 +1,12 @@
-<h1 align="center" style="font-size: 1.75em;">OpenOPC: Build Your Personal AI-Native Company — Self-Built, Self-Run, Self-Grown</h1>
+<h1 align="center" style="font-size: 1.75em;">Hyman OpenOPC: Build Your Personal AI-Native Company — Self-Built, Self-Run, Self-Grown</h1>
 
 <p align="center">
   <b>English</b> | <a href="README.zh-CN.md">简体中文</a>
 </p>
+
+**Hyman OpenOPC** is an independently maintained derivative of [HKUDS/OpenOPC](https://github.com/HKUDS/OpenOPC), with Hyman branding and local workflow improvements. Original software copyright © 2026 OpenOPC Authors. The original [MIT license](LICENSE) and author attribution are retained.
+
+**Validation scope:** Native web search in secretary chat, standalone tasks, and Company mode, along with major interface flows, has been validated locally. Third-party agent CLIs, messaging channels, and MCP servers require their own installation, configuration, and acceptance testing in each user's environment.
 
 🏗️ **Self-Built** — Fully automated to recruit role-specific AI employees and build the org.
 
@@ -188,6 +192,13 @@ Execution generates raw experience; Self-Grown turns it into lasting improvement
 
 ## Quick Start
 
+Clone this Hyman OpenOPC fork before following the environment setup below:
+
+```bash
+git clone https://github.com/HymanWong3911/OpenOPC.git
+cd OpenOPC
+```
+
 `uv` is the recommended setup path for OpenOPC. It can install/manage Python, create the project virtualenv, and run commands against that environment without mixing OpenOPC dependencies into your global Python.
 
 OpenOPC requires Python `>=3.10`; the examples below use Python `3.12`.
@@ -287,8 +298,8 @@ uv run opc exec -p demo --mode task --agent native --json "Summarize the current
 - `uv` is recommended for local development and release testing. If you prefer classic pip, create and activate a Python `>=3.10` virtualenv, then run `python -m pip install -e .`.
 - If virtualenv activation is blocked, stay unactivated and run commands with `uv run ...`.
 - See the official [`uv` installation](https://docs.astral.sh/uv/getting-started/installation/) and [Python management](https://docs.astral.sh/uv/guides/install-python/) docs for alternative package managers and managed Python details.
-- Node.js: `>=18` is needed when the Office UI frontend must be built.
-- `opc ui` auto-installs missing `aiohttp` / `aiosqlite` and auto-builds the frontend if needed.
+- Node.js: use `>=22.12` to build the Office UI frontend; Vite also supports `20.19+` within the Node.js 20.x series.
+- `aiohttp` and `aiosqlite` are installed with the Python package. `opc ui` retains a fallback installer if either dependency is missing, and builds the frontend when needed.
 - If you have not installed external agent CLIs yet, run `opc init --no-external-agent-preflight` to skip the first-run external-agent checks.
 - Browser tools are native Playwright tools. Install Chromium with `python -m playwright install chromium` before asking agents to browse pages.
 </details>

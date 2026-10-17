@@ -323,7 +323,7 @@ export function SessionSidebar({ sessions, activeSessionId, activeChannel, secre
 
   return (
     <div className="session-sidebar">
-      <button className="session-new-btn" onClick={onCreateSession}>
+      <button className="session-new-btn" onClick={onCreateSession} title={t('session.newChat')} aria-label={t('session.newChat')}>
         <IconPlus />
         <span>{t('session.newChat')}</span>
       </button>
@@ -332,6 +332,7 @@ export function SessionSidebar({ sessions, activeSessionId, activeChannel, secre
         <button
           className={`session-nav-btn${activeChannel === secretaryChannelId ? ' active' : ''}`}
           onClick={onSelectSecretary}
+          title={t('session.secretary')} aria-label={t('session.secretary')}
         >
           <IconShield />
           <span>{t('session.secretary')}</span>
@@ -448,6 +449,7 @@ export function SessionSidebar({ sessions, activeSessionId, activeChannel, secre
       <button
         className={`session-nav-btn session-activity-btn${activeSessionId === null && activeChannel !== secretaryChannelId ? ' active' : ''}`}
         onClick={() => onSelect(null)}
+        title={t('session.activity')} aria-label={t('session.activity')}
       >
         <IconActivity />
         <span>{t('session.activity')}</span>

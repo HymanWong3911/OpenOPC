@@ -906,6 +906,8 @@
   gap: 12px;
 }
 .mkt-arch-card {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
@@ -993,7 +995,7 @@
   color: var(--text-secondary);
   border: 1px solid var(--border);
 }
-.mkt-arch-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.mkt-arch-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: auto; }
 
 
 .mkt-installed-badge {
@@ -1188,4 +1190,124 @@
   font-size: 11.5px;
   color: var(--text-secondary);
   font-style: italic;
+}
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-grid, .mkt-arch-grid, .pkg-grid) {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-card, .mkt-arch-card, .pkg-card) {
+  background: var(--ha-bg-surface);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: none;
+  transition: background 120ms, border-color 120ms;
+  min-width: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card { min-height: 264px; gap: 16px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-card, .mkt-arch-card, .pkg-card):hover {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-strong);
+  box-shadow: none;
+  transform: none;
+}
+/* Talent metadata supplies inline colors. Neutral cards keep one visual hierarchy. */
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-avatar {
+  background: var(--ha-bg-raised) !important;
+  color: var(--ha-text-secondary) !important;
+  border: 1px solid var(--ha-border-default);
+  border-radius: 8px;
+  box-shadow: none !important;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-name-row { flex-wrap: wrap; row-gap: 4px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-name {
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  flex-basis: 100%;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-agent-badge { font-size: 11px; background: var(--ha-bg-subtle); color: var(--ha-text-secondary); font-family: var(--ha-font-mono, 'Geist Mono', monospace); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-category { font-size: 12px; line-height: 18px; font-family: inherit; text-transform: none; letter-spacing: 0; opacity: 1; color: var(--ha-text-secondary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-category::before { content: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-vibe { font-size: 13px; line-height: 20px; font-style: normal; color: var(--ha-text-primary); opacity: 1; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-card-desc, .mkt-arch-desc) { font-size: 13px; line-height: 22px; color: var(--ha-text-secondary); -webkit-line-clamp: 3; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-card-chip, .org-domain-tag, .org-tool-tag, .mkt-tag,
+  .mkt-arch-category, .mkt-arch-pattern, .mkt-arch-stat) {
+  background: var(--ha-bg-subtle);
+  color: var(--ha-text-secondary);
+  border: 1px solid var(--ha-border-subtle);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 3px 7px;
+  letter-spacing: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-footer { border-color: var(--ha-border-subtle); padding-top: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-hire-btn {
+  background: var(--ha-action-primary);
+  color: var(--ha-text-on-primary);
+  border: 1px solid var(--ha-action-primary);
+  border-radius: 8px;
+  min-height: 32px;
+  padding: 5px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-hire-btn:hover:not(:disabled) {
+  background: var(--ha-action-primary-hover);
+  color: var(--ha-text-on-primary);
+  border-color: var(--ha-action-primary-hover);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-card-hire-btn:disabled { background: var(--ha-fill-pressed); color: var(--ha-text-disabled); border-color: var(--ha-border-subtle); opacity: 1; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-search {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+  min-height: 36px;
+  font-size: 13px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-toolbar { gap: 16px; margin-bottom: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-search-wrap { min-width: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-count { font-size: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-pill { min-height: 28px; font-size: 13px; border-radius: 8px; border-color: var(--ha-border-default); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-pill:hover { background: var(--ha-fill-hover); border-color: var(--ha-border-strong); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-pill.active {
+  background: var(--ha-fill-selected);
+  color: var(--ha-text-primary);
+  border-color: var(--ha-border-strong);
+  box-shadow: inset 0 -2px 0 var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-section-title { font-size: 17px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-section-header { margin: 24px 0 14px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-arch-name { font-size: 15px; line-height: 24px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-arch-dag-summary { font-family: var(--ha-font-mono, 'Geist Mono', monospace); font-size: 13px; color: var(--ha-text-secondary); background: var(--ha-bg-subtle); letter-spacing: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-detail-overlay, .mkt-modal-overlay) { background: var(--ha-bg-overlay); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-detail-modal, .mkt-modal) { background: var(--ha-bg-surface); border-color: var(--ha-border-default); border-radius: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.tm-detail-header, .mkt-modal-header) { border-bottom-width: 1px; border-color: var(--ha-border-subtle); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-detail-name { font-size: 20px; line-height: 30px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-detail-vibe { background: var(--ha-bg-subtle); border-left-color: var(--ha-border-strong); font-style: normal; font-size: 15px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-detail-desc { color: var(--ha-text-reading); font-size: 15px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .tm-detail-label { font-size: 13px; letter-spacing: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.org-dag-node-role, .org-conn-type, .org-stat-tag, .org-ch-enabled, .org-conn-action-tag) {
+  background: var(--ha-bg-subtle);
+  color: var(--ha-text-secondary);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .org-emp-selected { background: var(--ha-fill-selected); border-color: var(--ha-border-default); }
+@media (max-width: 980px) {
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-toolbar { flex-wrap: wrap; }
+  :is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .mkt-search-wrap { flex-basis: 100%; }
 }

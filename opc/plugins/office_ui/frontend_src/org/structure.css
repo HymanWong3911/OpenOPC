@@ -1771,3 +1771,52 @@
   .sos-row,
   .sos-row-delete { transition: none !important; }
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-node-card, .oc-canvas-node, .oc-canvas-node.is-owner) {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+  border-radius: 8px;
+  color: var(--ha-text-primary);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-node-card:hover, .oc-canvas-node:hover, .oc-canvas-node.is-owner:hover) {
+  border-color: var(--ha-border-strong);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-canvas-node.is-selected, .oc-card-editing) {
+  border-color: var(--ha-accent);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .oc-canvas-node.is-drop-target {
+  border-color: var(--ha-accent);
+  box-shadow: none;
+  transform: none;
+  animation: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .oc-canvas-node.is-external-team-boundary { box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-canvas-node-chip, .oc-canvas-node:hover .oc-canvas-node-chip,
+  .oc-canvas-node.is-selected .oc-canvas-node-chip, .is-owner .oc-canvas-node-chip) {
+  background: var(--ha-bg-raised);
+  border: 1px solid var(--ha-border-default);
+  color: var(--ha-text-secondary);
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-canvas-node-chip-icon, .is-owner .oc-canvas-node-chip-icon) { background-color: var(--ha-text-primary); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-canvas-node-team, .oc-canvas-node-person) { color: var(--ha-text-secondary); font-size: 12px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .oc-canvas-node-name { font-size: 13px; line-height: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .oc-canvas-node-meta { font-size: 12px; line-height: 18px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .se-body::after { background: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.oc-status-dot, .oc-canvas-node-status-dot) { box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ri-panel, .rt-container, .se-toolbar, .se-settings-panel) { background: var(--ha-bg-surface); border-color: var(--ha-border-subtle); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ri-textarea, .ri-input, .ri-select, .oc-form-row input, .oc-form-row select, .oc-form-row textarea) {
+  font-size: 13px;
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+  background: var(--ha-bg-canvas);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ri-textarea-mono, .ri-toolcheck-name, .rt-cell-id, .oc-canvas-node-id, .se-code) { font-family: var(--ha-font-mono, 'Geist Mono', monospace); font-size: 13px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.ri-label, .rt-table, .se-toolbar button, .oc-action-btn, .oc-form-actions button) { font-size: 13px; line-height: 20px; }

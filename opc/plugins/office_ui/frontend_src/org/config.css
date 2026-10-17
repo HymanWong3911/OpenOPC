@@ -224,3 +224,22 @@
   word-break: break-word;
   line-height: 1.4;
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .cfg-io-panel { background: var(--ha-bg-surface); border-color: var(--ha-border-subtle); border-radius: 10px; box-shadow: none; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .cfg-io-title { font-size: 17px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.cfg-io-subtitle, .cfg-io-section-title, .cfg-io-file-btn, .cfg-io-file-name) { font-size: 13px; line-height: 20px; letter-spacing: 0; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .cfg-io-textarea {
+  background: var(--ha-bg-canvas);
+  color: var(--ha-text-primary);
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+  font-family: var(--ha-font-mono, 'Geist Mono', monospace);
+  font-size: 13px;
+  line-height: 20px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.cfg-io-pre, .cfg-io-error) { font-family: var(--ha-font-mono, 'Geist Mono', monospace); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) .cfg-io-file-label:hover .cfg-io-file-btn { color: var(--ha-text-primary); border-color: var(--ha-border-strong); }

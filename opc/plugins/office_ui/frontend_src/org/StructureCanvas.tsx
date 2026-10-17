@@ -1,4 +1,6 @@
-import { useMemo, useCallback, useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import React, { useMemo, useCallback, useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import { ReactFlow, Background, Controls, MiniMap, ReactFlowProvider, applyNodeChanges } from '@xyflow/react'
 import type { Node, Edge, NodeChange } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
@@ -37,6 +39,8 @@ interface StructureCanvasProps {
  *  - Reparenting reflows (a new parent->child edge would leave the graph stale).
  */
 export const StructureCanvas = forwardRef<StructureCanvasHandle, StructureCanvasProps>(function StructureCanvas(props, ref) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   return (
     <ReactFlowProvider>
       <StructureCanvasInner {...props} forwardedRef={ref} />
@@ -45,6 +49,8 @@ export const StructureCanvas = forwardRef<StructureCanvasHandle, StructureCanvas
 })
 
 function StructureCanvasInner({ roles, employees, sessionRecruitmentByRole, selectedRoleId, onSelectRole, onReparent, readOnly, forwardedRef }: StructureCanvasProps & { forwardedRef: React.ForwardedRef<StructureCanvasHandle> }) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const employeesByRole = useMemo(() => {
     const m = new Map<string, OrgEmployee[]>()
     for (const e of employees) {
@@ -129,7 +135,7 @@ function StructureCanvasInner({ roles, employees, sessionRecruitmentByRole, sele
         employeeNames: recruitedNamesByRole(r.role_id),
         isOwner: false, isSelected: false, isDropTarget: false,
         externalTeamLabel: r.covered_by_external_team
-          ? (r.external_team_boundary ? 'JiuwenSwarm-team' : `via ${r.external_team_boundary_role_id ?? 'team boundary'}`)
+          ? (r.external_team_boundary ? 'JiuwenSwarm-team' : msg('via {role}', { role: r.external_team_boundary_role_id ?? msg('team boundary') }))
           : undefined,
         externalTeamBoundary: !!r.external_team_boundary,
       },
@@ -144,7 +150,7 @@ function StructureCanvasInner({ roles, employees, sessionRecruitmentByRole, sele
     const positioned = computeDagreLayout(all, edges)
     return { nodes: positioned, edges }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- layoutVersion is the explicit reflow trigger
-  }, [layoutVersion, readOnly])
+  }, [layoutVersion, readOnly, msg])
 
   // Live nodes: start from laid-out positions; overlay current role data
   // (name/icon/etc.) without re-running dagre.
@@ -168,13 +174,13 @@ function StructureCanvasInner({ roles, employees, sessionRecruitmentByRole, sele
           isSelected: role.role_id === selectedRoleId,
           isDropTarget: role.role_id === dropTargetId,
           externalTeamLabel: role.covered_by_external_team
-            ? (role.external_team_boundary ? 'JiuwenSwarm-team' : `via ${role.external_team_boundary_role_id ?? 'team boundary'}`)
+            ? (role.external_team_boundary ? 'JiuwenSwarm-team' : msg('via {role}', { role: role.external_team_boundary_role_id ?? msg('team boundary') }))
             : undefined,
           externalTeamBoundary: !!role.external_team_boundary,
         },
       }
     })
-  }, [laidOut.nodes, roles, employeesByRole, recruitedNamesByRole, selectedRoleId, dropTargetId, readOnly, manualPositions])
+  }, [laidOut.nodes, roles, employeesByRole, recruitedNamesByRole, selectedRoleId, dropTargetId, readOnly, manualPositions, msg])
 
   const [stateNodes, setStateNodes] = useState(liveNodes)
   useEffect(() => { setStateNodes(liveNodes) }, [liveNodes])
@@ -231,6 +237,19 @@ function StructureCanvasInner({ roles, employees, sessionRecruitmentByRole, sele
         onNodeDrag={handleNodeDrag}
         onNodeDragStop={handleNodeDragStop}
         onNodeClick={handleNodeClick}
+        ariaLabelConfig={{
+          'node.a11yDescription.default': msg('Press enter or space to select a node. Press delete to remove it and escape to cancel.'),
+          'node.a11yDescription.keyboardDisabled': msg('Press enter or space to select a node. You can then use the arrow keys to move the node around. Press delete to remove it and escape to cancel.'),
+          'node.a11yDescription.ariaLiveMessage': ({ direction, x, y }) => msg('Moved selected node {direction}. New position, x: {x}, y: {y}', { direction: msg(direction), x, y }),
+          'edge.a11yDescription.default': msg('Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.'),
+          'controls.ariaLabel': msg('Control Panel'),
+          'controls.zoomIn.ariaLabel': msg('Zoom In'),
+          'controls.zoomOut.ariaLabel': msg('Zoom Out'),
+          'controls.fitView.ariaLabel': msg('Fit View'),
+          'controls.interactive.ariaLabel': msg('Toggle Interactivity'),
+          'minimap.ariaLabel': msg('Mini Map'),
+          'handle.ariaLabel': msg('Handle'),
+        }}
         fitView
         fitViewOptions={{ padding: 0.32, minZoom: 0.45, maxZoom: 1.2 }}
         nodesConnectable={false}

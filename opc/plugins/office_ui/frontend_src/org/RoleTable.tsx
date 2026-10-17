@@ -1,3 +1,5 @@
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
 /**
  * RoleTable — Tanstack-table bulk editor for roles.
  *
@@ -15,7 +17,7 @@
  * Row click → selects the row in StructureEditor (opens Inspector).
  * Multi-select → bulk-edit bar at top ("Change agent for N roles", etc.)
  */
-import { useMemo, useState, type ChangeEvent } from 'react'
+import React, { useMemo, useState, type ChangeEvent } from 'react'
 import {
   useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
   type ColumnDef, type SortingState,
@@ -59,6 +61,8 @@ export function RoleTable({
   roles, employees, selectedIds, onSelectRow,
   onUpdateRole, onDeleteRole, readOnly,
 }: RoleTableProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
   const [editingCell, setEditingCell] = useState<{ rowId: string; col: 'name' } | null>(null)
@@ -87,8 +91,8 @@ export function RoleTable({
   }, [roles, employees])
 
   const reportsToOptions = useMemo(
-    () => [{ id: 'owner', name: 'Owner' }, ...roles.map(r => ({ id: r.role_id, name: r.name }))],
-    [roles],
+    () => [{ id: 'owner', name: msg("Owner") }, ...roles.map(r => ({ id: r.role_id, name: r.name }))],
+    [roles, msg],
   )
 
   const commitName = (rowId: string) => {
@@ -110,7 +114,7 @@ export function RoleTable({
           ref={el => { if (el) el.indeterminate = table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected() }}
           onChange={table.getToggleAllRowsSelectedHandler()}
           disabled={readOnly}
-          aria-label="Select all"
+          aria-label={msg("Select all")}
         />
       ),
       cell: ({ row }) => (
@@ -119,7 +123,7 @@ export function RoleTable({
           checked={row.getIsSelected()}
           onChange={row.getToggleSelectedHandler()}
           disabled={readOnly}
-          aria-label={`Select ${row.original.role_id}`}
+          aria-label={msg('Select {role}', { role: row.original.role_id })}
           onClick={e => e.stopPropagation()}
         />
       ),
@@ -137,7 +141,7 @@ export function RoleTable({
     },
     {
       id: 'name',
-      header: 'Name',
+      header: msg("Name"),
       accessorKey: 'name',
       cell: ({ row }) => {
         const r = row.original
@@ -167,7 +171,7 @@ export function RoleTable({
               setNameBuffer(r.name)
               setEditingCell({ rowId: r.role_id, col: 'name' })
             }}
-            title="Double-click to edit"
+            title={msg("Double-click to edit")}
           >
             {r.name}
           </span>
@@ -176,22 +180,22 @@ export function RoleTable({
     },
     {
       id: 'role_id',
-      header: 'ID',
+      header: msg("ID"),
       accessorKey: 'role_id',
       cell: ({ row }) => <code className="rt-cell-id">{row.original.role_id}</code>,
     },
     {
       id: 'reports_to',
-      header: 'Reports to',
+      header: msg("Reports to"),
       accessorKey: 'reports_to',
       cell: ({ row }) => {
         const r = row.original
         if (r.coveredByExternalTeam) {
           return (
             <span className="rt-team-agent" title={r.externalTeamBoundary
-              ? 'This role and its descendants execute as one opaque team.'
-              : `Covered by the team at ${r.externalTeamBoundaryRoleId ?? 'the boundary role'}`}>
-              {r.externalTeamBoundary ? 'JiuwenSwarm-team' : `Covered by ${r.externalTeamBoundaryRoleId ?? 'team'}`}
+              ? msg("This role and its descendants execute as one opaque team.")
+              : msg('Covered by the team at {role}', { role: r.externalTeamBoundaryRoleId ?? msg('the boundary role') })}>
+              {r.externalTeamBoundary ? 'JiuwenSwarm-team' : msg('Covered by {role}', { role: r.externalTeamBoundaryRoleId ?? msg('team') })}
             </span>
           )
         }
@@ -212,7 +216,7 @@ export function RoleTable({
     },
     {
       id: 'toolCount',
-      header: 'Tools',
+      header: msg("Tools"),
       accessorKey: 'toolCount',
       cell: ({ row }) => (
         <span className="rt-cell-count">{row.original.toolCount}</span>
@@ -221,7 +225,7 @@ export function RoleTable({
     },
     {
       id: 'agent',
-      header: 'Agent',
+      header: msg("Agent"),
       accessorKey: 'agent',
       cell: ({ row }) => {
         const r = row.original
@@ -233,7 +237,7 @@ export function RoleTable({
             disabled={readOnly}
             onClick={e => e.stopPropagation()}
           >
-            <option value="">(auto)</option>
+            <option value="">{msg("(auto)")}</option>
             {EXTERNAL_AGENTS.map(a => <option key={a} value={a}>{executionAgentLabel(a)}</option>)}
           </select>
         )
@@ -241,7 +245,7 @@ export function RoleTable({
     },
     {
       id: 'employeeCount',
-      header: 'People',
+      header: msg("People"),
       accessorKey: 'employeeCount',
       cell: ({ row }) => <span className="rt-cell-count">{row.original.employeeCount}</span>,
       size: 64,
@@ -255,16 +259,16 @@ export function RoleTable({
           onClick={e => {
             e.stopPropagation()
             if (readOnly) return
-            if (confirm(`Delete role "${row.original.name}"?`)) onDeleteRole(row.original.role_id)
+            if (confirm(msg('Delete role \"{name}\"?', { name: row.original.name }))) onDeleteRole(row.original.role_id)
           }}
           disabled={readOnly}
-          title="Delete"
+          title={msg("Delete")}
         >✕</button>
       ),
       size: 40,
       enableSorting: false,
     },
-  ], [editingCell, nameBuffer, readOnly, reportsToOptions, onUpdateRole, onDeleteRole])
+  ], [editingCell, nameBuffer, readOnly, reportsToOptions, onUpdateRole, onDeleteRole, msg])
 
   const table = useReactTable({
     data,
@@ -289,7 +293,7 @@ export function RoleTable({
   }
   const bulkDelete = () => {
     if (readOnly) return
-    if (!confirm(`Delete ${selectedCount} roles? This cannot be undone.`)) return
+    if (!confirm(msg('Delete {count} roles? This cannot be undone.', { count: selectedCount }))) return
     selectedRoleIds.forEach(id => onDeleteRole(id))
     setRowSelection({})
   }
@@ -298,18 +302,18 @@ export function RoleTable({
     <div className="rt-container">
       {selectedCount > 0 && !readOnly && (
         <div className="rt-bulk-bar">
-          <span className="rt-bulk-count">{selectedCount} selected</span>
+          <span className="rt-bulk-count">{selectedCount} {msg("selected")}</span>
           <select
             className="rt-bulk-select"
             defaultValue=""
             onChange={e => { const v = e.target.value; if (v) bulkSetAgent(v === '__auto__' ? null : v) }}
           >
-            <option value="" disabled>Change agent…</option>
-            <option value="__auto__">(auto)</option>
+            <option value="" disabled>{msg("Change agent…")}</option>
+            <option value="__auto__">{msg("(auto)")}</option>
             {EXTERNAL_AGENTS.map(a => <option key={a} value={a}>{executionAgentLabel(a)}</option>)}
           </select>
-          <button className="btn btn-danger btn-sm" onClick={bulkDelete}>Delete selected</button>
-          <button className="btn btn-ghost btn-sm" onClick={() => setRowSelection({})}>Clear</button>
+          <button className="btn btn-danger btn-sm" onClick={bulkDelete}>{msg("Delete selected")}</button>
+          <button className="btn btn-ghost btn-sm" onClick={() => setRowSelection({})}>{msg("Clear")}</button>
         </div>
       )}
 
@@ -335,7 +339,7 @@ export function RoleTable({
           </thead>
           <tbody>
             {table.getRowModel().rows.length === 0 && (
-              <tr><td colSpan={9} className="rt-empty">No roles. Add one via the "+ Add role" button.</td></tr>
+              <tr><td colSpan={9} className="rt-empty">{msg("No roles. Add one via the \"+ Add role\" button.")}</td></tr>
             )}
             {table.getRowModel().rows.map(row => {
               const isSelected = selectedIds.includes(row.original.role_id)

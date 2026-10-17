@@ -128,12 +128,13 @@ _TASK_MODE_ORCHESTRATION = """
 # file_write / file_edit are deliberately NOT blocked: coordination turns
 # produce in-context content (briefs, matrices, review notes) that must be
 # persistable to the workspace, or it gets trapped in blocking DM hand-offs.
+# Read-only web research is also available in coordination turns so managers
+# can verify sources and answer direct research requests. Network approval is
+# still enforced by the normal permission pipeline.
 _MULTI_TEAM_COORDINATION_NATIVE_TOOL_BLOCKLIST = {
     "shell_exec",
     "apply_patch",
     "python_exec",
-    "web_search",
-    "web_fetch",
     "browser_navigate",
     "browser_navigate_back",
     "browser_click",

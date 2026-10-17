@@ -1,3 +1,4 @@
+import { useChatText, localizeExternalTeamSummary } from '../lib/chatMessages'
 import React, { useMemo } from 'react'
 import type { ReactNode } from 'react'
 import type {
@@ -16,7 +17,7 @@ import { getExecutionTurnId } from '../lib/workItemRuntimeIds'
 import { executionAgentLabel } from '../lib/externalAgents'
 import type { ExternalTeamActivityRecord } from '../stores/ExternalTeamActivityStore'
 import type { ExternalTeamActivitySummary } from '../types/externalTeamActivity'
-import { externalTeamSummaryText, isJiuwenOpaqueTeam } from '../lib/externalTeamActivity'
+import { isJiuwenOpaqueTeam } from '../lib/externalTeamActivity'
 
 interface WorkItemProgressCardProps {
   workItemLog: WorkItemProgressEntry[]
@@ -257,6 +258,7 @@ export function WorkItemProgressCard({
   onWorkItemClick,
   getExternalTeamActivity,
 }: WorkItemProgressCardProps) {
+  const tr = useChatText()
   // Build child session lookup for enriching display names
   const sessionByTaskId = useMemo(() => {
     const map = new Map<string, Session>()
@@ -287,7 +289,7 @@ export function WorkItemProgressCard({
         order.push(projectionId)
         // Determine display title — prefer roleName, avoid UUID fallback
         const rawTitle = entry.workItemProjectionTitle ?? projectionId
-        const title = entry.roleName || (!isUuidLike(rawTitle) ? rawTitle : 'Agent')
+        const title = entry.roleName || (!isUuidLike(rawTitle) ? rawTitle : tr("Agent"))
         map.set(projectionId, {
           projectionId,
           title,
@@ -334,7 +336,7 @@ export function WorkItemProgressCard({
     }
 
     return order.map(id => map.get(id)!)
-  }, [workItemLog, sessionByTaskId])
+  }, [workItemLog, sessionByTaskId, tr])
 
   const taskOrder = useMemo(() => {
     const map = new Map<string, number>()
@@ -366,7 +368,7 @@ export function WorkItemProgressCard({
         const phaseToStatus = phaseAggregateForRow(row.phase)
         return {
           executionTurnId: row.executionTurnId ?? '',
-          title: trimString(row.title) || trimString(row.executorRoleName) || trimString(row.executorRoleId) || 'Work item',
+          title: trimString(row.title) || trimString(row.executorRoleName) || trimString(row.executorRoleId) || tr("Work item"),
           status: phaseToStatus,
           statusLabel: labelForColumnId(columnId),
           columnId,
@@ -391,7 +393,7 @@ export function WorkItemProgressCard({
         roleKey: summary.roleKey,
         executionTurnId: focusedExecutionTurnId,
         title: opaqueTeamRow
-          ? `${summary.roleName || summary.roleId} · JiuwenSwarm-team`
+          ? `${summary.roleName || summary.roleId} · ${tr('JiuwenSwarm-team')}`
           : (summary.roleName || summary.roleId),
         status: aggregatedStatus,
         statusLabel: labelForColumnId(aggregatedColumnId),
@@ -415,7 +417,7 @@ export function WorkItemProgressCard({
       return aFirst - bFirst
     })
     return summaries
-  }, [displayRoleWorkItems, getExternalTeamActivity])
+  }, [displayRoleWorkItems, getExternalTeamActivity, tr])
 
   const roleSummariesFromSessions = useMemo<RoleSummaryInfo[]>(() => {
     const sessions = [...(childSessions ?? [])]
@@ -482,7 +484,7 @@ export function WorkItemProgressCard({
               session.title,
               session.workItemRoleName,
               session.workItemRoleId,
-              'Turn',
+              tr("Turn"),
             ),
             status,
             statusLabel: labelForColumnId(columnId),
@@ -509,7 +511,7 @@ export function WorkItemProgressCard({
         representative.assigneeIds[0],
         getWorkItemAssignmentLabel(representative),
         representative.title,
-        'Agent',
+        tr("Agent"),
       )
 
       summaries.push({
@@ -528,7 +530,7 @@ export function WorkItemProgressCard({
     }
 
     return summaries
-  }, [childSessions, taskOrder])
+  }, [childSessions, taskOrder, tr])
 
   // Pick the work-item-driven summaries when present. In company/org
   // mode, runtime sessions are only audit targets; they must not synthesize
@@ -564,7 +566,7 @@ export function WorkItemProgressCard({
     <div className="wi-progress-card">
       <div className="wi-progress-header">
         <IconWorkItem />
-        <span>Execution Progress</span>
+        <span>{tr("Execution Progress")}</span>
       </div>
 
       {workItems.length > 0 && (
@@ -575,14 +577,14 @@ export function WorkItemProgressCard({
                 type="button"
                 className={`wi-projection-chip wi-projection-${workItem.status}`}
                 onClick={() => onWorkItemClick?.(workItem.executionTurnId || '')}
-                title={`Open Runtime Session${workItem.roleName ? `: ${workItem.title} (${workItem.roleName})` : `: ${workItem.title}`}`}
+                title={`${tr('Open Runtime Session')}${workItem.roleName ? `: ${workItem.title} (${workItem.roleName})` : `: ${workItem.title}`}`}
               >
                 <span className="wi-projection-label">{workItem.title}</span>
                 {workItem.executionAgent && (
                   <span className="wi-projection-agent">{workItem.executionAgent}</span>
                 )}
                 {workItem.externalTeamSummary && (
-                  <span className="wi-projection-team-summary">{externalTeamSummaryText(workItem.externalTeamSummary)}</span>
+                  <span className="wi-projection-team-summary">{localizeExternalTeamSummary(workItem.externalTeamSummary, tr)}</span>
                 )}
                 {renderProjectionIcon(workItem.status)}
               </button>
@@ -594,8 +596,7 @@ export function WorkItemProgressCard({
 
       {isPreparingCompanyRuntime && (
         <div className="wi-progress-pipeline wi-progress-pipeline-empty" role="status">
-          Preparing company roles…
-        </div>
+          {tr("Preparing company roles…")}</div>
       )}
 
     </div>

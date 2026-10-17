@@ -9,6 +9,13 @@ import type {
 import type { InteractionReplyReceipt } from '../types/chat'
 import { PackageCard } from './PackageCard'
 import { CollapsibleSection } from './CollapsibleSection'
+import { ArchitectureIcon } from './ArchitectureIcon'
+import { useI18n } from '../i18n'
+import {
+  architectureMessages, filterArchitecturePresets, getArchitectureCategoryLabel,
+  getArchitectureDetailPresentation, getArchitectureGateLabel, getArchitecturePatternLabel,
+  getArchitecturePresentation, getReorgStatusLabel,
+} from '../lib/architectureLocalization'
 
 /* ── Inline SVG icon data-URIs (no external CDN) ────────────────── */
 const ICON = {
@@ -24,13 +31,7 @@ const ICON = {
   gateHold: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ef4444' d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'/%3E%3C/svg%3E",
 }
 
-const PATTERN_LABELS: Record<string, string> = {
-  pipeline: 'Pipeline',
-  hub_spoke: 'Hub & Spoke',
-  review_loop: 'Review Loop',
-  hierarchical: 'Hierarchical',
-  flat: 'Flat Team',
-}
+type ReorgError = { message: string } | { fallback: 'decisionNotAccepted' | 'decisionFailed' }
 
 interface ArchitectureMarketplaceProps {
   presets: ArchitecturePreset[]
@@ -60,6 +61,8 @@ export function ArchitectureMarketplace({
   installedPackages, channels, reorgProposals, isCustomMode,
   onReorgDecide, onMarketInstall, onMarketUninstall,
 }: ArchitectureMarketplaceProps) {
+  const { locale } = useI18n()
+  const labels = architectureMessages(locale)
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [activePattern, setActivePattern] = useState<string | null>(null)
@@ -70,7 +73,7 @@ export function ArchitectureMarketplace({
   const [acceptedReorgIds, setAcceptedReorgIds] = useState<Set<string>>(
     () => new Set(),
   )
-  const [reorgError, setReorgError] = useState<Record<string, string>>({})
+  const [reorgError, setReorgError] = useState<Record<string, ReorgError | null>>({})
 
   const categories = useMemo(() => {
     const cats = new Set<string>()
@@ -84,21 +87,9 @@ export function ArchitectureMarketplace({
     return Array.from(pats).sort()
   }, [presets])
 
-  const filteredPresets = useMemo(() => {
-    let result = presets
-    if (activeCategory) result = result.filter(p => p.category === activeCategory)
-    if (activePattern) result = result.filter(p => p.collaboration_pattern === activePattern)
-    if (search.trim()) {
-      const q = search.trim().toLowerCase()
-      result = result.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.tags.some(t => t.toLowerCase().includes(q)) ||
-        (PATTERN_LABELS[p.collaboration_pattern] || '').toLowerCase().includes(q),
-      )
-    }
-    return result
-  }, [presets, activeCategory, activePattern, search])
+  const filteredPresets = useMemo(() => filterArchitecturePresets(presets, {
+    category: activeCategory, pattern: activePattern, query: search,
+  }), [presets, activeCategory, activePattern, search])
 
   const handleImport = () => {
     if (!importPath.trim()) return
@@ -108,7 +99,7 @@ export function ArchitectureMarketplace({
   }
 
   const handleUninstall = (pkgId: string) => {
-    if (!confirm('Uninstall this package? Roles and work-item templates from this package will be removed.')) return
+    if (!confirm(labels.uninstallConfirm)) return
     setUninstallingId(pkgId)
     onMarketUninstall(pkgId)
     setTimeout(() => setUninstallingId(null), 3000)
@@ -120,13 +111,16 @@ export function ArchitectureMarketplace({
   ) => {
     if (!proposal.checkpoint_id || proposal.checkpoint_status !== 'pending') return
     setSubmittingReorgId(proposal.proposal_id)
-    setReorgError(current => ({ ...current, [proposal.proposal_id]: '' }))
+    setReorgError(current => ({ ...current, [proposal.proposal_id]: null }))
     try {
       const receipt = await onReorgDecide(proposal, approved)
       if (!receipt.accepted) {
+        const message = receipt.reason || receipt.error
         setReorgError(current => ({
           ...current,
-          [proposal.proposal_id]: receipt.reason || receipt.error || 'Decision was not accepted.',
+          [proposal.proposal_id]: message
+            ? { message }
+            : { fallback: 'decisionNotAccepted' },
         }))
         return
       }
@@ -139,7 +133,9 @@ export function ArchitectureMarketplace({
     } catch (error) {
       setReorgError(current => ({
         ...current,
-        [proposal.proposal_id]: error instanceof Error ? error.message : 'Decision failed.',
+        [proposal.proposal_id]: error instanceof Error && error.message
+          ? { message: error.message }
+          : { fallback: 'decisionFailed' },
       }))
     } finally {
       setSubmittingReorgId(current => (
@@ -156,12 +152,13 @@ export function ArchitectureMarketplace({
           <img src={ICON.search} alt="" className="mkt-search-icon" />
           <input
             className="mkt-search"
-            placeholder="Search architectures..."
+            placeholder={labels.search}
+            aria-label={labels.search}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <span className="mkt-count">{filteredPresets.length} architectures</span>
+        <span className="mkt-count">{labels.architecturesCount(filteredPresets.length)}</span>
       </div>
 
       {/* Filter pills */}
@@ -169,22 +166,26 @@ export function ArchitectureMarketplace({
         {categories.length > 0 && (
           <div className="mkt-pill-row">
             <button className={`mkt-pill${!activeCategory ? ' active' : ''}`}
-              onClick={() => setActiveCategory(null)}>All</button>
+              aria-pressed={!activeCategory}
+              onClick={() => setActiveCategory(null)}>{labels.all}</button>
             {categories.map(cat => (
               <button key={cat} className={`mkt-pill${activeCategory === cat ? ' active' : ''}`}
+                aria-pressed={activeCategory === cat}
                 onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              >{cat}</button>
+              >{getArchitectureCategoryLabel(cat, locale, presets)}</button>
             ))}
           </div>
         )}
         {patterns.length > 0 && (
           <div className="mkt-pill-row">
             <button className={`mkt-pill mkt-pill-pattern${!activePattern ? ' active' : ''}`}
-              onClick={() => setActivePattern(null)}>All Patterns</button>
+              aria-pressed={!activePattern}
+              onClick={() => setActivePattern(null)}>{labels.allPatterns}</button>
             {patterns.map(pat => (
               <button key={pat} className={`mkt-pill mkt-pill-pattern${activePattern === pat ? ' active' : ''}`}
+                aria-pressed={activePattern === pat}
                 onClick={() => setActivePattern(activePattern === pat ? null : pat)}
-              >{PATTERN_LABELS[pat] || pat}</button>
+              >{getArchitecturePatternLabel(pat, locale)}</button>
             ))}
           </div>
         )}
@@ -195,7 +196,7 @@ export function ArchitectureMarketplace({
         <div className="mkt-section">
           <div className="mkt-section-header">
             <img src={ICON.arch} alt="" className="mkt-section-icon" />
-            <h3 className="mkt-section-title">Architecture Blueprints</h3>
+            <h3 className="mkt-section-title">{labels.blueprints}</h3>
             <span className="mkt-section-count">{filteredPresets.length}</span>
           </div>
           <div className="mkt-arch-grid">
@@ -211,26 +212,26 @@ export function ArchitectureMarketplace({
           </div>
         </div>
       ) : (
-        <div className="mkt-empty"><p>No architectures match your search.</p></div>
+        <div className="mkt-empty"><p>{labels.noResults}</p></div>
       )}
 
       {/* Installed Packages */}
-      <CollapsibleSection icon={ICON.packages} title="Installed Packages" count={installedPackages.length}
+      <CollapsibleSection icon={ICON.packages} title={labels.installedPackages} count={installedPackages.length}
         extra={isCustomMode ? (
           <button className="myorg-inline-btn" onClick={() => setShowImportForm(!showImportForm)}>
-            <img src={ICON.importPkg} alt="" className="myorg-inline-icon" /> Import
+            <img src={ICON.importPkg} alt="" className="myorg-inline-icon" /> {labels.import}
           </button>
         ) : undefined}>
         {isCustomMode && showImportForm && (
           <div className="myorg-form">
             <div className="oc-form-row">
-              <label>Path</label>
+              <label>{labels.path}</label>
               <input value={importPath} onChange={e => setImportPath(e.target.value)}
-                placeholder="/path/to/package.opcpkg" />
+                aria-label={labels.path} placeholder="/path/to/package.opcpkg" />
             </div>
             <div className="oc-form-actions">
-              <button className="oc-btn-primary" onClick={handleImport} disabled={!importPath.trim()}>Install</button>
-              <button className="oc-btn-ghost" onClick={() => setShowImportForm(false)}>Cancel</button>
+              <button className="oc-btn-primary" onClick={handleImport} disabled={!importPath.trim()}>{labels.install}</button>
+              <button className="oc-btn-ghost" onClick={() => setShowImportForm(false)}>{labels.cancel}</button>
             </div>
           </div>
         )}
@@ -243,12 +244,12 @@ export function ArchitectureMarketplace({
             ))}
           </div>
         ) : (
-          <div className="myorg-empty-hint">No packages installed.</div>
+          <div className="myorg-empty-hint">{labels.noPackages}</div>
         )}
       </CollapsibleSection>
 
       {/* Channels & Connectors */}
-      <CollapsibleSection icon={ICON.channels} title="Channels & Connectors" count={channels.length}>
+      <CollapsibleSection icon={ICON.channels} title={labels.channels} count={channels.length}>
         {channels.length > 0 ? (
           <div className="org-channels-grid">
             {channels.map(ch => (
@@ -258,21 +259,21 @@ export function ArchitectureMarketplace({
                   <span className="org-ch-name">{ch.name}</span>
                 </div>
                 <div className="org-ch-status-row">
-                  {ch.enabled && <span className="org-ch-badge org-ch-enabled">enabled</span>}
-                  {ch.running && <span className="org-ch-badge org-ch-running-badge">running</span>}
-                  {!ch.enabled && <span className="org-ch-badge org-ch-off">disabled</span>}
+                  {ch.enabled && <span className="org-ch-badge org-ch-enabled">{labels.enabled}</span>}
+                  {ch.running && <span className="org-ch-badge org-ch-running-badge">{labels.running}</span>}
+                  {!ch.enabled && <span className="org-ch-badge org-ch-off">{labels.disabled}</span>}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="myorg-empty-hint">No channels configured.</div>
+          <div className="myorg-empty-hint">{labels.noChannels}</div>
         )}
       </CollapsibleSection>
 
       {/* Reorg Proposals */}
       {reorgProposals.length > 0 && (
-        <CollapsibleSection icon={ICON.reorg} title="Reorg Proposals" count={reorgProposals.length}>
+        <CollapsibleSection icon={ICON.reorg} title={labels.reorgProposals} count={reorgProposals.length}>
           <div className="org-reorg-list">
             {reorgProposals.map(p => {
               const isPending = p.status === 'proposed'
@@ -285,11 +286,12 @@ export function ArchitectureMarketplace({
                 && Boolean(p.checkpoint_id)
                 && !wasAccepted
               )
+              const error = reorgError[p.proposal_id]
               return (
                 <div key={p.proposal_id} className={`org-reorg-card org-reorg-${p.status}`}>
                   <div className="org-reorg-header">
-                    <span className="org-reorg-title">{p.title || p.summary || 'Untitled'}</span>
-                    <span className="org-reorg-status">{p.status}</span>
+                    <span className="org-reorg-title">{p.title || p.summary || labels.untitled}</span>
+                    <span className="org-reorg-status">{getReorgStatusLabel(p.status, locale)}</span>
                   </div>
                   {p.summary && <div className="org-reorg-summary">{p.summary}</div>}
                   {canDecide && (
@@ -298,25 +300,25 @@ export function ArchitectureMarketplace({
                         className="org-reorg-approve"
                         disabled={isSubmitting}
                         onClick={() => void handleReorgDecision(p, true)}
-                      >{isSubmitting ? 'Submitting…' : 'Approve'}</button>
+                      >{isSubmitting ? labels.submitting : labels.approve}</button>
                       <button
                         className="org-reorg-deny"
                         disabled={isSubmitting}
                         onClick={() => void handleReorgDecision(p, false)}
-                      >Deny</button>
+                      >{labels.deny}</button>
                     </div>
                   )}
                   {isPending && isCustomMode && wasAccepted && (
-                    <div className="org-reorg-status">Decision submitted</div>
+                    <div className="org-reorg-status">{labels.decisionSubmitted}</div>
                   )}
                   {isPending && isCustomMode && p.user_confirmation_required
                     && !p.checkpoint_id && !wasAccepted && (
                     <div className="org-reorg-status">
-                      Approval is unavailable until its review checkpoint is restored.
+                      {labels.approvalUnavailable}
                     </div>
                   )}
-                  {reorgError[p.proposal_id] && (
-                    <div className="org-reorg-status">{reorgError[p.proposal_id]}</div>
+                  {error && (
+                    <div className="org-reorg-status">{'message' in error ? error.message : labels[error.fallback]}</div>
                   )}
                 </div>
               )
@@ -329,6 +331,7 @@ export function ArchitectureMarketplace({
       {previewData && (
         <ArchPreviewModal
           data={previewData}
+          collaborationPattern={presets.find(p => p.id === previewData.id)?.collaboration_pattern}
           isInstalled={installedIds.has(previewData.id)}
           isApplying={applyingPresetId === previewData.id}
           onApply={() => onApplyPreset(previewData.id, 'namespace')}
@@ -349,50 +352,54 @@ function ArchCard({ preset: p, isInstalled, isApplying, readOnly, onPreview, onA
   onPreview: () => void
   onApply: () => void
 }) {
-  const patternLabel = PATTERN_LABELS[p.collaboration_pattern] || p.collaboration_pattern
+  const { locale } = useI18n()
+  const labels = architectureMessages(locale)
+  const presentation = getArchitecturePresentation(p, locale)
+  const patternLabel = getArchitecturePatternLabel(p.collaboration_pattern, locale)
 
   return (
     <div className="mkt-arch-card" style={{ borderLeftColor: p.color || 'var(--accent)' }}
       onClick={onPreview}>
       <div className="mkt-arch-header">
-        <span className="mkt-arch-emoji">{p.emoji}</span>
+        <ArchitectureIcon pattern={p.collaboration_pattern} />
         <div className="mkt-arch-title-wrap">
-          <span className="mkt-arch-name">{p.name}</span>
+          <span className="mkt-arch-name">{presentation.name}</span>
           <div className="mkt-arch-badges">
-            <span className="mkt-arch-category">{p.category}</span>
+            <span className="mkt-arch-category">{presentation.category}</span>
             {p.collaboration_pattern && <span className="mkt-arch-pattern">{patternLabel}</span>}
           </div>
         </div>
       </div>
 
-      {p.dag_summary && <div className="mkt-arch-dag-summary">{p.dag_summary}</div>}
-      <div className="mkt-arch-desc">{p.description}</div>
+      {p.dag_summary && <div className="mkt-arch-dag-summary">{presentation.dag_summary}</div>}
+      <div className="mkt-arch-desc">{presentation.description}</div>
 
       <div className="mkt-arch-stats">
-        <span className="mkt-arch-stat">{p.roles_count} roles</span>
-        <span className="mkt-arch-stat">{p.work_item_templates_count} templates</span>
-        {p.gates_count > 0 && <span className="mkt-arch-stat">{p.gates_count} checkpoints</span>}
-        {p.team_size && <span className="mkt-arch-stat">{p.team_size} people</span>}
+        <span className="mkt-arch-stat">{labels.rolesCount(p.roles_count)}</span>
+        <span className="mkt-arch-stat">{labels.templatesCount(p.work_item_templates_count)}</span>
+        {p.gates_count > 0 && <span className="mkt-arch-stat">{labels.checkpointsCount(p.gates_count)}</span>}
+        {p.team_size && <span className="mkt-arch-stat">{labels.peopleCount(p.team_size)}</span>}
       </div>
 
       {p.tags.length > 0 && (
         <div className="mkt-arch-tags">
-          {p.tags.slice(0, 4).map(t => <span key={t} className="mkt-tag">{t}</span>)}
+          {p.tags.slice(0, 4).map((tag, index) => <span key={tag} className="mkt-tag">{presentation.tags[index]}</span>)}
         </div>
       )}
 
       <div className="mkt-arch-actions">
         {isInstalled ? (
-          <span className="mkt-installed-badge">Installed</span>
+          <span className="mkt-installed-badge">{labels.installed}</span>
         ) : !readOnly ? (
           <button className="mkt-btn mkt-btn-primary mkt-btn-sm"
             disabled={isApplying}
             onClick={e => { e.stopPropagation(); onApply() }}
-          >{isApplying ? 'Applying...' : 'Use This'}</button>
+          >{isApplying ? labels.applying : labels.useThis}</button>
         ) : null}
         <button className="mkt-btn mkt-btn-ghost mkt-btn-sm"
+          aria-label={labels.previewTitle(presentation.name)}
           onClick={e => { e.stopPropagation(); onPreview() }}
-        >Preview</button>
+        >{labels.preview}</button>
       </div>
     </div>
   )
@@ -400,48 +407,55 @@ function ArchCard({ preset: p, isInstalled, isApplying, readOnly, onPreview, onA
 
 /* ── Architecture Preview Modal ──────────────────────────────────────── */
 
-function ArchPreviewModal({ data, isInstalled, isApplying, onApply, onClose }: {
+function ArchPreviewModal({ data, collaborationPattern, isInstalled, isApplying, onApply, onClose }: {
   data: ArchitecturePresetDetail
+  collaborationPattern?: string
   isInstalled: boolean
   isApplying: boolean
   onApply: () => void
   onClose: () => void
 }) {
+  const { locale } = useI18n()
+  const labels = architectureMessages(locale)
+  const presentation = getArchitectureDetailPresentation(data, locale)
+  const pattern = collaborationPattern || presentation.collaboration_pattern
   return (
     <div className="mkt-modal-overlay" onClick={onClose}>
-      <div className="mkt-modal" onClick={e => e.stopPropagation()}>
+      <div className="mkt-modal" role="dialog" aria-modal="true" aria-label={presentation.name} onClick={e => e.stopPropagation()}>
         <div className="mkt-modal-header" style={{ borderBottomColor: data.color || 'var(--border)' }}>
-          <span className="mkt-modal-emoji">{data.emoji}</span>
+          <ArchitectureIcon pattern={pattern} />
           <div>
-            <h2 className="mkt-modal-name">{data.name}</h2>
-            <span className="mkt-modal-category">{data.category}</span>
+            <h2 className="mkt-modal-name">{presentation.name}</h2>
+            <span className="mkt-modal-category">{presentation.category}</span>
+            {pattern && <span className="mkt-arch-pattern">{getArchitecturePatternLabel(pattern, locale)}</span>}
           </div>
-          <button className="mkt-modal-close" onClick={onClose}>&times;</button>
+          <button className="mkt-modal-close" aria-label={labels.close} onClick={onClose}>&times;</button>
         </div>
 
         <div className="mkt-modal-body">
-          <p className="mkt-modal-desc">{data.description}</p>
+          <p className="mkt-modal-desc">{presentation.description}</p>
+          {presentation.dag_summary && <div className="mkt-arch-dag-summary">{presentation.dag_summary}</div>}
 
           {data.tags.length > 0 && (
             <div className="mkt-modal-section">
-              <div className="mkt-modal-label">Tags</div>
+              <div className="mkt-modal-label">{labels.tags}</div>
               <div className="mkt-modal-tags">
-                {data.tags.map(t => <span key={t} className="mkt-tag">{t}</span>)}
+                {data.tags.map((tag, index) => <span key={tag} className="mkt-tag">{presentation.tags[index]}</span>)}
               </div>
             </div>
           )}
 
           <div className="mkt-modal-section">
-            <div className="mkt-modal-label">Roles ({data.roles.length})</div>
+            <div className="mkt-modal-label">{labels.rolesTitle(data.roles.length)}</div>
             <div className="mkt-role-list">
-              {data.roles.map(r => (
+              {presentation.roles.map(r => (
                 <div key={r.id} className="mkt-role-item">
                   <div className="mkt-role-name">{r.name} <code>{r.id}</code></div>
                   <div className="mkt-role-resp">{r.responsibility}</div>
                   <div className="mkt-role-meta">
-                    reports to: <code>{r.reports_to}</code>
+                    {labels.reportsTo} <code>{r.reports_to}</code>
                     {r.can_spawn && r.can_spawn.length > 0 && (
-                      <> &middot; spawns: {r.can_spawn.map(s => <code key={s}>{s}</code>)}</>
+                      <> &middot; {labels.spawns} {r.can_spawn.map(s => <code key={s}>{s}</code>)}</>
                     )}
                   </div>
                 </div>
@@ -451,19 +465,19 @@ function ArchPreviewModal({ data, isInstalled, isApplying, onApply, onClose }: {
 
           {/* Work item templates */}
           <div className="mkt-modal-section">
-            <div className="mkt-modal-label">Work item templates ({data.work_item_templates.length} templates)</div>
+            <div className="mkt-modal-label">{labels.workItemsTitle(data.work_item_templates.length)}</div>
             <div className="mkt-dag-wrap">
-              <ModalWorkItemTemplates templates={data.work_item_templates} />
+              <ModalWorkItemTemplates templates={presentation.work_item_templates} />
             </div>
           </div>
         </div>
 
         <div className="mkt-modal-footer">
           {isInstalled ? (
-            <span className="mkt-installed-badge">Already Installed</span>
+            <span className="mkt-installed-badge">{labels.alreadyInstalled}</span>
           ) : (
             <button className="mkt-btn mkt-btn-primary" disabled={isApplying} onClick={onApply}>
-              {isApplying ? 'Applying...' : 'Use This Architecture'}
+              {isApplying ? labels.applying : labels.useArchitecture}
             </button>
           )}
         </div>
@@ -473,6 +487,8 @@ function ArchPreviewModal({ data, isInstalled, isApplying, onApply, onClose }: {
 }
 
 function ModalWorkItemTemplates({ templates }: { templates: ArchitecturePresetDetail['work_item_templates'] }): ReactNode {
+  const { locale } = useI18n()
+  const labels = architectureMessages(locale)
   type Group = { group: string | null; templates: typeof templates }
   const groups: Group[] = []
   let currentGroup: string | null = '__init__'
@@ -494,7 +510,7 @@ function ModalWorkItemTemplates({ templates }: { templates: ArchitecturePresetDe
         <div key={gi} className="org-dag-group-wrap">
           {gi > 0 && <div className="org-dag-arrow"><img src={ICON.arrow} alt="→" className="org-dag-arrow-icon" /></div>}
           <div className={`org-dag-group${g.templates.length > 1 ? ' org-dag-parallel' : ''}`}>
-            {g.templates.length > 1 && <div className="org-dag-parallel-label">parallel</div>}
+            {g.templates.length > 1 && <div className="org-dag-parallel-label">{labels.parallel}</div>}
             {g.templates.map(template => (
               <div key={template.id} className="org-dag-node">
                 <div className="org-dag-node-header">
@@ -508,8 +524,8 @@ function ModalWorkItemTemplates({ templates }: { templates: ArchitecturePresetDe
                       src={template.gate.type === 'review' ? ICON.gateReview : template.gate.type === 'approval' ? ICON.gateApproval : ICON.gateHold}
                       alt="" className="org-gate-icon"
                     />
-                    <span>{template.gate.type}</span>
-                    {template.gate.reviewer_role && <span className="org-gate-reviewer">by {template.gate.reviewer_role}</span>}
+                    <span>{getArchitectureGateLabel(template.gate.type, locale)}</span>
+                    {template.gate.reviewer_role && <span className="org-gate-reviewer">{labels.reviewedBy} {template.gate.reviewer_role}</span>}
                   </div>
                 )}
               </div>

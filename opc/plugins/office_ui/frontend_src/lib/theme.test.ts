@@ -44,12 +44,12 @@ test('saving uses the stable key and never leaks storage failures', () => {
 })
 
 test('every registered theme has a matching CSS implementation', () => {
-  const css = readFileSync(new URL('../index.css', import.meta.url), 'utf8')
+  const css = ['../index.css', '../hyman-theme.css'].map(path => readFileSync(new URL(path, import.meta.url), 'utf8')).join('\n')
   for (const { name } of THEMES) {
     const selector = `.app-shell[data-theme="${name}"]`
     const blockStart = css.indexOf(selector)
     const blockEnd = css.indexOf('}', blockStart)
     assert.notEqual(blockStart, -1, `missing CSS implementation for ${name}`)
-    assert.match(css.slice(blockStart, blockEnd), /--bg:/, `theme ${name} must define its background token`)
+    assert.match(css.slice(blockStart, blockEnd), /--(?:bg|ha-bg-canvas):/, `theme ${name} must define its background token`)
   }
 })

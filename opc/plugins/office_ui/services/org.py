@@ -698,6 +698,7 @@ class OrgService:
 
     async def saved_create(self, *, organization_name: str, members: list[dict[str, Any]]) -> ServiceResult:
         from opc.core.config import EmployeeConfig, OPCConfig, RoleConfig, slugify_organization_name
+        from opc.layer2_organization.talent_market import TalentMarket
 
         display_name = str(organization_name or "").strip()
         if not display_name:
@@ -719,6 +720,7 @@ class OrgService:
                 "responsibility": str(item.get("responsibility") or "").strip(),
                 "prompt": str(item.get("prompt") or "").strip(),
                 "reports_to_index": item.get("reports_to_index"),
+                "template_id": str(item.get("template_id") or "").strip(),
             })
         if len(normalized_members) < 2:
             raise ServiceError("org_members_required", "organization requires at least two members")
@@ -797,6 +799,35 @@ class OrgService:
         cfg.org.teams = []
         cfg.org.team_runtime = OPCConfig().org.team_runtime
         cfg.org.installed_packages = []
+
+        template_members = [
+            (idx, member)
+            for idx, member in enumerate(normalized_members)
+            if member["template_id"]
+        ]
+        if template_members:
+            market = TalentMarket(self.context.opc_home, cfg)
+            available_ids = {template.id for template in market.list_available_templates()}
+            for idx, member in template_members:
+                if member["template_id"] not in available_ids:
+                    raise ServiceError(
+                        "template_not_found",
+                        "Talent template not found",
+                        {"index": idx, "template_id": member["template_id"]},
+                    )
+            for idx, member in template_members:
+                try:
+                    market.hire_template(
+                        member["template_id"],
+                        role_ids[idx],
+                        employee_name=member["name"],
+                    )
+                except ValueError as exc:
+                    raise ServiceError(
+                        "talent_hire_failed",
+                        str(exc),
+                        {"index": idx, "template_id": member["template_id"], "role_id": role_ids[idx]},
+                    ) from exc
         validate_runnable_org_config(cfg, organization_id=organization_id)
 
         async with self.context.config_lock:
@@ -805,6 +836,10 @@ class OrgService:
                 organization_id=organization_id,
                 organization_name=display_name,
             )
+            if template_members:
+                # The existing writer stores employees in the company registry
+                # and removes this legacy input field from the saved org YAML.
+                payload["employees"] = [employee.model_dump(mode="json") for employee in cfg.org.employees]
             path = write_org_config_payload(config_dir, organization_id, payload)
             write_org_index(config_dir, organization_id)
             self.context.rebind_config(cfg)
@@ -821,7 +856,7 @@ class OrgService:
             "filename": path.name,
             "path": str(path),
             "roles_count": len(roles),
-            "employees_count": len(employees),
+            "employees_count": len(cfg.org.employees),
         })
 
     async def saved_delete(self, name: str) -> ServiceResult:

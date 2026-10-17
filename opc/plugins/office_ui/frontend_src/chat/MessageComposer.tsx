@@ -1,3 +1,4 @@
+import { useChatText, localizeAttachmentError } from '../lib/chatMessages'
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import {
   IconArrowRight,
@@ -99,6 +100,7 @@ function AttachmentProgressRing({
   state: AttachmentTransferState
   error?: string
 }) {
+  const tr = useChatText()
   const radius = 11
   const circumference = 2 * Math.PI * radius
   const normalized = error ? 100 : state === 'ready' ? 100 : Math.max(0, Math.min(progress, 100))
@@ -107,7 +109,7 @@ function AttachmentProgressRing({
   return (
     <span
       className={`attachment-progress-ring${error ? ' error' : state === 'ready' ? ' ready' : ''}`}
-      aria-label={error ? 'Attachment preparation failed' : state === 'ready' ? 'Attachment ready to send' : `Preparing attachment ${normalized}%`}
+      aria-label={error ? tr("Attachment preparation failed") : state === 'ready' ? tr("Attachment ready to send") : tr('Preparing attachment {percent}%', { percent: normalized })}
       role="img"
     >
       <svg viewBox="0 0 28 28" aria-hidden="true">
@@ -137,6 +139,7 @@ function ContextRing({
   usedTokens?: number
   windowTokens?: number
 }) {
+  const tr = useChatText()
   const radius = 11
   const circumference = 2 * Math.PI * radius
   const clamped = Math.max(0, Math.min(usedPct, 100))
@@ -144,14 +147,14 @@ function ContextRing({
   const isLow = clamped >= 80
   const isCritical = clamped >= 90
   const usageLabel = typeof usedTokens === 'number' && typeof windowTokens === 'number'
-    ? `${clamped}% used (${usedTokens.toLocaleString()}/${windowTokens.toLocaleString()})`
-    : `${clamped}% used`
+    ? tr('{percent}% used ({used}/{total})', { percent: clamped, used: usedTokens.toLocaleString(), total: windowTokens.toLocaleString() })
+    : tr('{percent}% used', { percent: clamped })
 
   return (
     <span
       className={`composer-context-ring${isLow ? ' low' : ''}${isCritical ? ' critical' : ''}`}
-      title={`Context window: ${usageLabel}`}
-      aria-label={`Context window ${usageLabel}`}
+      title={tr('Context window: {usage}', { usage: usageLabel })}
+      aria-label={tr('Context window {usage}', { usage: usageLabel })}
       role="img"
     >
       <svg viewBox="0 0 28 28" aria-hidden="true">
@@ -270,6 +273,7 @@ export function MessageComposer({
   onStop,
   onContinueInNewChat,
 }: MessageComposerProps) {
+  const tr = useChatText()
   const [text, setText] = useState(() => (channelId && composerDrafts.get(channelId)) || '')
   const [focused, setFocused] = useState(false)
   const [pending, setPending] = useState<PendingAttachment[]>([])
@@ -446,10 +450,10 @@ export function MessageComposer({
     : 'corporate'
   const companyArchitectureLabel = normalizedExecMode === 'org'
     ? selectedOrgLabel
-      ? `Company / ${selectedOrgLabel}`
-      : 'Company / Saved org'
-    : 'Company / Corporate'
-  const modeLabel = selectedModeOption === 'task' ? 'Task' : companyArchitectureLabel
+      ? tr('Company / {name}', { name: selectedOrgLabel })
+      : tr("Company / Saved org")
+    : tr("Company / Corporate")
+  const modeLabel = selectedModeOption === 'task' ? tr("Task") : companyArchitectureLabel
   const showModePicker = !!execMode && !!onModeChange
   const showTaskAgentPicker = normalizedExecMode === 'task' && !!onTaskAgentChange
 
@@ -469,16 +473,16 @@ export function MessageComposer({
       {
         key: 'task',
         mode: 'task',
-        label: 'Task',
-        description: 'A single agent handles the request',
+        label: tr("Task"),
+        description: tr("A single agent handles the request"),
         icon: <IconUserRound />,
       },
       {
         key: 'company:corporate',
         mode: 'company',
         profile: 'corporate',
-        label: 'Company / Corporate',
-        description: 'A team of roles collaborates',
+        label: tr("Company / Corporate"),
+        description: tr("A team of roles collaborates"),
         icon: <IconBuilding />,
       },
     ]
@@ -488,24 +492,24 @@ export function MessageComposer({
         mode: 'org',
         profile: 'custom',
         orgId: continueOrgName,
-        label: `Company / ${continueOrgLabel}`,
-        description: 'A saved company architecture collaborates',
+        label: tr('Company / {name}', { name: continueOrgLabel }),
+        description: tr("A saved company architecture collaborates"),
         icon: <IconSparkles />,
       })
     }
     return all.filter(option => option.key !== currentKey)
-  }, [activeSavedOrgLabel, activeSavedOrgOption?.name, normalizedExecMode, selectedOrgLabel, selectedOrgValue])
+  }, [activeSavedOrgLabel, activeSavedOrgOption?.name, normalizedExecMode, selectedOrgLabel, selectedOrgValue, tr])
   const preparingAttachmentCount = pending.filter(attachment => !attachment.error && attachment.transfer_state === 'reading').length
   const readyAttachmentCount = pending.filter(attachment => !attachment.error && attachment.transfer_state === 'ready').length
   const visibleTool = displayTool || currentTool
 
   const statusText = (() => {
     if (!isWorking) return null
-    if (isStopping) return 'Stopping...'
-    if (activeAgentCount && activeAgentCount > 1) return `${activeAgentCount} agents working`
-    if (visibleTool) return `Running ${visibleTool}`
-    if (agentStatus === 'reflecting') return 'Thinking...'
-    return 'Working...'
+    if (isStopping) return tr("Stopping...")
+    if (activeAgentCount && activeAgentCount > 1) return tr('{count} agents working', { count: activeAgentCount })
+    if (visibleTool) return tr('Running {tool}', { tool: visibleTool })
+    if (agentStatus === 'reflecting') return tr("Thinking...")
+    return tr("Working...")
   })()
 
   return (
@@ -515,9 +519,9 @@ export function MessageComposer({
           <div className="composer-status">
             <div className="composer-status-indicator" />
             <span className="composer-status-text">{statusText}</span>
-            <button className="composer-stop-btn" onClick={onStop} title="Stop" disabled={!stopEnabled || !onStop}>
+            <button className="composer-stop-btn" onClick={onStop} title={tr("Stop")} disabled={!stopEnabled || !onStop}>
               <IconStop />
-              <span>{isStopping ? 'Stopping...' : 'Stop'}</span>
+              <span>{isStopping ? tr("Stopping...") : tr("Stop")}</span>
             </button>
           </div>
         )}
@@ -542,10 +546,10 @@ export function MessageComposer({
                   <span className="attachment-chip-name">{attachment.filename}</span>
                   <span className="attachment-chip-size">
                       {attachment.error
-                      ? attachment.error
+                      ? localizeAttachmentError(attachment.error, tr)
                       : attachment.transfer_state === 'reading'
-                        ? `Preparing ${attachment.progress_percent}%`
-                        : `${formatSize(attachment.size_bytes)} - Ready`}
+                        ? tr('Preparing {percent}%', { percent: attachment.progress_percent })
+                        : tr('{size} - Ready', { size: formatSize(attachment.size_bytes) })}
                   </span>
                 </span>
                 <AttachmentProgressRing
@@ -556,7 +560,7 @@ export function MessageComposer({
                 <button
                   className="attachment-chip-remove"
                   onClick={() => removeAttachment(attachment.id)}
-                  title="Remove"
+                  title={tr("Remove")}
                 >
                   <IconClose />
                 </button>
@@ -579,7 +583,7 @@ export function MessageComposer({
                 handleSend()
               }
             }}
-            placeholder={placeholder ?? 'Message...'}
+            placeholder={placeholder ?? tr("Message...")}
             rows={1}
             disabled={disabled}
           />
@@ -588,7 +592,7 @@ export function MessageComposer({
             <button
               className="composer-attach-btn"
               onClick={() => fileInputRef.current?.click()}
-              title="Attach files"
+              title={tr("Attach files")}
               disabled={disabled}
             >
               <IconPaperclip />
@@ -610,9 +614,9 @@ export function MessageComposer({
                   <label
                     className="composer-mode-inline"
                     data-kind="mode"
-                    title="Execution mode for this chat and new work started from it"
+                    title={tr("Execution mode for this chat and new work started from it")}
                   >
-                    <span className="composer-mode-inline-label">Mode</span>
+                    <span className="composer-mode-inline-label">{tr("Mode")}</span>
                     <span className="composer-mode-select-wrap">
                       <select
                         className="composer-mode-select"
@@ -628,10 +632,10 @@ export function MessageComposer({
                         onFocus={() => onSavedOrgsRefresh?.()}
                         onPointerDown={() => onSavedOrgsRefresh?.()}
                         disabled={disabled}
-                        aria-label="Execution mode"
+                        aria-label={tr("Execution mode")}
                       >
-                        <option value="task">Task</option>
-                        <option value="company">Company</option>
+                        <option value="task">{tr("Task")}</option>
+                        <option value="company">{tr("Company")}</option>
                       </select>
                     </span>
                   </label>
@@ -641,26 +645,24 @@ export function MessageComposer({
                     data-kind="mode"
                     tabIndex={0}
                     role="group"
-                    aria-label={`Mode locked to ${modeLabel}.${onContinueInNewChat ? ' Use the menu to start a new chat in a different mode.' : ' Start a new chat to use a different mode.'}`}
+                    aria-label={tr('Mode locked to {mode}.{hint}', { mode: modeLabel, hint: ` ${tr(onContinueInNewChat ? 'Use the menu to start a new chat in a different mode.' : 'Start a new chat to use a different mode.')}` })}
                   >
                     <span className="composer-mode-chip-icon" aria-hidden="true">
                       <IconLock />
                     </span>
                     <span className="composer-mode-chip-label">{modeLabel}</span>
-                    <div className="composer-mode-chip-popover" role="dialog" aria-label="Mode info">
+                    <div className="composer-mode-chip-popover" role="dialog" aria-label={tr("Mode info")}>
                       <div className="composer-mode-chip-popover-title">
-                        Mode is fixed for this chat
-                      </div>
+                        {tr("Mode is fixed for this chat")}</div>
                       <div className="composer-mode-chip-popover-body">
-                        Once the first message is sent, this chat is committed to{' '}
+                        {tr("Once the first message is sent, this chat is committed to")}{' '}
                         <strong>{modeLabel}</strong>.
                       </div>
                       {onContinueInNewChat && continueAlternatives.length > 0 && (
                         <>
                           <div className="composer-mode-chip-popover-divider" aria-hidden="true" />
                           <div className="composer-mode-chip-popover-action-title">
-                            Continue in a new chat
-                          </div>
+                            {tr("Continue in a new chat")}</div>
                           <div className="composer-mode-chip-popover-actions">
                             {continueAlternatives.map(alt => (
                               <button
@@ -668,7 +670,7 @@ export function MessageComposer({
                                 type="button"
                                 className="composer-mode-chip-popover-action"
                                 onClick={() => onContinueInNewChat(alt.mode, alt.profile, alt.orgId)}
-                                aria-label={`Start a new chat in ${alt.label}`}
+                                aria-label={tr('Start a new chat in {mode}', { mode: alt.label })}
                               >
                                 <span className="composer-mode-chip-popover-action-icon" aria-hidden="true">
                                   {alt.icon}
@@ -700,9 +702,9 @@ export function MessageComposer({
                     <label
                       className="composer-mode-inline"
                       data-kind="org"
-                      title="Company architecture for this chat"
+                      title={tr("Company architecture for this chat")}
                     >
-                      <span className="composer-mode-inline-label">Company</span>
+                      <span className="composer-mode-inline-label">{tr("Company")}</span>
                       <span className="composer-mode-select-wrap">
                         <select
                           className="composer-mode-select"
@@ -721,11 +723,11 @@ export function MessageComposer({
                           onFocus={() => onSavedOrgsRefresh?.()}
                           onPointerDown={() => onSavedOrgsRefresh?.()}
                           disabled={disabled}
-                          aria-label="Company architecture"
+                          aria-label={tr("Company architecture")}
                         >
-                          <option value="corporate">Corporate</option>
+                          <option value="corporate">{tr("Corporate")}</option>
                           {!selectedCompanyArchitecture && (
-                            <option value="" disabled>Select saved org</option>
+                            <option value="" disabled>{tr("Select saved org")}</option>
                           )}
                           {selectedCompanyArchitecture
                             && selectedCompanyArchitecture !== 'corporate'
@@ -733,7 +735,7 @@ export function MessageComposer({
                               <option value={selectedCompanyArchitecture}>{selectedOrgLabel || selectedOrgValue}</option>
                             )}
                           {savedOrgOptions.length === 0 ? (
-                            <option value="" disabled>No saved orgs</option>
+                            <option value="" disabled>{tr("No saved orgs")}</option>
                           ) : savedOrgOptions.map(org => (
                             <option key={org.name} value={`org:${org.name}`}>
                               {savedOrgLabel(org)}
@@ -751,16 +753,16 @@ export function MessageComposer({
                       <label
                         className="composer-mode-inline"
                         data-kind="agent"
-                        title="Execution agent for this task-mode chat"
+                        title={tr("Execution agent for this task-mode chat")}
                       >
-                        <span className="composer-mode-inline-label">Agent</span>
+                        <span className="composer-mode-inline-label">{tr("Agent")}</span>
                         <span className="composer-mode-select-wrap">
                           <select
                             className="composer-mode-select"
                             value={taskPreferredAgent}
                             onChange={(event) => onTaskAgentChange?.(event.target.value as TaskPreferredAgent)}
                             disabled={disabled}
-                            aria-label="Task mode agent"
+                            aria-label={tr("Task mode agent")}
                           >
                             {Object.entries(TASK_AGENT_LABELS).map(([value, label]) => (
                               <option key={value} value={value}>{label}</option>
@@ -774,7 +776,7 @@ export function MessageComposer({
                         data-kind="agent"
                         tabIndex={0}
                         role="status"
-                        aria-label={`Agent locked to ${TASK_AGENT_LABELS[taskPreferredAgent]}. Start a new chat to use a different agent.`}
+                        aria-label={tr('Agent locked to {agent}. Start a new chat to use a different agent.', { agent: TASK_AGENT_LABELS[taskPreferredAgent] })}
                       >
                         <span className="composer-mode-chip-icon" aria-hidden="true">
                           <IconLock />
@@ -784,12 +786,9 @@ export function MessageComposer({
                         </span>
                         <span className="composer-mode-chip-popover" role="tooltip">
                           <span className="composer-mode-chip-popover-title">
-                            Agent is fixed for this chat
-                          </span>
+                            {tr("Agent is fixed for this chat")}</span>
                           <span className="composer-mode-chip-popover-body">
-                            The execution agent is committed once the chat starts. Start a new
-                            chat to switch agents.
-                          </span>
+                            {tr("The execution agent is committed once the chat starts. Start a new chat to switch agents.")}</span>
                         </span>
                       </span>
                     ) : (
@@ -804,12 +803,12 @@ export function MessageComposer({
                       className="composer-mode-inline"
                       data-kind="permissions"
                       title={nativeApprovalLevel === 'read-only'
-                        ? 'OpenOPC Native can read locally; writes, network, and side effects ask first.'
+                        ? tr("OpenOPC Native can read locally; writes, network, and side effects ask first.")
                         : nativeApprovalLevel === 'full-access'
-                          ? 'OpenOPC Native tools run without approval prompts or a sandbox.'
-                          : 'OpenOPC Native can edit this workspace; network and outside access ask first.'}
+                          ? tr("OpenOPC Native tools run without approval prompts or a sandbox.")
+                          : tr("OpenOPC Native can edit this workspace; network and outside access ask first.")}
                     >
-                      <span className="composer-mode-inline-label">Permissions</span>
+                      <span className="composer-mode-inline-label">{tr("Permissions")}</span>
                       <span className="composer-mode-select-wrap">
                         <select
                           className="composer-mode-select"
@@ -819,11 +818,11 @@ export function MessageComposer({
                             event.target.value as NativeApprovalLevel,
                           )}
                           disabled={!onNativeApprovalLevelChange}
-                          aria-label="OpenOPC Native permissions"
+                          aria-label={tr("OpenOPC Native permissions")}
                         >
-                          <option value="read-only">Read-only</option>
-                          <option value="auto">Auto</option>
-                          <option value="full-access">Full access</option>
+                          <option value="read-only">{tr("Read-only")}</option>
+                          <option value="auto">{tr("Auto")}</option>
+                          <option value="full-access">{tr("Full access")}</option>
                         </select>
                       </span>
                     </label>
@@ -835,11 +834,10 @@ export function MessageComposer({
                         onClick={() => onSetNativeApprovalDefault(nativeApprovalLevel)}
                         disabled={nativeApprovalDefault === nativeApprovalLevel}
                         title={nativeApprovalDefault === nativeApprovalLevel
-                          ? 'This is already the default for new chats.'
-                          : 'Use this OpenOPC Native permission level for new chats.'}
+                          ? tr("This is already the default for new chats.")
+                          : tr("Use this OpenOPC Native permission level for new chats.")}
                       >
-                        Default
-                      </button>
+                        {tr("Default")}</button>
                     )}
                   </>
                 )}
@@ -847,10 +845,10 @@ export function MessageComposer({
             )}
             <span className="composer-hint">
               {preparingAttachmentCount > 0
-                ? `Preparing ${preparingAttachmentCount} attachment${preparingAttachmentCount > 1 ? 's' : ''}`
+                ? tr(preparingAttachmentCount > 1 ? 'Preparing {count} attachments' : 'Preparing {count} attachment', { count: preparingAttachmentCount })
                 : readyAttachmentCount > 0
-                  ? `${readyAttachmentCount} attachment${readyAttachmentCount > 1 ? 's' : ''} ready`
-                  : 'Shift+Enter for new line'}
+                  ? tr(readyAttachmentCount > 1 ? '{count} attachments ready' : '{count} attachment ready', { count: readyAttachmentCount })
+                  : tr("Shift+Enter for new line")}
             </span>
             {typeof contextUsage.usedPct === 'number' && (
               <ContextRing
@@ -872,7 +870,7 @@ export function MessageComposer({
 
       {lightbox && (
         <div className="lightbox-overlay" onClick={() => setLightbox(null)}>
-          <img className="lightbox-img" src={lightbox} alt="Preview" />
+          <img className="lightbox-img" src={lightbox} alt={tr("Preview")} />
         </div>
       )}
     </>

@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
+import React, { useEffect, useMemo, useState } from 'react'
 import type { OrgCreateMemberInput, OrgSavedCreatePayload } from '../types/visual'
 
 interface OrgCreateResult extends OrgSavedCreatePayload {
@@ -25,11 +27,13 @@ const INITIAL_MEMBERS: MemberDraft[] = [
   { name: '', responsibility: '', prompt: '', reportsToIndex: 0 },
 ]
 
-function slugLabel(value: string): string {
-  return value.trim() || 'Member'
+function slugLabel(value: string, fallback: string): string {
+  return value.trim() || fallback
 }
 
 export function OrgCreateModal({ open, pending, result, onClose, onCreate }: OrgCreateModalProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const [step, setStep] = useState(1)
   const [organizationName, setOrganizationName] = useState('')
   const [members, setMembers] = useState<MemberDraft[]>(INITIAL_MEMBERS)
@@ -69,14 +73,14 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
       const mappedParent = member.reportsToIndex == null ? null : originalIndexToCreateIndex.get(member.reportsToIndex)
       return {
         ...member,
-        roleName: slugLabel(member.name),
+        roleName: slugLabel(member.name, msg('Member')),
         managerName: mappedParent != null && mappedParent < createIndex
-          ? slugLabel(validMembers[mappedParent]?.member.name || '')
-          : 'Owner',
+          ? slugLabel(validMembers[mappedParent]?.member.name || '', msg('Member'))
+          : msg("Owner"),
         index,
       }
     }),
-    [originalIndexToCreateIndex, validMembers],
+    [originalIndexToCreateIndex, validMembers, msg],
   )
 
   if (!open) return null
@@ -127,17 +131,17 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
       <div className="org-create-modal" role="dialog" aria-modal="true" aria-labelledby="org-create-title" onMouseDown={e => e.stopPropagation()}>
         <div className="org-create-header">
           <div>
-            <span className="org-create-eyebrow">New organization</span>
-            <h3 id="org-create-title" className="org-create-title">Create a saved org</h3>
+            <span className="org-create-eyebrow">{msg("New organization")}</span>
+            <h3 id="org-create-title" className="org-create-title">{msg("Create a saved org")}</h3>
           </div>
-          <button type="button" className="org-create-close" onClick={onClose} aria-label="Close">x</button>
+          <button type="button" className="org-create-close" onClick={onClose} aria-label={msg("Close")}>x</button>
         </div>
 
-        <div className="org-create-steps" aria-label="Create organization steps">
+        <div className="org-create-steps" aria-label={msg("Create organization steps")}>
           {[
-            ['1', 'Name'],
-            ['2', 'Members'],
-            ['3', 'Review'],
+            ['1', msg("Name")],
+            ['2', msg("Members")],
+            ['3', msg("Review")],
           ].map(([id, label]) => (
             <span key={id} className={`org-create-step${step === Number(id) ? ' org-create-step--active' : step > Number(id) ? ' org-create-step--done' : ''}`}>
               <span>{id}</span>{label}
@@ -148,11 +152,11 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
         {step === 1 && (
           <div className="org-create-panel">
             <label className="org-create-field">
-              <span>Organization name</span>
+              <span>{msg("Organization name")}</span>
               <input
                 value={organizationName}
                 onChange={e => setOrganizationName(e.target.value)}
-                placeholder="HKU Research Lab"
+                placeholder={msg("HKU Research Lab")}
                 autoFocus
               />
             </label>
@@ -167,23 +171,23 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
                   <input
                     value={member.name}
                     onChange={e => updateMember(index, { name: e.target.value })}
-                    placeholder={index === 0 ? 'Lead role' : 'Member role'}
+                    placeholder={index === 0 ? msg("Lead role") : msg("Member role")}
                   />
                   <input
                     value={member.responsibility}
                     onChange={e => updateMember(index, { responsibility: e.target.value })}
-                    placeholder="Responsibility"
+                    placeholder={msg("Responsibility")}
                   />
                   <select
                     value={member.reportsToIndex == null ? 'owner' : String(member.reportsToIndex)}
                     onChange={e => updateMember(index, { reportsToIndex: e.target.value === 'owner' ? null : Number(e.target.value) })}
                     disabled={index === 0}
-                    aria-label="Reports to"
+                    aria-label={msg("Reports to")}
                   >
-                    <option value="owner">Owner</option>
+                    <option value="owner">{msg("Owner")}</option>
                     {members.slice(0, index).map((candidate, candidateIndex) => (
                       <option key={candidateIndex} value={candidateIndex}>
-                        {slugLabel(candidate.name)}
+                        {slugLabel(candidate.name, msg('Member'))}
                       </option>
                     ))}
                   </select>
@@ -192,21 +196,21 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
                     className="org-create-icon-btn"
                     onClick={() => removeMember(index)}
                     disabled={members.length <= 2}
-                    title="Remove member"
-                    aria-label="Remove member"
+                    title={msg("Remove member")}
+                    aria-label={msg("Remove member")}
                   >
                     -
                   </button>
                   <textarea
                     value={member.prompt}
                     onChange={e => updateMember(index, { prompt: e.target.value })}
-                    placeholder="Prompt optional"
-                    aria-label={`${index === 0 ? 'Lead role' : 'Member role'} prompt optional`}
+                    placeholder={msg("Prompt optional")}
+                    aria-label={msg('{role} prompt optional', { role: index === 0 ? msg("Lead role") : msg("Member role") })}
                   />
                 </div>
               ))}
             </div>
-            <button type="button" className="org-create-add" onClick={addMember}>+ Add member</button>
+            <button type="button" className="org-create-add" onClick={addMember}>{msg("+ Add member")}</button>
           </div>
         )}
 
@@ -215,14 +219,14 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
             <div className="org-create-review">
               <div className="org-create-review-head">
                 <span>{organizationName.trim()}</span>
-                <b>{validMembers.length} members</b>
+                <b>{validMembers.length} {msg("members")}</b>
               </div>
               {previewMembers.map(member => (
                 <div className="org-create-review-row" key={member.index}>
                   <strong>{member.roleName}</strong>
                   <span>
                     {member.managerName}
-                    {member.prompt.trim() ? <em>Prompt</em> : null}
+                    {member.prompt.trim() ? <em>{msg("Prompt")}</em> : null}
                   </span>
                 </div>
               ))}
@@ -230,11 +234,11 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
           </div>
         )}
 
-        {localError && <div className="org-create-error">{localError}</div>}
+        {localError && <div className="org-create-error">{msg(localError)}</div>}
 
         <div className="org-create-actions">
           <button type="button" className="btn btn-ghost" onClick={step === 1 ? onClose : () => setStep(step - 1)}>
-            {step === 1 ? 'Cancel' : 'Back'}
+            {step === 1 ? msg("Cancel") : msg("Back")}
           </button>
           {step < 3 ? (
             <button
@@ -243,11 +247,12 @@ export function OrgCreateModal({ open, pending, result, onClose, onCreate }: Org
               onClick={() => setStep(step + 1)}
               disabled={step === 1 ? !organizationValid : !membersValid}
             >
-              Next
+
+              {msg("Next")}
             </button>
           ) : (
             <button type="button" className="btn btn-primary" onClick={submit} disabled={!canCreate}>
-              {pending ? 'Creating...' : 'Create organization'}
+              {pending ? msg("Creating...") : msg("Create organization")}
             </button>
           )}
         </div>

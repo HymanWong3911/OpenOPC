@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import type { TalentTemplate, OrgRole, HireTalentHandler } from '../types/visual'
 import { TalentCard } from './TalentCard'
 import { TalentDetailModal } from './TalentDetailModal'
 import { HireToRoleModal } from './HireToRoleModal'
+import { useI18n } from '../i18n'
+import { getTalentCategoryLabel, getTalentSearchText, talentMessages } from '../lib/talentLocalization'
 
 /* ── Inline SVG icon data-URIs ──────────────────────────────────── */
 const ICON = {
@@ -21,6 +23,8 @@ interface EmployeesMarketplaceProps {
 export function EmployeesMarketplace({
   templates, vacantRoles, hiringTemplateId, readOnly, onHireTalent,
 }: EmployeesMarketplaceProps) {
+  const { locale } = useI18n()
+  const messages = talentMessages(locale)
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [detailTemplate, setDetailTemplate] = useState<TalentTemplate | null>(null)
@@ -36,14 +40,8 @@ export function EmployeesMarketplace({
     let result = templates
     if (activeCategory) result = result.filter(t => t.category === activeCategory)
     if (search.trim()) {
-      const q = search.trim().toLowerCase()
-      result = result.filter(t =>
-        t.name.toLowerCase().includes(q) ||
-        t.description.toLowerCase().includes(q) ||
-        t.domains.some(d => d.toLowerCase().includes(q)) ||
-        t.tags.some(tag => tag.toLowerCase().includes(q)) ||
-        (t.vibe ?? '').toLowerCase().includes(q),
-      )
+      const q = search.trim().normalize('NFKC').toLowerCase()
+      result = result.filter(t => getTalentSearchText(t).includes(q))
     }
     return result
   }, [templates, activeCategory, search])
@@ -55,21 +53,22 @@ export function EmployeesMarketplace({
   }
 
   return (
-    <div className="mkt-container" data-testid="employees-marketplace">
+    <div className="mkt-container" data-testid="employees-marketplace" data-locale={locale}>
       {/* Toolbar */}
       <div className="mkt-toolbar">
         <div className="mkt-search-wrap">
           <img src={ICON.search} alt="" className="mkt-search-icon" />
           <input
             className="mkt-search"
-            placeholder="Search talent templates..."
+            placeholder={messages.search}
+            aria-label={messages.search}
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <span className="mkt-count">
-          {filteredTemplates.length} employees
-          {vacantRoles.length > 0 && <> · {vacantRoles.length} vacant role{vacantRoles.length === 1 ? '' : 's'}</>}
+          {messages.templatesCount(filteredTemplates.length)}
+          {vacantRoles.length > 0 && <> · {messages.vacanciesCount(vacantRoles.length)}</>}
         </span>
       </div>
 
@@ -78,11 +77,11 @@ export function EmployeesMarketplace({
         <div className="mkt-filters">
           <div className="mkt-pill-row">
             <button className={`mkt-pill${!activeCategory ? ' active' : ''}`}
-              onClick={() => setActiveCategory(null)}>All</button>
+              onClick={() => setActiveCategory(null)}>{messages.all}</button>
             {categories.map(cat => (
               <button key={cat} className={`mkt-pill${activeCategory === cat ? ' active' : ''}`}
                 onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
-              >{cat}</button>
+              >{getTalentCategoryLabel(cat, locale)}</button>
             ))}
           </div>
         </div>
@@ -93,7 +92,7 @@ export function EmployeesMarketplace({
         <div className="mkt-section">
           <div className="mkt-section-header">
             <img src={ICON.talent} alt="" className="mkt-section-icon" />
-            <h3 className="mkt-section-title">Talent Templates</h3>
+            <h3 className="mkt-section-title">{messages.title}</h3>
             <span className="mkt-section-count">{filteredTemplates.length}</span>
           </div>
           <div className="tm-grid">
@@ -108,7 +107,7 @@ export function EmployeesMarketplace({
         </div>
       ) : (
         <div className="mkt-empty">
-          <p>{templates.length === 0 ? 'No talent templates available.' : 'No employees match your search.'}</p>
+          <p>{templates.length === 0 ? messages.noTemplates : messages.noResults}</p>
         </div>
       )}
 

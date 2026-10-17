@@ -1,3 +1,4 @@
+import { useWorkspaceText } from '../lib/workspaceMessages'
 import { useMemo } from 'react'
 import type { OrgInfoPayload } from '../types/visual'
 import type { CommsStatePayload } from '../lib/wsClient'
@@ -59,6 +60,7 @@ export function ProjectCockpit({
   onStopRun,
   embedded = false,
 }: ProjectCockpitProps) {
+  const wsText = useWorkspaceText()
   const runtimeView = useMemo(() => getRuntimeOrgView(orgInfoData ?? null), [orgInfoData])
   const projectRun = runtimeView.projectRun
   const seatDigests = runtimeView.seatDigests
@@ -174,48 +176,47 @@ export function ProjectCockpit({
   }
 
   return (
-    <section className={`project-cockpit${embedded ? ' embedded' : ''}`} aria-label="Team">
+    <section className={`project-cockpit${embedded ? ' embedded' : ''}`} aria-label={wsText("Team")}>
       <div className="project-cockpit-overview">
         <div className="project-cockpit-title">
-          <span className="project-cockpit-label">Team</span>
-          <strong>{summarizeText(projectRun?.run_id, 'Runtime Team Status')}</strong>
+          <span className="project-cockpit-label">{wsText("Team")}</span>
+          <strong>{summarizeText(projectRun?.run_id, wsText('Runtime Team Status'))}</strong>
           {onStopRun && (
             <button
               className="project-cockpit-stop-btn"
               onClick={onStopRun}
-              title="Stop this run"
+              title={wsText("Stop this run")}
             >
-              Stop
-            </button>
+              {wsText("Stop")}</button>
           )}
         </div>
         <div className="project-cockpit-metrics">
-          <span>{summarizeText(projectRun?.lifecycle_status, 'active')}</span>
-          <span>Teams {teamCards.length}</span>
-          <span>Seats {runtimeView.runtimeSeats.length}</span>
-          <span>Approvals {pendingDecisionCount}</span>
-          <span>Unread {unreadCount}</span>
-          <span>Run state {summarizeText(asRecord(projectRun?.recovery_pointer).status, 'clean')}</span>
+          <span>{wsText(summarizeText(projectRun?.lifecycle_status, 'active'))}</span>
+          <span>{wsText("Teams ")}{teamCards.length}</span>
+          <span>{wsText("Seats ")}{runtimeView.runtimeSeats.length}</span>
+          <span>{wsText("Approvals ")}{pendingDecisionCount}</span>
+          <span>{wsText("Unread ")}{unreadCount}</span>
+          <span>{wsText("Run state ")}{wsText(summarizeText(asRecord(projectRun?.recovery_pointer).status, 'clean'))}</span>
         </div>
       </div>
 
       <div className="project-cockpit-grid project-cockpit-grid--team">
         <section className="project-cockpit-panel">
           <header>
-            <h3>Communication</h3>
+            <h3>{wsText("Communication")}</h3>
             <span>{communicationItems.length}</span>
           </header>
           <div className="project-cockpit-summary">
             {communicationItems.map((item) => (
-              <span key={item.label}>{item.label} {item.value}</span>
+              <span key={wsText(item.label)}>{wsText(item.label)} {item.value}</span>
             ))}
-            <div className="project-cockpit-inline-text">{latestAlert}</div>
+            <div className="project-cockpit-inline-text">{wsText(latestAlert)}</div>
           </div>
         </section>
 
         <section className="project-cockpit-panel project-cockpit-panel--wide">
           <header>
-            <h3>Teams</h3>
+            <h3>{wsText("Teams")}</h3>
             <span>{teamCards.length}</span>
           </header>
           <div className="project-cockpit-team-grid">
@@ -224,15 +225,15 @@ export function ProjectCockpit({
                 <div className="project-cockpit-team-head">
                   <div className="project-cockpit-team-title">
                     <strong>{team.label}</strong>
-                    <span>{team.managerLabel}</span>
+                    <span>{wsText(team.managerLabel)}</span>
                   </div>
                   <span className={`project-cockpit-team-status status-${statusToken(team.status)}`}>
-                    {team.status}
+                    {wsText(team.status)}
                   </span>
                 </div>
                 <div className="project-cockpit-team-meta">
-                  <span>Seats {team.seatCount}</span>
-                  <span>Approvals {team.pendingApprovals}</span>
+                  <span>{wsText("Seats ")}{team.seatCount}</span>
+                  <span>{wsText("Approvals ")}{team.pendingApprovals}</span>
                   {team.latestAlert && <span>{team.latestAlert}</span>}
                 </div>
                 <div className="project-cockpit-seat-list">
@@ -241,11 +242,11 @@ export function ProjectCockpit({
                       <span className="project-cockpit-seat-role">{seat.roleLabel}</span>
                       <span className="project-cockpit-seat-id">{seat.seatLabel}</span>
                       <span className={`project-cockpit-seat-status status-${statusToken(seat.status)}`}>
-                        {seat.status}
+                        {wsText(seat.status)}
                       </span>
                     </div>
                   )) : (
-                    <div className="project-cockpit-inline-text">No seats assigned yet</div>
+                    <div className="project-cockpit-inline-text">{wsText("No seats assigned yet")}</div>
                   )}
                 </div>
               </article>

@@ -1,3 +1,4 @@
+import { useWorkspaceText } from './lib/workspaceMessages'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VisualSocketClient } from './lib/wsClient'
 import { GameBridge } from './game/GameBridge'
@@ -31,16 +32,6 @@ import { EventTimelineStore } from './devtools/EventTimelineStore'
 import { DevToolsOverlay } from './devtools/DevToolsOverlay'
 import { useExternalTeamActivityStore, type ExternalTeamActivityRecord } from './stores/ExternalTeamActivityStore'
 import { isJiuwenOpaqueTeam } from './lib/externalTeamActivity'
-
-function readOutdoorOverrideUi(): 'auto' | 'day' | 'night' {
-  try {
-    const o = localStorage.getItem('opc_outdoor_override')
-    if (o === 'day' || o === 'night') return o
-    if (localStorage.getItem('opc_outdoor_day') === '1') return 'day'
-    if (localStorage.getItem('opc_outdoor_night') === '1') return 'night'
-  } catch { /* private mode */ }
-  return 'auto'
-}
 
 const MAX_LOG_ITEMS = 80
 const TASK_MODE_LOW_VALUE_RUNTIME_EVENTS = new Set([
@@ -534,7 +525,10 @@ export default function App() {
   const [activeSavedOrg, setActiveSavedOrg] = useState<string | null>(null)
   const [savedOrgVersionAtLoad, setSavedOrgVersionAtLoad] = useState<number | null>(null)
   const [orgCreatePending, setOrgCreatePending] = useState(false)
+  const orgCreatePendingRef = useRef(false)
+  const orgCreateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [orgCreateResult, setOrgCreateResult] = useState<(OrgSavedCreatePayload & { nonce: number }) | null>(null)
+  const wsText = useWorkspaceText()
   const [orgToast, setOrgToast] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null)
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set())
   const replayedEventIds = useRef<Set<string>>(new Set())
@@ -563,7 +557,6 @@ export default function App() {
   const [deletingAgentId, setDeletingAgentId] = useState<string | null>(null)
   const [executionPanelTaskId, setExecutionPanelTaskId] = useState<string | null>(null)
   const [executionPanelRuntimeOnly, setExecutionPanelRuntimeOnly] = useState(false)
-  const [outdoorOverride, setOutdoorOverride] = useState<'auto' | 'day' | 'night'>(() => readOutdoorOverrideUi())
 
   const normalizeProjectId = useCallback((value: unknown): string => {
     const projectId = typeof value === 'string' ? value.trim() : ''
@@ -1242,6 +1235,13 @@ export default function App() {
       onStatus: (next, detail) => {
         setStatus(next)
         setStatusDetail(detail ?? '')
+        if ((next === 'disconnected' || next === 'error') && orgCreatePendingRef.current) {
+          orgCreatePendingRef.current = false
+          if (orgCreateTimeoutRef.current) clearTimeout(orgCreateTimeoutRef.current)
+          orgCreateTimeoutRef.current = null
+          setOrgCreatePending(false)
+          setOrgCreateResult({ ok: false, name: '', error: t('teamPresets.unconfirmed'), nonce: Date.now() })
+        }
         if (next !== 'connected') setProjectIdPolicy(null)
         if (next === 'connected') {
           const projectId = getActiveProjectId()
@@ -1906,6 +1906,9 @@ export default function App() {
         }
       },
       onOrgSavedCreate: (payload) => {
+        orgCreatePendingRef.current = false
+        if (orgCreateTimeoutRef.current) clearTimeout(orgCreateTimeoutRef.current)
+        orgCreateTimeoutRef.current = null
         setOrgCreatePending(false)
         setOrgCreateResult({ ...payload, nonce: Date.now() })
         if (payload.ok) {
@@ -2103,9 +2106,25 @@ export default function App() {
     clientRef.current?.orgSavedSaveAs(name, overwrite)
   }, [])
   const handleSavedOrgCreate = useCallback((organizationName: string, members: OrgCreateMemberInput[]) => {
+    if (orgCreatePendingRef.current) return
+    if (status !== 'connected' || !clientRef.current) {
+      setOrgCreateResult({ ok: false, name: '', error: t('teamPresets.connection'), nonce: Date.now() })
+      return
+    }
+    orgCreatePendingRef.current = true
     setOrgCreatePending(true)
     setOrgCreateResult(null)
+    orgCreateTimeoutRef.current = setTimeout(() => {
+      orgCreatePendingRef.current = false
+      orgCreateTimeoutRef.current = null
+      setOrgCreatePending(false)
+      setOrgCreateResult({ ok: false, name: '', error: t('teamPresets.unconfirmed'), nonce: Date.now() })
+      clientRef.current?.orgSavedList()
+    }, 30_000)
     clientRef.current?.orgSavedCreate(organizationName, members)
+  }, [status, t])
+  useEffect(() => () => {
+    if (orgCreateTimeoutRef.current) clearTimeout(orgCreateTimeoutRef.current)
   }, [])
   const handleSavedOrgLoad = useCallback((name: string) => {
     clientRef.current?.orgSavedLoad(name)
@@ -2423,23 +2442,28 @@ export default function App() {
   // Whether the current mode allows agent creation/editing
   const isOrgMode = globalExecMode === 'org'
   const globalModeLabel = globalExecMode === 'task'
-    ? 'task'
+    ? t('execution.task')
     : globalExecMode === 'org'
-      ? `company/${activeSavedOrg ?? 'org'}`
-      : `company/${globalCompanyProfile}`
+      ? `${t('execution.company')} / ${activeSavedOrg ?? t('execution.org')}`
+      : `${t('execution.company')} / ${t('org.corporate')}`
 
 
   return (
     <div className="app-shell" data-theme={theme}>
       {orgToast && (
         <div className={`org-toast org-toast--${orgToast.kind}`} role="status" aria-live="polite">
-          {orgToast.text}
+          {wsText(orgToast.text)}
         </div>
       )}
       {/* Topbar */}
       <header className="topbar">
         <div className="topbar-left">
-          <span className="logo-text">Open<span className="logo-accent">OPC</span></span>
+          <div className="hyman-brand" aria-label="Hyman OpenOPC">
+            <div className="hyman-brand-copy">
+              <span className="hyman-product-name">Hyman OpenOPC</span>
+              <span className="hyman-product-caption">{t('brand.caption')}</span>
+            </div>
+          </div>
           <div className={`conn-dot ${statusClass(status)}`} title={`${status}${statusDetail ? ` — ${statusDetail}` : ''}\n${wsUrl}`} />
           <ProjectSelector
             projects={projectStore.projects}
@@ -2456,16 +2480,16 @@ export default function App() {
           />
         </div>
         <div className="topbar-center">
-          <div className="page-nav">
-            <button className={`page-nav-btn${activePage === 'workspace' ? ' active' : ''}`} onClick={() => setActivePage('workspace')}>
+          <div className="page-nav" role="navigation" aria-label={t('brand.navigation')}>
+            <button className={`page-nav-btn${activePage === 'workspace' ? ' active' : ''}`} aria-pressed={activePage === 'workspace'} onClick={() => setActivePage('workspace')}>
               {t('app.page.workspace')}
               {(() => {
                 const total = chatStore.channels.reduce((sum, ch) => sum + chatStore.getUnreadCount(ch.id), 0)
                 return total > 0 ? <span className="nav-unread-badge">{total > 99 ? '99+' : total}</span> : null
               })()}
             </button>
-            <button className={`page-nav-btn${activePage === 'office' ? ' active' : ''}`} onClick={() => setActivePage('office')}>{t('app.page.office')}</button>
-            <button className={`page-nav-btn${activePage === 'org' ? ' active' : ''}`} onClick={() => setActivePage('org')}>{t('app.page.org')}</button>
+            <button className={`page-nav-btn${activePage === 'office' ? ' active' : ''}`} aria-pressed={activePage === 'office'} onClick={() => setActivePage('office')}>{t('app.page.office')}</button>
+            <button className={`page-nav-btn${activePage === 'org' ? ' active' : ''}`} aria-pressed={activePage === 'org'} onClick={() => setActivePage('org')}>{t('app.page.org')}</button>
           </div>
           <div className="stat-chips">
             <span className="stat-chip"><b>{metrics.totalAgents}</b> {t('app.metric.agents')}</span>
@@ -2494,32 +2518,6 @@ export default function App() {
               {t('language.chinese')}
             </button>
           </div>
-          <select
-            className="theme-select"
-            value={outdoorOverride}
-            title={t('outdoor.title')}
-            aria-label={t('outdoor.title')}
-            onChange={(e) => {
-              const v = e.target.value as 'auto' | 'day' | 'night'
-              setOutdoorOverride(v)
-              try {
-                if (v === 'auto') {
-                  localStorage.removeItem('opc_outdoor_override')
-                  localStorage.removeItem('opc_outdoor_day')
-                  localStorage.removeItem('opc_outdoor_night')
-                } else {
-                  localStorage.setItem('opc_outdoor_override', v)
-                  localStorage.removeItem('opc_outdoor_day')
-                  localStorage.removeItem('opc_outdoor_night')
-                }
-              } catch { /* private mode */ }
-              bridgeRef.current.syncOutdoorLighting()
-            }}
-          >
-            <option value="auto">{t('outdoor.auto')}</option>
-            <option value="day">{t('outdoor.day')}</option>
-            <option value="night">{t('outdoor.night')}</option>
-          </select>
           <select
             className="theme-select"
             value={theme}

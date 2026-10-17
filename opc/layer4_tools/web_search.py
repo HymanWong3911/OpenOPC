@@ -93,9 +93,9 @@ class _DuckDuckGoResultsParser(HTMLParser):
 
         attributes = {name.lower(): value or "" for name, value in attrs}
         classes = set(attributes.get("class", "").split())
-        if "result__a" in classes:
+        if classes & {"result__a", "result-link"}:
             self._start_capture("title", href=attributes.get("href", ""))
-        elif "result__snippet" in classes:
+        elif classes & {"result__snippet", "result-snippet"}:
             self._start_capture("snippet")
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -190,19 +190,49 @@ def _parse_duckduckgo_results(text: str, max_results: int) -> list[dict[str, str
 
 
 async def web_search(query: str, max_results: int = 5) -> dict[str, Any]:
-    """Search the web using DuckDuckGo HTML scraping (no API key needed)."""
+    """Search DDG's text endpoints; never treat a challenge as empty success."""
+    query = str(query or "").strip()
     try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(
-                "https://html.duckduckgo.com/html/",
-                params={"q": query},
-                headers={"User-Agent": "Mozilla/5.0 (compatible; OPC/1.0)"},
-            )
-            resp.raise_for_status()
-            text = resp.text
-            return {"results": _parse_duckduckgo_results(text, max_results), "query": query}
-    except Exception as e:
-        return {"error": str(e), "query": query}
+        limit = min(20, max(1, int(max_results)))
+    except (TypeError, ValueError, OverflowError):
+        return {"error": "max_results must be an integer", "query": query, "success": False}
+    if not query:
+        return {"error": "Search query must not be empty", "query": query, "success": False}
+
+    attempts: list[dict[str, str]] = []
+    async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
+        for provider, endpoint in (
+            ("duckduckgo_lite", "https://lite.duckduckgo.com/lite/"),
+            ("duckduckgo_html", "https://html.duckduckgo.com/html/"),
+        ):
+            try:
+                resp = await client.get(
+                    endpoint, params={"q": query},
+                    headers={"User-Agent": "Mozilla/5.0 (compatible; OPC/1.0)"},
+                )
+                resp.raise_for_status()
+                text = resp.text
+                lowered = text.lower()
+                if any(marker in lowered for marker in (
+                    "anomaly.js", "anomaly-modal", "challenge-form", "bots use duckduckgo",
+                )):
+                    attempts.append({"provider": provider, "reason": "challenge"})
+                    continue
+                results = _parse_duckduckgo_results(text, limit)
+                results = [r for r in results if r["title"] and r["url"]]
+                if results:
+                    return {"results": results, "query": query, "success": True, "provider": provider}
+                if "no-results" in lowered or "no results found for" in lowered:
+                    return {"results": [], "query": query, "success": True, "provider": provider}
+                attempts.append({"provider": provider, "reason": "unrecognized_response"})
+            except httpx.HTTPStatusError as exc:
+                attempts.append({"provider": provider, "reason": f"http_{exc.response.status_code}"})
+            except Exception as exc:
+                attempts.append({"provider": provider, "reason": type(exc).__name__})
+    return {
+        "error": "Web search unavailable: search endpoints were blocked or failed. Do not invent search results.",
+        "error_code": "search_unavailable", "query": query, "success": False, "attempts": attempts,
+    }
 
 
 async def web_fetch(

@@ -1,3 +1,4 @@
+import { useChatText, type ChatText } from '../lib/chatMessages'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import type { Session } from '../types/kanban'
 import type { AgentInfo } from '../types/visual'
@@ -16,12 +17,12 @@ interface TaskHeaderBarProps {
   onResume?: () => void
 }
 
-function relativeTime(ts: number): string {
+function relativeTime(ts: number, tr: ChatText): string {
   const diff = Date.now() - ts
-  if (diff < 60_000) return 'just now'
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`
-  return `${Math.floor(diff / 86_400_000)}d ago`
+  if (diff < 60_000) return tr('just now')
+  if (diff < 3_600_000) return tr('{count}m ago', { count: Math.floor(diff / 60_000) })
+  if (diff < 86_400_000) return tr('{count}h ago', { count: Math.floor(diff / 3_600_000) })
+  return tr('{count}d ago', { count: Math.floor(diff / 86_400_000) })
 }
 
 const STATUS_META: Record<string, { color: string; label: string }> = {
@@ -46,6 +47,7 @@ const HUMAN_REVIEW_STATUSES = new Set([
 ])
 
 export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, onStop, onComplete, onResume }: TaskHeaderBarProps) {
+  const tr = useChatText()
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(session.title)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -95,7 +97,7 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
     ?? (isSuspended || (!isAwaitingReview && !isRunning && session.status !== 'done' && session.status !== 'pending'))
   ) && !isSuspending && !isResuming
   const meta = STATUS_META[session.status] ?? STATUS_META.pending
-  const statusLabel = isSuspending ? 'Stopping' : isSuspended ? 'Suspended' : isResuming ? 'Resuming' : meta.label
+  const statusLabel = isSuspending ? tr("Stopping") : isSuspended ? tr("Suspended") : isResuming ? tr("Resuming") : tr(meta.label)
   const roleLabel = getWorkItemRoleLabel(session)
   const runtimeStatus = getSessionRuntimeStatus(session)
   const isWorking = isSessionWorking(session)
@@ -140,7 +142,7 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
             }}
           />
         ) : (
-          <span className="task-title" onClick={startEditing} title="Click to edit">
+          <span className="task-title" onClick={startEditing} title={tr("Click to edit")}>
             {session.title}
           </span>
         )}
@@ -172,13 +174,13 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
             the role pill rather than as a wide chip. */}
 
         {roleLabel && (
-          <span className="task-role-pill" title={`Role: ${roleLabel}`}>
+          <span className="task-role-pill" title={tr('Role: {role}', { role: roleLabel })}>
             {roleLabel}
           </span>
         )}
 
         {session.employeeAssignment?.name && (
-          <span className="task-employee-pill" title={`Employee: ${session.employeeAssignment.name}${session.employeeAssignment.category ? ` (${session.employeeAssignment.category})` : ''}`}>
+          <span className="task-employee-pill" title={`${tr('Employee: {employee}', { employee: session.employeeAssignment.name })}${session.employeeAssignment.category ? ` (${session.employeeAssignment.category})` : ''}`}>
             <span className="task-employee-icon">&#x1F464;</span>
             {session.employeeAssignment.name}
           </span>
@@ -187,7 +189,7 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
         {session.selectedExecutionAgent && (
           <span
             className="task-agent-pill"
-            title={`Execution Agent: ${executionAgentLabel(session.selectedExecutionAgent)}`}
+            title={tr('Execution Agent: {agent}', { agent: executionAgentLabel(session.selectedExecutionAgent) })}
           >
             <span className="task-agent-icon">&#x2699;</span>
             {executionAgentLabel(session.selectedExecutionAgent)}
@@ -208,13 +210,13 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
         )}
 
         <span className="task-header-time" title={new Date(session.createdAt).toLocaleString()}>
-          {relativeTime(session.createdAt)}
+          {relativeTime(session.createdAt, tr)}
         </span>
 
         {(canStop || isSuspending) && onStop && (
-          <button className="task-stop-btn" onClick={onStop} title="Stop task" disabled={!canStop}>
+          <button className="task-stop-btn" onClick={onStop} title={tr("Stop task")} disabled={!canStop}>
             <IconStop />
-            <span>{isSuspending ? 'Stopping...' : 'Stop'}</span>
+            <span>{isSuspending ? tr("Stopping...") : tr("Stop")}</span>
           </button>
         )}
 
@@ -222,21 +224,21 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
           <button
             className="task-resume-btn"
             onClick={onResume}
-            title="Resume prior runtime (re-awaken original team, no new plan)"
+            title={tr("Resume prior runtime (re-awaken original team, no new plan)")}
           >
-            <span>Continue</span>
+            <span>{tr("Continue")}</span>
           </button>
         )}
 
         {onComplete && (
-          <button className="task-done-btn" onClick={onComplete} title="Mark task as done">
+          <button className="task-done-btn" onClick={onComplete} title={tr("Mark task as done")}>
             <IconCheck />
-            <span>Done</span>
+            <span>{tr("Done")}</span>
           </button>
         )}
 
         {onViewOnBoard && (
-          <button className="task-board-btn" onClick={onViewOnBoard} title="View on Board">
+          <button className="task-board-btn" onClick={onViewOnBoard} title={tr("View on Board")}>
             <IconBoard />
           </button>
         )}
@@ -246,8 +248,8 @@ export function TaskHeaderBar({ session, agents, onTitleChange, onViewOnBoard, o
       {showRuntimeMetrics && (
         <div className="task-header-metrics">
           {hasApprovalMetrics && (
-            <div className="task-runtime-metric task-runtime-metric-approval" title="Pending approvals">
-              <span className="task-runtime-metric-label">Approvals</span>
+            <div className="task-runtime-metric task-runtime-metric-approval" title={tr("Pending approvals")}>
+              <span className="task-runtime-metric-label">{tr("Approvals")}</span>
               <span className="task-runtime-metric-value">{session.pendingPermissionCount}</span>
             </div>
           )}

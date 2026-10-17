@@ -849,3 +849,41 @@
     align-items: stretch;
   }
 }
+
+
+/* HymanAgent VI: component surfaces, typography, and interaction.
+   Scoped to the two Hyman themes so legacy palettes retain their styling. */
+
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-command-bar, .myorg-section, .myorg-form, .team-roster-card, .myorg-roster-role) {
+  background: var(--ha-bg-surface);
+  border-color: var(--ha-border-subtle);
+  border-radius: 10px;
+  box-shadow: none;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-command-title, .myorg-section-title) { font-size: 17px; line-height: 26px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-roster-role-name, .team-roster-emp-name, .myorg-roster-role-name,
+  .myorg-roster-emp-name, .team-roster-hire-btn, .team-roster-deploy-btn) { font-size: 13px; line-height: 20px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-command-metrics span, .team-roster-count, .team-roster-card-icon,
+  .myorg-seniority-mid, .team-roster-seniority--senior) {
+  background: var(--ha-bg-subtle);
+  color: var(--ha-text-secondary);
+  border-color: var(--ha-border-subtle);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-roster-deploy-btn, .team-roster-hire-btn) {
+  color: var(--ha-text-primary);
+  background: transparent;
+  border-color: var(--ha-border-default);
+  border-radius: 8px;
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-roster-deploy-btn, .team-roster-hire-btn):hover {
+  background: var(--ha-fill-hover);
+  color: var(--ha-text-primary);
+  border-color: var(--ha-border-strong);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.wfe-dag-node:hover, .wfe-node-editing) {
+  box-shadow: none;
+  border-color: var(--ha-accent);
+}
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.myorg-container, .team-view) :is(input, textarea, select, button) { font-family: inherit; font-size: 13px; }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.myorg-code, .wfe-code) { font-family: var(--ha-font-mono, 'Geist Mono', monospace); }
+:is(.app-shell[data-theme="openopc"], .app-shell[data-theme="paper"]) :is(.team-roster-grid, .myorg-roster-grid) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 16px; }

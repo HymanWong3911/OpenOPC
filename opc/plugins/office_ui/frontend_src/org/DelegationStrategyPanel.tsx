@@ -1,3 +1,6 @@
+import React from 'react'
+import { useI18n } from '../i18n'
+import { orgMessages } from '../lib/orgMessages'
 import type { OrgRole, RuntimeFrontierSummary, RuntimeSeatInfo, RuntimeTeamInfo, RuntimeWorkItemInfo, RuntimePolicy } from '../types/visual'
 
 interface DelegationStrategyPanelProps {
@@ -63,6 +66,8 @@ export function DelegationStrategyPanel({
   onUpdateOrgStrategy,
   onUpdateRuntimePolicy,
 }: DelegationStrategyPanelProps) {
+  const { locale } = useI18n()
+  const msg = orgMessages(locale)
   const topLevel = roles.filter(r => (topLevelRoleIds ?? []).includes(r.role_id))
   const selectedFinalDecider = finalDeciderRoleId || (topLevel.length === 1 ? topLevel[0]?.role_id : '')
   const hasSelectionError = topLevel.length > 1 && !selectedFinalDecider
@@ -71,14 +76,14 @@ export function DelegationStrategyPanel({
   return (
     <div className="wfe-container">
       <div className="wfe-header">
-        <h3 className="wfe-title">Actor Runtime</h3>
-        <span className="wfe-profile-badge">{companyProfile}</span>
+        <h3 className="wfe-title">{msg("Actor Runtime")}</h3>
+        <span className="wfe-profile-badge">{msg(companyProfile)}</span>
       </div>
 
       <div className="myorg-collapsible" style={{ margin: '0 0 8px' }}>
         <div className="myorg-collapsible-body" style={{ display: 'block' }}>
           <div className="oc-form-row">
-            <label>Final decider</label>
+            <label>{msg("Final decider")}</label>
             <select
               value={selectedFinalDecider}
               disabled={readOnly}
@@ -87,18 +92,20 @@ export function DelegationStrategyPanel({
                 onUpdateOrgStrategy?.({ final_decider_role_id: e.target.value || null })
               }}
             >
-              <option value="">{topLevel.length > 1 ? 'Select top-level role' : 'Auto-select only top-level role'}</option>
+              <option value="">{topLevel.length > 1 ? msg("Select top-level role") : msg("Auto-select only top-level role")}</option>
               {topLevel.map(role => (
                 <option key={role.role_id} value={role.role_id}>{role.name}</option>
               ))}
             </select>
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-            Runtime wakeups, delegation, approvals, and recovery are seat-scoped.
+
+            {msg("Runtime wakeups, delegation, approvals, and recovery are seat-scoped.")}
           </div>
           {hasSelectionError && (
             <div className="org-toast org-toast--warn" style={{ margin: '0 0 8px' }}>
-              Multiple top-level roles exist. Select one final decider before company execution can start.
+
+              {msg("Multiple top-level roles exist. Select one final decider before company execution can start.")}
             </div>
           )}
         </div>
@@ -108,28 +115,28 @@ export function DelegationStrategyPanel({
         <div className="myorg-collapsible" style={{ margin: '0 0 8px' }}>
           <div className="myorg-collapsible-body" style={{ display: 'block' }}>
             <div className="oc-form-row">
-              <label>Runtime</label>
+              <label>{msg("Runtime")}</label>
               <div>
-                {frontier.status || 'running'}
+                {msg(frontier.status || 'running')}
                 {frontier.run_id ? ` (${frontier.run_id.slice(0, 8)})` : ''}
               </div>
             </div>
             <div className="oc-form-row">
-              <label>Frontier</label>
+              <label>{msg("Frontier")}</label>
               <div>
-                {frontier.running_count ?? 0} running, {frontier.ready_count ?? 0} ready, {frontier.blocked_count ?? 0} blocked, {frontier.waiting_count ?? 0} waiting
+                {msg('{running} running, {ready} ready, {blocked} blocked, {waiting} waiting', { running: frontier.running_count ?? 0, ready: frontier.ready_count ?? 0, blocked: frontier.blocked_count ?? 0, waiting: frontier.waiting_count ?? 0 })}
               </div>
             </div>
             <div className="oc-form-row">
-              <label>Teams</label>
+              <label>{msg("Teams")}</label>
               <div>{runtimeTeams.length}</div>
             </div>
             <div className="oc-form-row">
-              <label>Seats</label>
+              <label>{msg("Seats")}</label>
               <div>{runtimeSeats.length}</div>
             </div>
             <div className="oc-form-row">
-              <label>Work items</label>
+              <label>{msg("Work items")}</label>
               <div>{workItems.length}</div>
             </div>
             {workItems.length > 0 && (
@@ -142,22 +149,22 @@ export function DelegationStrategyPanel({
                   const missingSignals = missingSignalsForWorkItem(item)
                   const confidence = adaptiveConfidenceLabel(item)
                   const summary = [
-                    blockedReason ? `waiting ${blockedReason}` : '',
-                    gateOwner ? `gate ${roleNameMap.get(gateOwner) ?? gateOwner}` : '',
-                    missingSignals.length ? `signals ${missingSignals.join(', ')}` : '',
-                    confidence ? `confidence ${confidence}` : '',
-                    normalizedState === 'invalidated' ? 'invalidated' : '',
+                    blockedReason ? msg('waiting {reason}', { reason: msg(blockedReason) }) : '',
+                    gateOwner ? msg('gate {role}', { role: roleNameMap.get(gateOwner) ?? gateOwner }) : '',
+                    missingSignals.length ? msg('signals {signals}', { signals: missingSignals.join(', ') }) : '',
+                    confidence ? msg('confidence {value}', { value: confidence }) : '',
+                    normalizedState === 'invalidated' ? msg("invalidated") : '',
                   ].filter(Boolean)
                   return (
                     <div key={item.work_item_id} style={{ marginBottom: 6 }}>
                       <div>
-                        {roleNameMap.get(item.role_id) ?? item.role_id}: {item.title} [{item.phase}]
+                        {roleNameMap.get(item.role_id) ?? item.role_id}: {item.title} [{msg(item.phase)}]
                         {item.kanban_column && (
-                          <span style={{ opacity: 0.5 }}> · {item.kanban_column}</span>
+                          <span style={{ opacity: 0.5 }}> · {msg(item.kanban_column)}</span>
                         )}
-                        {item.batch_id && <span style={{ opacity: 0.5 }}> batch:{item.batch_id}</span>}
+                        {item.batch_id && <span style={{ opacity: 0.5 }}> {msg("batch:")}{item.batch_id}</span>}
                         {normalizedState && normalizedState !== item.phase && (
-                          <span style={{ opacity: 0.7 }}> state:{normalizedState}</span>
+                          <span style={{ opacity: 0.7 }}> {msg("state:")}{msg(normalizedState)}</span>
                         )}
                       </div>
                       {summary.length > 0 && (
